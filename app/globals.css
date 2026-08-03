@@ -1,26 +1,275 @@
 @import "tailwindcss";
 
+@theme {
+  /* Color — text tiers (grayscale editorial hierarchy) */
+  --color-text-primary: #111111;
+  --color-text-strong-secondary: #333333;
+  --color-text-body: #555555;
+  --color-text-muted: #666666;
+  --color-text-quiet: #777777;
+  --color-text-faint: #888888;
+  --color-text-meta: #999999;
+  --color-text-subtle: #aaaaaa;
+  --color-text-whisper: #bbbbbb;
+  --color-text-on-dark: #eeeeee;
+  --color-text-on-dark-muted: #bbbbbb;
+  --color-text-on-accent: #ffffff;
+
+  /* Color — borders / dividers */
+  --color-border-input: #cccccc;
+  --color-border-default: #dddddd;
+  --color-border-divider: #e4e4e4;
+  --color-border-divider-alt: #e5e5e5;
+  --color-border-hairline: #f0f0f0;
+  --color-border-hairline-alt: #f2f2f2;
+  --color-border-placeholder: #bbbbbb;
+  --color-border-dark: #333333;
+
+  /* Color — backgrounds */
+  --color-bg-page: #ffffff;
+  --color-bg-card: #ffffff;
+  --color-bg-subtle: #fafafa;
+  --color-bg-placeholder-a: #eeeeee;
+  --color-bg-placeholder-b: #f7f7f7;
+  --color-bg-wireframe-backdrop: #f0f0f0;
+
+  /* Color — dark / accent blocks (trust callouts, RG helpline, footer, primary CTA) */
+  --color-bg-accent: #111111;
+  --color-bg-dark-block: #1a1a1a;
+  --color-border-on-dark: #333333;
+
+  /* Typography — families */
+  --font-serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+
+  /* Typography — weights actually used */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-heavy: 800;
+
+  /* Typography — rationalized size scale (see inconsistency #1) */
+  --text-2xs: 10px; /* mono meta labels, timestamps, section eyebrows */
+  --text-xs: 11px; /* fine print, byline meta, breadcrumb */
+  --text-sm: 12px; /* body small, card labels, buttons (compact) */
+  --text-base: 13px; /* nav links, default UI text */
+  --text-md: 14px; /* emphasized UI text, rank row titles */
+  --text-lg: 15px; /* operator name, verdict title */
+  --text-xl: 16px; /* lead paragraph (mobile) */
+  --text-2xl: 18px; /* h2 sans, blog title, brand wordmark (compact) */
+  --text-3xl: 22px; /* stat values, brand wordmark (nav) */
+  --text-4xl: 28px; /* score display (e.g. "9.4") */
+  --text-5xl-mobile: 30px; /* h1 hero, mobile */
+  --text-5xl-tablet: 38px; /* h1 hero, tablet */
+  --text-5xl-desktop: 44px; /* h1 hero, desktop */
+  --text-h2-serif: 25px; /* editorial h2 (Newsreader) */
+
+  /* Line heights actually used */
+  --leading-tight: 1;
+  --leading-snug: 1.12;
+  --leading-heading: 1.2;
+  --leading-relaxed: 1.5;
+  --leading-loose: 1.6;
+  --leading-copy: 1.65;
+  --leading-lead: 1.7;
+
+  /* Spacing — clean 8px scale (preferred going forward). Renamed from
+     --space-* to --spacing-*: */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 16px;
+  --spacing-4: 24px;
+  --spacing-5: 32px;
+  --spacing-6: 40px;
+  --spacing-7: 48px;
+  --spacing-8: 60px;
+
+  /* Spacing — observed ad hoc values (legacy; see inconsistency #2) */
+  --spacing-legacy-1: 2px;
+  --spacing-legacy-2: 6px;
+  --spacing-legacy-3: 10px;
+  --spacing-legacy-4: 12px;
+  --spacing-legacy-5: 14px;
+  --spacing-legacy-6: 20px;
+  --spacing-legacy-7: 28px;
+
+  /* Container gutter — horizontal (and top) page padding, distinct per
+     breakpoint (confirmed NOT shared between mobile/tablet — see doc block
+     above). This is the `pad` value applied as shellStyle padding across
+     every route (Home, Category, RG-Directory, Author, etc.) */
+  --spacing-container-mobile: 16px;
+  --spacing-container-tablet: 20px;
+  --spacing-container-desktop: 24px;
+
+  /* Border radius — separated by component class (see inconsistency #3).
+     --radius-pill and --radius-full were removed: Tailwind v4 already
+     ships a built-in "rounded-full" utility (border-radius: 9999px, which
+     renders a perfect circle on any square element) — a custom
+     --radius-full: 50% entry doesn't override that built-in and a separate
+     --radius-pill: 9999px is just a duplicate value under a different name.
+     Use Tailwind's own rounded-full for every circular avatar, icon button,
+     and pill shape in this system instead of a custom token. */
+  --radius-sm: 6px; /* compact tiles, score cards, search inputs, small icon chips */
+  --radius-md: 8px; /* cards, sections, CTA buttons, avatars/logo squares, dark blocks */
+
+  /* Shadow — moved into @theme from :root: Tailwind v4's --shadow-*
+     namespace generates a real utility (shadow-frame), so this shouldn't
+     have been var()-only. */
+  --shadow-frame: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* Background image — moved into @theme from :root for the same reason:
+     --background-image-* generates a bg-{name} utility. */
+  --background-image-placeholder-asset: repeating-linear-gradient(
+    45deg,
+    #eeeeee,
+    #eeeeee 4px,
+    #f7f7f7 4px,
+    #f7f7f7 8px
+  );
+}
+
+/* :root — values with no matching Tailwind v4 theme namespace, so they
+   generate no utility class on their own. Consumed via Tailwind's
+   arbitrary-value syntax (e.g. grid-cols-[var(--grid-nav-width)_1fr_var(--grid-rail-width)]),
+   which IS a generated utility class, not an inline style. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --grid-nav-width: 236px;
+  --grid-content-width: 720px;
+  --grid-rail-width: 300px;
+  --grid-gap-desktop: 28px;
+  --grid-gap-tablet: 24px;
+  --grid-max-width: 1360px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  background: var(--color-bg-page);
+  font-family: var(--font-sans);
+}
+
+a {
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-text-body);
+}
+
+@layer components {
+  /* Card shell — the border+radius+padding+bg combo repeated across score
+     tiles, bonus offers, rail modules, methodology strips, dark trust blocks */
+  .card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-divider);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3);
+  }
+  .card-compact {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-divider);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .card-dark {
+    background: var(--color-bg-dark-block);
+    color: var(--color-text-on-dark);
+    border: 1px solid var(--color-border-on-dark);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3);
+  }
+
+  /* Buttons — primary (dark fill, e.g. Log In, CTAs) and secondary (outline) */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(var(--spacing) * 11); /* 44px — same value as Tailwind's built-in h-11/w-11 */
+    padding: 10px 16px;
+    background: var(--color-bg-accent);
+    color: var(--color-text-on-accent);
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-base);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(var(--spacing) * 11);
+    padding: 10px 16px;
+    background: transparent;
+    color: var(--color-text-strong-secondary);
+    border: 1px solid var(--color-border-input);
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--text-base);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* Touch-target minimum — icon buttons (search, menu). 44px is exactly
+     Tailwind's built-in h-11/w-11 (11 × the default 4px spacing unit) —
+     prefer "h-11 w-11" directly in markup over this class where possible. */
+  .touch-target {
+    width: calc(var(--spacing) * 11);
+    height: calc(var(--spacing) * 11);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Placeholder / asset-pending block — logos, hero images, avatars not yet
+     supplied. Prefer the generated "bg-placeholder-asset" utility directly
+     over this class where only the fill (not the dashed border) is needed. */
+  .placeholder-asset {
+    background: var(--background-image-placeholder-asset);
+    border: 1px dashed var(--color-border-placeholder);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Mono meta label — eyebrow labels, "Last Verified" timestamps, byline meta */
+  .meta-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text-meta);
+    letter-spacing: 0.05em;
+  }
+  .meta-label-caps {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text-meta);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Editorial heading (serif) — Tier 1 only: hero h1, article titles,
+     editorial h2s (e.g. Home's "Latest news", Blog-Post, Category, Author,
+     RG-Directory). Do NOT apply to Tier 2/3 comparison-register headings
+     (Operator-Review/Review-Post h1 and h2, Home's "Top-Rated Sportsbooks" /
+     "Compare Sportsbooks Side by Side") — those render in the plain sans
+     stack by design; use .heading-sans there instead. */
+  .heading-serif {
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+    letter-spacing: -0.015em;
+  }
+  .heading-sans {
+    font-family: var(--font-sans);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  /* Hairline row divider — feed items, footer link lists */
+  .divider-row {
+    border-bottom: 1px solid var(--color-border-hairline);
+  }
 }
