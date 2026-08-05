@@ -17,16 +17,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Wagerblogs",
-  description:
-    "Independent guides, reviews, and strategy tips for online gaming — updated regularly so you can play with confidence.",
+  title: "WagerBlogs",
+  description: "Independent reviews, odds comparisons, and state-by-state legal betting guides.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${newsreader.variable} ${inter.variable}`}>
       <body>{children}</body>

@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+/*
+  WagerBlogs / RG.org design language — extracted from wireframe library (Home, Blog-Post, Category, Review-Post, Operator-Review, RG-Directory, Responsible-Gambling, Disclaimer, Author, Not-Found, Comments, Component-Reference-Filled-States).
+
+  Every token below is namespaced so Tailwind v4 actually generates a utility class from it — this file assumes NO var()/inline-style fallback; implementation should always reach for a generated class. Namespace verification pass (v4 rules): --color-* → bg-/text-/border-/etc. OK as-is --font- → font-sans/font-serif/font-mono OK as-is --font-weight-* → font-regular/font-medium/etc. OK as-is (note: Tailwind's own default key is "normal", not "regular" — kept "regular" to match how it's described everywhere else in this file; both are valid custom keys, just flagging the naming choice) --text-* → text-2xs/text-xl/etc. OK as-is --leading-* → leading-tight/leading-loose/etc. OK as-is --radius-* → rounded-sm/rounded-md/etc. OK for sm/md; --radius-pill and --radius-full were WRONG — see fix #2 below, both removed. --spacing-* → p-/m-/gap-/px-/etc. was --space-, which generates NOTHING in Tailwind v4 — renamed throughout (fix #1 below). --shadow- → shadow-frame moved here from :root (was inert) — now generates a real utility. --background-image-* → bg-placeholder-asset moved here from :root for the same reason. Values with no Tailwind namespace at all (grid track widths, container gutters used only inside a grid-template-columns declaration) stay in :root and are consumed via Tailwind's arbitrary-value syntax, e.g. grid-cols-[var(--grid-nav-width)_1fr_var(--grid-rail-width)] — that is still a generated utility class, not an inline style, since the value just happens to be a var() reference.
+
+  FLAGGED INCONSISTENCIES — decided ad hoc per-component, not from a defined system. Resolved below; most are settled by design intent (a genuine split between component classes, e.g. compact vs. standard), not by picking whichever value appeared most often — verify against intent before treating this file as final:
+
+  Type scale uses many one-off half-pixel sizes (9.5, 10.5, 11.5, 12.5, 13.5, 14.5, 17.5px) rather than a clean ratio scale. Rationalized into --text-2xs…--text-5xl-* below; some components will render 0.5–1px off their current wireframe size once switched to tokens.
+  Spacing is NOT a strict 8px multiple in practice — 6px, 10px, 14px, 20px, 28px gaps appear alongside 8/16/24/32/40. Kept both the "clean" 8px scale AND the observed odd values as --spacing-* tokens; prefer the clean scale in new work and treat the -legacy- steps as exceptions.
+  Card border-radius is inconsistent: 6px on some cards/score tiles, 8px on others (bonus cards, CTA buttons, dark trust blocks, avatars). Resolved as --radius-sm (6px, compact tiles/chips/inputs) vs --radius-md (8px, cards/sections/CTAs) — confirm this split is intentional rather than accidental drift.
+  Divider color is inconsistent: header/card borders use #e4e4e4, list-row dividers use #f0f0f0 or 
+  #f2f2f2 interchangeably. Kept as two tokens (--color-border-divider, --color-border-hairline) — check whether a single divider color was intended. No live CSS @media queries exist in the Claude Design source — layout switching (side-nav vs top-header, 3-col vs stacked grid) is driven by a JS state toggle in the wireframes (mobile 375 / tablet 834 / desktop 1440 preview widths). The actual breakpoint behavior IS fully resolved, just documented as prose below rather than as literal CSS: confirmed 768px/1024px match Tailwind's default md:/lg: exactly, so no custom --breakpoint-* tokens are declared — use unprefixed (mobile/base), md: (tablet), lg: (desktop) directly. Do not read this item as "the breakpoint spec doesn't exist yet" — it's finalized below, just not as a literal media query in the source file. BREAKPOINT BEHAVIOR (documented here as the source of truth for this spec — see inconsistency #5 for why it's prose, not live CSS in the export). Mobile-first: base case below, then only what changes at md: (768px, tablet preview 834px) and lg: (1024px, desktop preview 1440px). base (mobile, <768px): top-header shown, side-nav hidden; content+rail collapse to a single stacked column, grid-gap 0; container gutter --spacing-container-mobile (16px); hero h1 30px. md: (tablet, 768–1023px): still single-column stack (rail moves below content, side-nav still hidden/top-header still shown — no nav change from base at this step); grid-gap becomes --grid-gap-tablet (24px); container gutter becomes --spacing-container-tablet (20px) — NOT the same as the base 16px; hero h1 becomes 38px. lg: (desktop, ≥1024px): side-nav replaces top-header; layout becomes the 3-column grid (--grid-nav-width/1fr/--grid-rail-width) at --grid-gap-desktop (28px); container gutter becomes --spacing-container-desktop (24px); hero h1 becomes 44px.
+  The wireframe chrome itself (#f0f0f0 page backdrop, dev toolbar, dashed-border image placeholders) is scaffolding, not final UI — excluded from the component-pattern utilities below except where the placeholder pattern is genuinely reused as an asset-pending state. Login/CTA button radius drifted between 4px (earliest wireframes) and 8px (current baseline + built pages) — 8px treated as current truth.
+*/
+
 @theme {
   /* Color — text tiers (grayscale editorial hierarchy) */
   --color-text-primary: #111111;
@@ -76,7 +91,8 @@
   --leading-lead: 1.7;
 
   /* Spacing — clean 8px scale (preferred going forward). Renamed from
-     --space-* to --spacing-*: */
+     --space-* to --spacing-*: Tailwind v4 only maps p-, m-, gap-, px-, etc.
+     utilities from the --spacing-* namespace specifically. */
   --spacing-1: 4px;
   --spacing-2: 8px;
   --spacing-3: 16px;
@@ -148,14 +164,6 @@ body {
   -webkit-font-smoothing: antialiased;
   background: var(--color-bg-page);
   font-family: var(--font-sans);
-}
-
-a {
-  color: var(--color-text-primary);
-  text-decoration: none;
-}
-a:hover {
-  color: var(--color-text-body);
 }
 
 @layer components {
@@ -271,5 +279,14 @@ a:hover {
   /* Hairline row divider — feed items, footer link lists */
   .divider-row {
     border-bottom: 1px solid var(--color-border-hairline);
+  }
+
+  /* Editorial link card — category tiles, toolbox items, related-reading cards.
+     Tier 1 only, per .heading-serif's register note. */
+  .editorial-link-card {
+    display: block;
+    text-decoration: none;
+    border-top: 1px solid var(--color-border-divider);
+    padding-top: var(--spacing-3);
   }
 }
