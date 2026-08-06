@@ -119,6 +119,11 @@
   --spacing-container-tablet: 20px;
   --spacing-container-desktop: 24px;
 
+  /* Second breakpoint below lg:'s 1024px shell switch — the content column is too narrow for dense per-row layouts until ~1370px. */
+  --breakpoint-wide: 1370px;
+  /* Earlier threshold for 2-up card grids, which need less room than a dense per-row layout to look right again. */
+  --breakpoint-cards-wide: 1250px;
+
   /* Border radius — separated by component class (see inconsistency #3).
      --radius-pill and --radius-full were removed: Tailwind v4 already
      ships a built-in "rounded-full" utility (border-radius: 9999px, which
