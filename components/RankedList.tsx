@@ -10,7 +10,7 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
           key={operator.id}
           className={`rounded-md p-4 bg-bg-card ${operator.isPrimaryDomain ? "border border-text-primary" : "border border-border-divider"}`}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-[40px_1fr_128px] gap-3.5 items-center">
+          <div className="grid grid-cols-1 wide:grid-cols-[40px_1fr_128px] gap-3.5 items-center">
             <div className="w-10 h-10 shrink-0 placeholder-asset rounded-sm text-xs text-text-meta font-mono">
               #{i + 1}
             </div>
@@ -28,7 +28,7 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
               ))}
               <div className="text-xs text-text-body leading-relaxed mt-1.5">{operator.terms}</div>
             </div>
-            <div className="grid grid-cols-2 lg:flex lg:flex-col gap-2.5">
+            <div className="grid grid-cols-2 wide:flex wide:flex-col gap-2.5">
               <PrimaryDomainLink linkTier="tier2" primaryDomainLink={operator.primaryDomainLink} />
               <Link href="/reviews/sample-operator" className="btn-secondary">
                 Read Review
