@@ -19,6 +19,27 @@ export type Author = {
   name: string;
   credentialLine: string;
   photoUrl: string;
+  bio?: string;
+};
+
+/** Recurring "post teaser" card shape — recentPosts/related-reading/author's-recent-work
+ * lists across several routes. `href` is omitted where the card isn't a link. */
+export type PostTeaser = {
+  kicker: string;
+  title: string;
+  meta: string;
+  href?: string;
+};
+
+export type NewsItem = {
+  title: string;
+  meta: string;
+};
+
+/** "At a glance" rail-list shape, shared by both reviews templates. */
+export type AtAGlanceItem = {
+  label: string;
+  value: string;
 };
 
 export type Post = {
@@ -49,5 +70,16 @@ export type Operator = {
   /** Only one operator per rendered list may be true. */
   isPrimaryDomain: boolean;
   /** Present only when isPrimaryDomain is true. */
+  primaryDomainLink?: PrimaryDomainLinkData;
+  /** Used by the full operator-review templates; not rendered by ranked-list rows. */
+  pros?: string[];
+  cons?: string[];
+};
+
+/** Minimal operator shape for the side-by-side comparison table — feature rows
+ * live separately in `compareRows`, keyed by index against this array. */
+export type ComparisonOperator = {
+  name: string;
+  isPrimaryDomain: boolean;
   primaryDomainLink?: PrimaryDomainLinkData;
 };

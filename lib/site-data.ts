@@ -1,74 +1,69 @@
 // Shared placeholder navigation/footer/legal data for the WagerBlogs scaffold.
 // TODO(cms): every list here is a static stand-in. In the real build this comes from
 // the CMS taxonomy / nav config — never hardcode routes that can drift from the CMS.
-import type { PrimaryDomainLinkData } from "./types";
+// Structure/taxonomy only — content (operator data, post lists, stats, etc.)
+// lives in lib/mock-data.ts (see the DRY-4 split rule there).
 
 export type NavGroup = {
   id: string;
   label: string;
   href: string;
-  glyph: string;
-  subs: { label: string; href: string }[];
+  subs: { label: string; href: string; trailingIcon?: boolean }[];
 };
 
 export const navGroups: NavGroup[] = [
-  { id: "home", label: "Home", href: "/", glyph: "⌂", subs: [] },
+  { id: "home", label: "Home", href: "/", subs: [] },
   {
     id: "news",
     label: "News",
     href: "/news",
-    glyph: "◷",
     subs: [
       { label: "Football", href: "/news" },
       { label: "Basketball", href: "/news" },
       { label: "Soccer", href: "/news" },
       { label: "Esports", href: "/news" },
       { label: "Industry", href: "/news" },
-      { label: "All News →", href: "/news" },
+      { label: "All News", href: "/news", trailingIcon: true },
     ],
   },
   {
     id: "reviews",
     label: "Reviews",
     href: "/reviews",
-    glyph: "★",
     subs: [
       { label: "Sportsbooks", href: "/reviews" },
       { label: "Online Casinos", href: "/reviews" },
       { label: "Sweepstakes Casinos", href: "/reviews" },
       { label: "Bonuses & Offers", href: "/reviews" },
-      { label: "All Reviews →", href: "/reviews" },
+      { label: "All Reviews", href: "/reviews", trailingIcon: true },
     ],
   },
   {
     id: "categories",
     label: "Categories",
     href: "/categories",
-    glyph: "⊞",
     subs: [
       { label: "By Sport", href: "/categories" },
       { label: "By State", href: "/categories" },
       { label: "By Vertical", href: "/categories" },
-      { label: "Market Search →", href: "/categories" },
+      { label: "Market Search", href: "/categories", trailingIcon: true },
     ],
   },
   {
     id: "blog",
     label: "Blog",
     href: "/blog",
-    glyph: "✎",
     subs: [
       { label: "Guides", href: "/blog" },
       { label: "Strategy", href: "/blog" },
       { label: "Research", href: "/blog" },
-      { label: "All Posts →", href: "/blog" },
+      { label: "All Posts", href: "/blog", trailingIcon: true },
     ],
   },
   {
     id: "more",
     label: "More",
     href: "/about",
-    glyph: "⋯",
     subs: [
       { label: "About Us", href: "/about" },
       { label: "How We Review", href: "/about" },
@@ -131,52 +126,6 @@ export const legalParagraphs = [
   "No guarantees: [placeholder] Odds, bonus terms, and payout times change frequently. Always confirm current terms on the operator site before wagering. Gambling involves financial risk and can be addictive.",
 ];
 
-export const bonusOffers = [
-  {
-    name: "PeakWager",
-    headline: "Bet $5 Get $200 in Bonus Bets",
-    code: "PEAK200",
-    isPrimaryDomain: true,
-    primaryDomainLink: {
-      anchorText: "Claim PeakWager Offer",
-      url: "https://example.com",
-      relAttribute: "sponsored",
-    } as PrimaryDomainLinkData,
-  },
-  { name: "BlueHorizon Bet", headline: "10x $100 Bet Match Bonus", code: "BLUE100" },
-  { name: "Crownline Coins", headline: "1.5M Coins + 75 Free SC", code: "CROWN75" },
-  { name: "IronStake Sports", headline: "Double Your First 10 Wagers", code: "IRONX2" },
-];
-
-export const methodSteps = [
-  "Hands-on testing with real deposits",
-  "Same criteria for every operator",
-  "Scores benchmarked to the market leader",
-  "Re-verified when odds, apps, or payouts change",
-];
-
-export const operators = [
-  {
-    name: "PeakWager",
-    isPrimaryDomain: true,
-    primaryDomainLink: {
-      anchorText: "Visit PeakWager",
-      url: "https://example.com",
-      relAttribute: "sponsored",
-    } as PrimaryDomainLinkData,
-  },
-  { name: "BlueHorizon Bet", isPrimaryDomain: false },
-  { name: "IronStake Sports", isPrimaryDomain: false },
-];
-
-export const compareRows = [
-  { label: "Live Betting", values: ["Yes", "Yes", "Limited"] },
-  { label: "Same-Game Parlay", values: ["Yes", "Yes", "Yes"] },
-  { label: "Casino Cross-Sell", values: ["Yes", "No", "Yes"] },
-  { label: "Payout Speed", values: ["1-3 days", "2-5 days", "1-3 days"] },
-  { label: "Welcome Bonus", values: ["Bet $5/$200", "10x $100", "Bet $5/$150"] },
-];
-
 export const categories = [
   { name: "Sportsbooks", desc: "NFL, NBA, MLB & more" },
   { name: "Online Casinos", desc: "Slots & live dealer" },
@@ -186,87 +135,11 @@ export const categories = [
   { name: "Horse Racing", desc: "Racebooks & odds" },
 ];
 
-export const newsFeed = [
-  {
-    title: "[Placeholder headline — Football]",
-    meta: "Football · 07/20/2026 · by [author] · 5 min",
-  },
-  {
-    title: "[Placeholder headline — Basketball]",
-    meta: "Basketball · 07/19/2026 · by [author] · 3 min",
-  },
-  {
-    title: "[Placeholder headline — Soccer interview]",
-    meta: "Soccer · 07/18/2026 · by [author] · 4 min",
-  },
-  { title: "[Placeholder headline — Esports]", meta: "Esports · 07/17/2026 · by [author] · 3 min" },
-];
+// Content-type filter chips on a category page — structural taxonomy, not per-category content.
+export const categoryFilters = ["All", "Guides", "Analysis", "Research", "News"];
 
-export const blogPosts = [
-  {
-    title: "[Placeholder] How moneylines actually work",
-    excerpt: "A beginner walkthrough of reading odds before your first bet.",
-    byline: "by [author] · 07/18/2026",
-  },
-  {
-    title: "[Placeholder] Bankroll management 101",
-    excerpt: "Simple rules for staking that keep betting sustainable.",
-    byline: "by [author] · 07/12/2026",
-  },
-  {
-    title: "[Placeholder] Parlays vs straight bets",
-    excerpt: "When each bet type makes sense and what the math says.",
-    byline: "by [author] · 07/05/2026",
-  },
-];
+// Region filter chips on the gambling-help directory — structural taxonomy.
+export const regions = ["All regions", "North America", "UK & Ireland", "Europe", "Asia-Pacific"];
 
-export const toolboxItems = [
-  {
-    title: "Betting guides",
-    desc: "Bet types, strategy, and state rules explained.",
-    href: "/blog",
-  },
-  { title: "Market research", desc: "Team form, injuries, and matchup trend data.", href: "/blog" },
-  {
-    title: "State statistics",
-    desc: "Handle, revenue, and tax data by market.",
-    href: "/categories",
-  },
-  {
-    title: "Compare sites",
-    desc: "Side-by-side operator and bonus comparisons.",
-    href: "/reviews",
-  },
-];
-
-// From Component-Reference-Filled-States.dc.html — fictional-by-design fixtures.
-// TODO(cms): SourcedStat[] — each figure needs a real source + period, or it is
-// dropped from the strip entirely (never shown uncited).
-export const marketStats = [
-  {
-    value: "$00.0B",
-    label: "Example annual handle metric",
-    source: "Source: [Example State Commission]",
-    period: "Period: [FY 0000]",
-  },
-  {
-    value: "00",
-    label: "Example count of legal markets",
-    source: "Source: [Example Industry Tracker]",
-    period: "As of: [month 0000]",
-  },
-  {
-    value: "+0%",
-    label: "Example year-over-year change",
-    source: "Source: [Example Regulator Report]",
-    period: "Period: [0000 vs 0000]",
-  },
-  {
-    value: "00%",
-    label: "Example average rate metric",
-    source: "Source: [Example Tax Filing Data]",
-    period: "As of: [month 0000]",
-  },
-];
-
-export const helplineText = "Helpline: [1-800-XXX-XXXX]"; // TODO(cms): verify against a real, current helpline number before launch.
+// Sport filter chips on the latest-news rail — structural taxonomy.
+export const newsCategories = ["All", "Football", "Basketball", "Soccer", "Esports"];
