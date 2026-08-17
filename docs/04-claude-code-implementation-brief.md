@@ -1,6 +1,7 @@
 # Claude Code Implementation Brief — Off-Page SEO Site
 
 ## How to use
+
 Paste the prompt at the bottom into Claude Code as the opening message, with
 this file plus `offpage-seo-six-layer-map.md` and
 `wireframe-component-audit.md` available in the repo (e.g. a `/docs`
@@ -10,6 +11,7 @@ behavior (link rendering, schema, gating), this brief wins; on visuals,
 the design output wins.
 
 ## Stack (fixed, do not substitute)
+
 - Next.js (App Router) + React, TypeScript
 - PayloadCMS v3 (standalone repo pattern), Supabase PostgreSQL
   (session-mode pooler, port 5432)
@@ -18,7 +20,65 @@ the design output wins.
 
 ## Build order
 
+### Phase 0 — Route scope (resolved, do not deviate without re-confirming)
+
+Resolved via a stakeblogs-vs-wagerblogs design audit. This is the
+authoritative route list for this build. Do not add routes outside it
+(notably: no Guides/Guide, BestLines, or Forum/Thread — explicitly
+deferred, see below) without checking back first.
+
+**Redesign this pass (wagerblogs design system applied fresh to a
+stakeblogs-precedent page):**
+
+- Blog (listing)
+- Reviews (listing/comparison grid)
+- Categories (listing)
+- Article / Blog-Post (detail)
+- About
+- Contact
+- Header, Header-Nav, Footer — restyle to wagerblogs tokens only,
+  structure carries over from stakeblogs as-is
+
+**Already designed in wagerblogs, carried forward:**
+
+- Home
+- Review-Post (canonical operator review detail — see OPEN ITEM below)
+- Responsible-Gambling
+- Not-Found (404)
+- Comments (component)
+
+**New pages, no stakeblogs precedent:**
+
+- Author
+- RG-Directory
+- Disclaimer
+- Category (per-vertical landing — distinct from the Categories listing
+  above; do not conflate the two)
+
+**Not designed — Clerk handles it directly:**
+
+- Login (no custom route design; use Clerk's prebuilt components)
+
+**Explicitly out of scope for this build — do not implement:**
+
+- Guides / Guide
+- BestLines
+- Forum / Thread
+  These exist as hrefs/precedent in the old stakeblogs export but represent
+  new feature scope, not redesign scope. Flag any reference to them found
+  during migration; do not build routes or CMS collections for them.
+
+**OPEN ITEM — Review-Post is missing three blocks found in the retired
+Operator-Review draft during audit:** the reader-reviews trust block
+(sign-in-gated submission form), the conditional Trustpilot block, and the
+Comments component import. These must be folded into Review-Post — treat
+Phase 5's review-page work (below) as incomplete until this is verified,
+not as new scope layered on top.
+
+## Build order
+
 ### Phase 1 — CMS schema (PayloadCMS)
+
 1. Posts collection: add `linkTier` select field (tier1/tier2/tier3,
    default tier1, required) and `primaryDomainLink` group
    (anchorText, url, relAttribute: dofollow/sponsored/nofollow, default
@@ -35,6 +95,7 @@ the design output wins.
    true per rendered list.
 
 ### Phase 2 — Link-policy components
+
 1. `PrimaryDomainLink` component: returns `null` for tier1 or missing
    link data (structural absence, never CSS-hidden). rel mapping:
    dofollow → no rel, sponsored → "sponsored noopener", nofollow →
@@ -48,6 +109,7 @@ the design output wins.
    via CMS or props. No exceptions.
 
 ### Phase 3 — Rendering + crawlability
+
 1. Blog/review routes: SSG via `generateStaticParams`; ISR
    (`revalidate`) on pages with freshness-sensitive content (bonus
    terms, lastVerified data).
@@ -60,6 +122,7 @@ the design output wins.
 5. `not-found.tsx` at app root (known gap from prior build).
 
 ### Phase 4 — Structured data (JSON-LD)
+
 1. Shared `JsonLd` helper component (script type application/ld+json).
 2. `Organization` schema once in root layout.
 3. `Article` schema on every post: author as Person with author-page URL,
@@ -72,17 +135,22 @@ the design output wins.
 7. Comments/UGC excluded from `Article` schema entirely.
 
 ### Phase 5 — Auth + UGC (Clerk)
+
 1. Clerk integration: email/password + Google OAuth, App Router middleware
    pattern.
 2. Commenting: login-gated, moderation-before-publish (a `status` field:
    pending/approved/rejected; only approved renders).
 3. Rollout scope: comments enabled on Tier 3 review routes only at launch;
    Tier 1 blog comments behind a feature flag, off by default.
-4. Review submissions on operator review pages: login-gated, moderated,
-   rendered in a section visually separate from the editorial score and
-   Trustpilot block.
+4. Review-Post page (canonical operator review route, per Phase 0):
+   confirm all three blocks flagged in the Phase 0 OPEN ITEM are present —
+   reader-reviews section (login-gated, moderated), conditional Trustpilot
+   block, and the Comments component — before treating this page as
+   complete. Login-gated, moderated, rendered in a section visually
+   separate from the editorial score and Trustpilot block.
 
 ### Phase 6 — Trust pages + integrity gates
+
 1. Routes that must exist and render real content before launch:
    `/privacy`, `/terms`, `/affiliate-disclosure`, `/responsible-gaming`.
 2. `/responsible-gaming` (or `/help-resources`): global directory of
@@ -98,6 +166,7 @@ the design output wins.
    missing source = component does not render.
 
 ### Phase 7 — Verification (CI)
+
 1. Script: fetch every URL in the sitemap; for each page identified as
    tier1 (via a meta tag or JSON-LD marker the build emits), assert zero
    `href` matches against the primary domain. Fail CI on violation.
@@ -107,6 +176,7 @@ the design output wins.
    one exact-match anchor).
 
 ## Process constraints (not code)
+
 - Link velocity: no batch-publishing many tier2/tier3 posts in a short
   window.
 - No seeding fake positive user reviews of the primary domain, ever —
@@ -120,12 +190,13 @@ Read /docs/claude-code-implementation-brief.md,
 /docs/offpage-seo-six-layer-map.md, and
 /docs/wireframe-component-audit.md in full before writing any code.
 
-Implement the project following the brief's Phase 1–7 build order exactly.
+Implement the project following the brief's Phase 0–7 build order exactly.
 Do not skip ahead: each phase's output is a dependency of the next. After
 completing each phase, stop and show me what was built before starting the
 next phase.
 
 Non-negotiable behavioral rules, regardless of anything else you infer:
+
 1. Tier 1 content must never render a link to the primary domain — the
    PrimaryDomainLink component returns null, structurally absent from the
    HTML, never hidden via CSS.
@@ -144,5 +215,5 @@ The finalized Claude Design outputs are the visual spec — match them for
 layout, tokens, and component anatomy. Where design output and this brief
 conflict on behavior (links, schema, gating, rendering), the brief wins.
 
-Start with Phase 1. Show me the PayloadCMS collection configs before
-running any migration.
+Start with Phase 0. Confirm the route scope with me before touching Phase 1
+schema work.
