@@ -62,7 +62,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         }
       />
       <div className="card">
-        <div className="font-bold text-sm text-text-primary mb-2">Change log</div>
+        <div className="font-bold text-sm text-text-primary mb-2.5">Change log</div>
         {/* TODO(cms): revisions[] — every published change appends a dated entry here. */}
         <div className="text-xs text-text-subtle font-mono leading-loose">
           No revisions recorded yet.
@@ -79,11 +79,11 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         items={[{ label: "Legal", href: "/legal/terms-of-service" }, { label: doc.title }]}
       />
 
-      <header className="flex flex-col gap-3 max-w-160 border-t border-text-primary pt-4 lg:pt-5">
-        <h1 className="heading-serif text-4xl md:text-5xl-tablet leading-snug text-pretty">
+      <header className="flex flex-col gap-3 max-w-160">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           {doc.title}
         </h1>
-        <p className="font-serif text-xl leading-copy text-text-body text-pretty">{doc.intro}</p>
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">{doc.intro}</p>
         <div className="flex gap-4 flex-wrap text-xs text-text-subtle font-mono">
           <div>Effective [date required]</div>
           <div>Last updated [date required]</div>
@@ -100,14 +100,14 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
             active: slug === docSlug,
             key: slug,
           }))}
-          activeClassName="btn-primary rounded-full"
-          inactiveClassName="btn-secondary rounded-full"
+          activeClassName="btn-primary"
+          inactiveClassName="btn-secondary"
         />
       </nav>
 
       <section className="bg-bg-subtle border border-border-divider rounded-md p-4 md:p-5 max-w-160">
         <div className="meta-label-caps mb-2.5">Plain-language summary</div>
-        <div className="font-serif text-lg leading-copy text-text-strong-secondary text-pretty">
+        <div className="text-lg leading-copy text-text-strong-secondary text-pretty">
           {doc.summary}
         </div>
         <div className="text-xs text-text-subtle leading-relaxed mt-2.5">
@@ -122,7 +122,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
             id={s.anchorId}
             className="border-t border-border-hairline pt-5 pb-1"
           >
-            <h2 className="heading-serif text-xl leading-heading mb-2.5">
+            <h2 className="heading text-xl leading-heading mb-2.5">
               <span className="text-text-subtle mr-2.5">{s.num}</span>
               {s.title}
             </h2>
@@ -135,7 +135,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
           firmOrBar, reviewedAt, documentVersion. Document must stay in draft until then. */}
 
       <section className="card max-w-160">
-        <div className="text-md font-bold text-text-primary mb-1.5">
+        <div className="text-md font-semibold text-text-primary mb-1.5">
           Questions about this document
         </div>
         <div className="text-sm text-text-body leading-relaxed mb-3">
@@ -143,7 +143,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         </div>
         <ArrowLink
           href="/contact"
-          className="inline-flex items-center min-h-11 text-md text-text-primary font-semibold group"
+          className="inline-flex items-center gap-1 min-h-11 text-md text-text-primary font-semibold group"
         >
           Contact us
         </ArrowLink>

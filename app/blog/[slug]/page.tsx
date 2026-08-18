@@ -74,12 +74,12 @@ export default function BlogPostPage() {
         ]}
       />
 
-      <header className="flex flex-col gap-3.5 max-w-prose">
+      <header className="flex flex-col gap-3 max-w-prose">
         <div className="meta-label-caps">Guides</div>
-        <h1 className="heading-serif text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           {postTitle}
         </h1>
-        <p className="font-serif text-xl md:text-2xl leading-copy text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder standfirst — one or two sentences that state the article&apos;s argument
           plainly, written to be readable on its own in search results and social previews.]
         </p>
@@ -116,28 +116,28 @@ export default function BlogPostPage() {
       </nav>
 
       <div className="flex flex-col max-w-prose">
-        <p className="font-serif text-xl leading-copy text-text-strong-secondary mb-5 text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-strong-secondary mb-5 text-pretty">
           [Placeholder opening paragraph — sets up the question the piece answers, in plain
           language. Editorial register: long-form measure, serif body, no promotional language and
           no operator links anywhere in this template.]
         </p>
 
-        <h2 id="reading-the-number" className="heading-serif text-3xl leading-heading mt-4 mb-3">
+        <h2 id="reading-the-number" className="heading text-3xl leading-heading mt-4 mb-3">
           Reading the number
         </h2>
-        <p className="font-serif text-xl leading-copy text-text-strong-secondary mb-5 text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-strong-secondary mb-5 text-pretty">
           [Placeholder body paragraph.] Internal links go to our own explainers and comparison
           surfaces — for example{" "}
-          <Link href="/blog" className="text-text-primary underline underline-offset-2">
+          <Link href="/blog" className="text-text-primary underline underline-offset-2 transition-colors hover:text-text-body">
             our guide to odds formats
           </Link>{" "}
           or the{" "}
-          <Link href="/reviews" className="text-text-primary underline underline-offset-2">
+          <Link href="/reviews" className="text-text-primary underline underline-offset-2 transition-colors hover:text-text-body">
             sportsbook comparison
           </Link>
           . Tier 1 posts link inward to Tier 2/3 pages; they never link out to an operator.
         </p>
-        <p className="font-serif text-xl leading-copy text-text-strong-secondary mb-5 text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-strong-secondary mb-5 text-pretty">
           [Placeholder body paragraph — second beat of the explanation, with the worked example
           introduced below.]
         </p>
@@ -151,36 +151,36 @@ export default function BlogPostPage() {
           </figcaption>
         </figure>
 
-        <h2 id="the-worked-example" className="heading-serif text-3xl leading-heading mt-4 mb-3">
+        <h2 id="the-worked-example" className="heading text-3xl leading-heading mt-4 mb-3">
           The worked example
         </h2>
-        <p className="font-serif text-xl leading-copy text-text-strong-secondary mb-5 text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-strong-secondary mb-5 text-pretty">
           [Placeholder body paragraph introducing the list below.]
         </p>
         <ul className="mb-5 pl-5 flex flex-col gap-2 list-disc">
           {blogBodyList.map((li) => (
-            <li key={li} className="font-serif text-xl leading-lead text-text-strong-secondary">
+            <li key={li} className="text-2xl font-medium leading-lead text-text-strong-secondary">
               {li}
             </li>
           ))}
         </ul>
 
-        <blockquote className="font-serif italic text-2xl leading-relaxed text-text-primary my-2 mb-6 pl-5 border-l-2 border-text-primary text-pretty">
+        <blockquote className="italic text-2xl leading-relaxed text-text-primary my-2 mb-6 pl-5 border-l-2 border-text-primary text-pretty">
           [Placeholder pull quote — a line from the piece worth setting apart. Attributed only if it
           belongs to a named, real person.]
         </blockquote>
 
-        <h3 id="common-mistakes" className="heading-serif text-xl leading-heading mt-3 mb-2.5">
+        <h3 id="common-mistakes" className="heading text-xl leading-heading mt-3 mb-2.5">
           Common mistakes
         </h3>
-        <p className="font-serif text-xl leading-copy text-text-strong-secondary mb-5 text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-strong-secondary mb-5 text-pretty">
           [Placeholder body paragraph.]
         </p>
 
-        <h2 id="what-this-means" className="heading-serif text-3xl leading-heading mt-4 mb-3">
+        <h2 id="what-this-means" className="heading text-3xl leading-heading mt-4 mb-3">
           What this means for your bets
         </h2>
-        <p className="font-serif text-xl leading-copy text-text-strong-secondary mb-5 text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-strong-secondary mb-5 text-pretty">
           [Placeholder closing section — restates the practical takeaway without recommending an
           operator.]
         </p>
@@ -190,7 +190,7 @@ export default function BlogPostPage() {
         <div className="meta-label-caps mb-3">Key takeaways</div>
         <div className="flex flex-col gap-2.5">
           {blogTakeaways.map((k) => (
-            <div key={k} className="font-serif text-lg leading-relaxed text-text-strong-secondary">
+            <div key={k} className="text-lg leading-relaxed text-text-strong-secondary">
               — {k}
             </div>
           ))}
@@ -200,13 +200,13 @@ export default function BlogPostPage() {
       {/* TODO(cms): Sources[] — every claim with a number needs a citation (publisher,
           title, url, retrievedAt) or it is cut from the body copy. Omitted here. */}
 
-      <section>
-        <h2 className="heading-serif text-h2-serif leading-heading mb-1">Related reading</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3 mt-3">
+      <section className="flex flex-col gap-3">
+        <h2 className="heading text-h2 leading-heading">Related reading</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3">
           {blogRelated.map((r) => (
             <Link key={r.title} href={r.href ?? "#"} className="editorial-link-card">
               <div className="meta-label-caps mb-2">{r.kicker}</div>
-              <div className="heading-serif text-xl leading-snug mb-1.5 text-pretty">{r.title}</div>
+              <div className="heading text-xl leading-snug mb-1.5 text-pretty">{r.title}</div>
               <div className="text-xs text-text-meta leading-relaxed">{r.meta}</div>
             </Link>
           ))}

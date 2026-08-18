@@ -13,8 +13,8 @@ export default function RGDirectoryPage() {
   const rail = (
     <>
       <div className="card-dark p-5">
-        <div className="font-bold text-md mb-2">In immediate danger?</div>
-        <div className="text-sm text-text-on-dark-muted leading-relaxed">
+        <div className="font-bold text-sm mb-2.5">In immediate danger?</div>
+        <div className="text-xs text-text-on-dark-muted leading-loose">
           Contact your local emergency services. The organizations on this page support gambling
           harm; they are not crisis lines unless marked.
         </div>
@@ -32,7 +32,7 @@ export default function RGDirectoryPage() {
         ))}
       </div>
       <div className="card">
-        <div className="font-bold text-sm text-text-primary mb-2">Understanding the risks</div>
+        <div className="font-bold text-sm text-text-primary mb-2.5">Understanding the risks</div>
         <div className="text-xs text-text-body leading-loose mb-3">
           Warning signs, self-checks, and the tools that limit play.
         </div>
@@ -68,11 +68,11 @@ export default function RGDirectoryPage() {
         ]}
       />
 
-      <header className="flex flex-col gap-3 max-w-160 border-t border-text-primary pt-4 lg:pt-5">
-        <h1 className="heading-serif text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
+      <header className="flex flex-col gap-3 max-w-160">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Gambling-help organizations, worldwide
         </h1>
-        <p className="font-serif text-xl leading-copy text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder standfirst — every organization listed here offers free, confidential
           support. Entries are checked against the organization&apos;s own published contact details
           before they appear, and re-checked on a schedule.]
@@ -81,29 +81,30 @@ export default function RGDirectoryPage() {
 
       <nav className="flex gap-2 flex-wrap">
         <ChipList
+          as="button"
           items={regions.map((r) => ({ label: r, active: r === "All regions" }))}
-          activeClassName="btn-primary rounded-full cursor-pointer"
-          inactiveClassName="btn-secondary rounded-full cursor-pointer"
+          activeClassName="btn-primary"
+          inactiveClassName="btn-secondary"
         />
       </nav>
 
       <div className="flex flex-col gap-8">
         {helpDirectory.map((grp) => (
           <section key={grp.region}>
-            <div className="flex items-baseline justify-between gap-4 flex-wrap border-t border-border-divider pt-3.5 mb-3.5">
-              <h2 className="heading-serif text-h2-serif leading-heading">{grp.region}</h2>
+            <div className="flex items-baseline justify-between gap-4 flex-wrap border-t border-border-divider pt-3.5 mb-3">
+              <h2 className="heading text-h2 leading-heading">{grp.region}</h2>
               <div className="text-xs text-text-subtle font-mono">
                 {grp.entries.length} organizations
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3 items-stretch">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 wide:grid-cols-2! gap-legacy-4 md:gap-3 items-stretch">
               {grp.entries.map((e) => (
                 <div
                   key={e.name}
-                  className="border border-border-divider rounded-md p-4 flex flex-col"
+                  className="min-w-0 border border-border-divider rounded-md p-4 flex flex-col"
                 >
                   <div className="flex items-start justify-between gap-2.5 mb-2.5">
-                    <div className="heading-serif text-xl leading-snug text-pretty">{e.name}</div>
+                    <div className="min-w-0 heading text-xl leading-snug text-pretty">{e.name}</div>
                     <div className="shrink-0 text-2xs text-text-meta font-mono border border-border-divider rounded-sm px-1.5 py-1 whitespace-nowrap">
                       {e.country}
                     </div>
@@ -132,10 +133,10 @@ export default function RGDirectoryPage() {
       </div>
 
       <section>
-        <h2 className="heading-serif text-h2-serif leading-heading mb-3">
+        <h2 className="heading text-h2 leading-heading mb-3">
           Missing an organization?
         </h2>
-        <p className="font-serif text-xl leading-copy text-text-strong-secondary max-w-160 mb-2 text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-strong-secondary max-w-160 mb-2 text-pretty">
           [Placeholder — inclusion criteria: free to use, confidential, and operated by a non-profit
           or public-health body. Commercial treatment providers are out of scope.]
         </p>

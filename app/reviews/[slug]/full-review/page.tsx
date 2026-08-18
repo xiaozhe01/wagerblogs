@@ -76,7 +76,7 @@ export default function ReviewPostPage() {
       </header>
 
       <section className="flex flex-col gap-4 bg-bg-subtle border border-border-divider rounded-md p-4 lg:p-5">
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div className="flex flex-col wide:flex-row items-stretch wide:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5 min-w-0">
             <div className="w-14 h-14 shrink-0 placeholder-asset rounded-md text-2xs text-text-subtle font-mono">
               [logo]
@@ -89,17 +89,17 @@ export default function ReviewPostPage() {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 lg:flex lg:flex-col gap-2.5 lg:w-37.5 shrink-0">
+          <div className="grid grid-cols-2 wide:flex wide:flex-col gap-2.5 wide:w-37.5 shrink-0">
             <PrimaryDomainLink
               linkTier="tier3"
               primaryDomainLink={mockPeakWagerReview.primaryDomainLink}
             />
-            <Link href="#scores" className="btn-secondary">
+            <Link href="#scores" className="btn-secondary min-h-0 py-1.5 px-3 text-xs">
               See full scores
             </Link>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-legacy-4 md:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 wide:grid-cols-6! gap-legacy-4 md:gap-3">
           {scoreBreakdown.map((s) => (
             <div key={s.label} className="border border-border-divider rounded-sm p-2.5 bg-bg-card">
               <div className="text-2xs text-text-meta font-mono mb-1 uppercase">{s.label}</div>
@@ -122,7 +122,7 @@ export default function ReviewPostPage() {
         <div className="card">
           <div className="flex justify-between gap-4 flex-wrap items-start mb-3">
             <div className="min-w-0">
-              <div className="text-md font-bold text-text-primary mb-1">
+              <div className="text-md font-semibold text-text-primary mb-1.5">
                 Bet $5 Get $200 in Bonus Bets
               </div>
               <div className="text-xs text-text-subtle font-mono">
@@ -162,7 +162,7 @@ export default function ReviewPostPage() {
         <div className="flex flex-col gap-2.5">
           {fullReviewFaqs.map((f) => (
             <div key={f.q} className="card">
-              <div className="text-sm font-bold text-text-primary mb-1.5">{f.q}</div>
+              <div className="text-md font-semibold text-text-primary mb-1.5">{f.q}</div>
               <div className="text-sm text-text-muted leading-relaxed">{f.a}</div>
             </div>
           ))}

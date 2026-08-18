@@ -14,7 +14,7 @@ type InfoCardProps = {
 export default function InfoCard({ title, titleClassName, body, cta }: InfoCardProps) {
   return (
     <div className="card">
-      <div className={titleClassName ?? "font-bold text-sm text-text-primary mb-2"}>{title}</div>
+      <div className={titleClassName ?? "font-bold text-sm text-text-primary mb-2.5"}>{title}</div>
       <div className="text-xs text-text-body leading-loose mb-3">{body}</div>
       {cta}
     </div>

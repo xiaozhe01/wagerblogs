@@ -7,8 +7,8 @@ export default function LatestNewsCategory() {
       <ChipList
         as="button"
         items={newsCategories.map((category, i) => ({ label: category, active: i === 0 }))}
-        activeClassName="btn-primary rounded-lg"
-        inactiveClassName="btn-secondary rounded-lg"
+        activeClassName="btn-primary"
+        inactiveClassName="btn-secondary"
       />
     </div>
   );

@@ -21,7 +21,11 @@ export default function TeaserCardGrid({
   return (
     <div className={gridClassName}>
       {items.map((item) => (
-        <Link key={item.title} href={item.href ?? "#"} className="card block">
+        <Link
+          key={item.title}
+          href={item.href ?? "#"}
+          className="card block transition-colors hover:bg-bg-subtle"
+        >
           <div className="meta-label-caps mb-1.5">{item.kicker}</div>
           <div className={titleClassName}>{item.title}</div>
           <div className="text-xs text-text-meta leading-relaxed">{item.meta}</div>

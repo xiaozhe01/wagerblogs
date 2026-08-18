@@ -3,7 +3,7 @@ import { marketStats } from "@/lib/mock-data";
 export default function MarketCard() {
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-2xl text-text-primary tracking-tight">Market at a Glance</h2>
+      <h2 className="heading text-2xl">Market at a Glance</h2>
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 wide:grid-cols-4! gap-legacy-4 md:gap-3">
         {marketStats.map((s) => (
           <div key={s.label} className="card bg-bg-card text-center">

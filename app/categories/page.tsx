@@ -45,17 +45,17 @@ export default function CategoriesIndexPage() {
       <Breadcrumbs items={[{ label: "Categories" }]} />
 
       <header className="flex flex-col gap-3 max-w-160">
-        <h1 className="heading-serif text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Betting categories
         </h1>
-        <p className="font-serif text-xl leading-copy text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder standfirst — every vertical WagerBlogs covers, and how coverage is
           organized.]
         </p>
       </header>
 
       <section className="flex flex-col gap-3">
-        <h2 className="heading-serif text-h2-serif leading-heading">All categories</h2>
+        <h2 className="heading text-h2 leading-heading">All categories</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {categories.map((c) => (
             <Link key={c.name} href="/categories/sample" className="editorial-link-card">

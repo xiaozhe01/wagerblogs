@@ -17,7 +17,7 @@ export default function EditorialSection({
 }: EditorialSectionProps) {
   return (
     <section className={className}>
-      <h2 className="heading-serif text-h2-serif leading-heading">{title}</h2>
+      <h2 className="heading text-h2 leading-heading">{title}</h2>
       {children}
     </section>
   );

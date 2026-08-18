@@ -10,7 +10,7 @@ export default function RankedListSection({
 }) {
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-2xl text-text-primary tracking-tight">{title}</h2>
+      <h2 className="heading text-2xl">{title}</h2>
       <RankedList operators={operators} />
     </section>
   );

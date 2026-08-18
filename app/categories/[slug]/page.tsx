@@ -23,7 +23,6 @@ import {
   categoryArticles,
   categorySubCategories,
   categoryCompareLinks,
-  categoryFinderStates,
 } from "@/lib/mock-data";
 import { categories, categoryFilters } from "@/lib/site-data";
 
@@ -51,19 +50,6 @@ export default function CategoryPage() {
           }
         />
       </div>
-      <div className="card">
-        <div className="font-bold text-sm text-text-primary mb-2.5">Browse by state</div>
-        <div className="border border-dashed border-border-placeholder rounded-sm p-3 text-xs text-text-subtle font-mono mb-3">
-          [state search input]
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          {categoryFinderStates.map((s) => (
-            <Link key={s} href="/categories/sample" className="btn-secondary">
-              {s}
-            </Link>
-          ))}
-        </div>
-      </div>
       <InfoCard
         title="Editorial standards"
         body="How we research, source, and correct our category coverage."
@@ -87,11 +73,11 @@ export default function CategoryPage() {
         items={[{ label: "Categories", href: "/categories" }, { label: sampleCategoryName }]}
       />
 
-      <header className="flex flex-col gap-3 max-w-160 border-t border-text-primary pt-4 lg:pt-5">
-        <h1 className="heading-serif text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
+      <header className="flex flex-col gap-3 max-w-160">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           {sampleCategoryName}
         </h1>
-        <p className="font-serif text-xl leading-copy text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder category standfirst — what this vertical covers, who it&apos;s for, and how
           our coverage is organised. Editorial register: this page navigates and explains; it never
           sells.]
@@ -103,28 +89,30 @@ export default function CategoryPage() {
         </div>
       </header>
 
+      {/* Browse by States */}
       <nav className="flex gap-2 flex-wrap">
         <ChipList
+          as="button"
           items={categoryFilters.map((f, i) => ({ label: f, active: i === 0 }))}
-          activeClassName="btn-primary rounded-full"
-          inactiveClassName="btn-secondary rounded-full"
+          activeClassName="btn-primary"
+          inactiveClassName="btn-secondary"
         />
       </nav>
 
       <section>
         <Link
           href="/blog/sample-post"
-          className="flex flex-col md:flex-row gap-3.5 md:gap-6 items-stretch md:items-center no-underline border-t border-b border-border-divider py-4 md:py-6"
+          className="flex flex-col wide:flex-row gap-3.5 wide:gap-6 items-stretch wide:items-center no-underline border-t border-b border-border-divider py-4 wide:py-6"
         >
-          <div className="w-full md:w-[320px] h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle font-mono text-center">
+          <div className="w-full wide:w-[320px] h-45 wide:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle font-mono text-center">
             [lead image — credit line required]
           </div>
           <div className="min-w-0 flex flex-col gap-2">
             <div className="meta-label-caps">Editor&apos;s lead</div>
-            <div className="heading-serif text-4xl leading-heading text-pretty">
+            <div className="heading text-4xl leading-heading text-pretty">
               [Placeholder] The state of esports betting going into the autumn season
             </div>
-            <div className="font-serif text-lg leading-copy text-text-meta text-pretty">
+            <div className="text-lg leading-copy text-text-meta text-pretty">
               [Placeholder excerpt — two lines summarising the piece, written to work as a
               standalone summary in search and social previews.]
             </div>
@@ -136,10 +124,8 @@ export default function CategoryPage() {
       </section>
 
       <section>
-        <div className="flex items-baseline justify-between gap-4 flex-wrap mb-1">
-          <h2 className="heading-serif text-h2-serif leading-heading">
-            Latest in {sampleCategoryName}
-          </h2>
+        <div className="flex items-baseline justify-between gap-4 flex-wrap mb-3">
+          <h2 className="heading text-h2 leading-heading">Latest in {sampleCategoryName}</h2>
           <ArrowLink
             href="/news"
             className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group"
@@ -152,9 +138,8 @@ export default function CategoryPage() {
             <PostRow
               key={a.title}
               post={a}
-              as="div"
-              wrapperClassName="flex gap-4 items-start justify-between py-4 border-b border-border-hairline"
-              titleClassName="heading-serif text-xl leading-snug mb-1.5 text-pretty"
+              wrapperClassName="flex gap-4 items-start justify-between py-4 border-b border-border-hairline no-underline"
+              titleClassName="heading text-xl leading-snug mb-1.5 text-pretty"
               thumbnailClassName="w-18 h-13.5 lg:w-24 lg:h-17 shrink-0 rounded-sm placeholder-asset text-2xs text-text-subtle font-mono"
             />
           ))}
@@ -187,13 +172,13 @@ export default function CategoryPage() {
       </section>
 
       <section>
-        <h2 className="heading-serif text-h2-serif leading-heading mb-3">
+        <h2 className="heading text-h2 leading-heading mb-3">
           Browse {sampleCategoryName} by title
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3">
           {categorySubCategories.map((s) => (
             <div key={s.name} className="editorial-link-card">
-              <div className="font-semibold text-md text-text-primary mb-1">{s.name}</div>
+              <div className="font-semibold text-md text-text-primary mb-1.5">{s.name}</div>
               <div className="text-xs text-text-meta leading-relaxed">{s.count}</div>
             </div>
           ))}
@@ -201,12 +186,10 @@ export default function CategoryPage() {
       </section>
 
       <section>
-        <h2 className="heading-serif text-h2-serif leading-heading mb-3">
-          Compare operators in this category
-        </h2>
+        <h2 className="heading text-h2 leading-heading mb-3">Compare operators in this category</h2>
         <TeaserCardGrid
           items={categoryCompareLinks}
-          titleClassName="text-md font-semibold text-text-primary mb-1 leading-snug"
+          titleClassName="text-sm font-bold text-text-primary mb-1 leading-snug"
         />
       </section>
 
@@ -214,15 +197,15 @@ export default function CategoryPage() {
           per figure, or the strip stays absent. Omitted here. */}
 
       <section>
-        <h2 className="heading-serif text-h2-serif leading-heading mb-3">About this coverage</h2>
-        <p className="font-serif text-xl leading-copy text-text-body max-w-160 mb-2 text-pretty">
+        <h2 className="heading text-h2 leading-heading mb-3">About this coverage</h2>
+        <p className="text-2xl font-medium leading-copy text-text-body max-w-160 mb-2 text-pretty">
           [Placeholder about-this-category copy — how often the vertical is reviewed, who writes it,
           and what falls outside its scope. Two or three sentences; this is the block search engines
           read as the category&apos;s descriptive text.]
         </p>
         <ArrowLink
           href="/about"
-          className="inline-flex items-center min-h-11 text-md text-text-primary font-semibold group"
+          className="inline-flex items-center gap-1 min-h-11 text-md text-text-primary font-semibold group"
         >
           Read our editorial standards
         </ArrowLink>

@@ -32,9 +32,7 @@ function ComparisonLinkOrNote({
 export default function ComparisonCard({ id }: { id?: string } = {}) {
   return (
     <section id={id} className="flex flex-col gap-3">
-      <h2 className="text-2xl text-text-primary tracking-tight">
-        Compare Sportsbooks Side by Side
-      </h2>
+      <h2 className="heading text-2xl">Compare Sportsbooks Side by Side</h2>
       <div className="hidden lg:block border border-border-divider rounded-md overflow-x-auto bg-bg-card">
         <div className="min-w-150">
           <div className="grid grid-cols-[132px_repeat(3,minmax(110px,1fr))] gap-3 bg-bg-subtle border-b border-border-divider p-4">

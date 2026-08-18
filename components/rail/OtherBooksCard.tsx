@@ -17,7 +17,7 @@ export default function OtherBooksCard({ books }: OtherBooksCardProps) {
         <Link
           key={o.name}
           href="/reviews"
-          className="flex justify-between gap-2.5 text-sm text-text-body py-2 border-b border-border-hairline-alt no-underline"
+          className="flex justify-between gap-2.5 text-sm text-text-body py-2 border-b border-border-hairline-alt no-underline -mx-3 px-3 rounded-md transition-colors hover:bg-bg-subtle"
         >
           <span>{o.name}</span>
           <span className="text-text-primary font-bold">{o.score}</span>

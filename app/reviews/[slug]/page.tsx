@@ -86,7 +86,7 @@ export default function OperatorReviewPage() {
           note="our tested verdict — produced by a named reviewer, methodology public"
         />
         <div className="flex flex-col gap-4 bg-bg-subtle border border-text-primary rounded-md p-4 lg:p-5">
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          <div className="flex flex-col wide:flex-row items-stretch wide:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5 min-w-0">
               <div className="w-14 h-14 shrink-0 placeholder-asset rounded-md text-2xs text-text-subtle font-mono">
                 [logo]
@@ -102,17 +102,17 @@ export default function OperatorReviewPage() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 lg:flex lg:flex-col gap-2.5 lg:w-37.5 shrink-0">
+            <div className="grid grid-cols-2 wide:flex wide:flex-col gap-2.5 wide:w-37.5 shrink-0">
               <PrimaryDomainLink
                 linkTier="tier3"
                 primaryDomainLink={mockPeakWagerReview.primaryDomainLink}
               />
-              <Link href="/about" className="btn-secondary">
+              <Link href="/about" className="btn-secondary min-h-0 py-1.5 px-3 text-xs">
                 How we score
               </Link>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-legacy-4 md:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 wide:grid-cols-6! gap-legacy-4 md:gap-3">
             {scoreBreakdown.map((s) => (
               <div
                 key={s.label}
@@ -185,7 +185,7 @@ export default function OperatorReviewPage() {
           </div>
           <ArrowLink
             href="#reader-reviews"
-            className="inline-flex items-center min-h-11 text-sm text-text-primary font-semibold group w-fit"
+            className="inline-flex items-center gap-1 min-h-11 text-sm text-text-primary font-semibold group w-fit"
           >
             All [n] reader reviews
           </ArrowLink>
@@ -212,7 +212,7 @@ export default function OperatorReviewPage() {
               <div className="text-2xs text-text-subtle font-mono mt-0.5">fetched [fetch date]</div>
             </div>
           </div>
-          <ArrowLink href="#" className="btn-secondary group">
+          <ArrowLink href="#" className="btn-secondary group min-h-0 py-1.5 px-3 gap-1 text-xs">
             Read Reviews
           </ArrowLink>
         </div>

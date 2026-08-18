@@ -53,19 +53,13 @@ export default function AuthorPage() {
   return (
     <PageShell activeNavId="more" rail={rail}>
       {/* Register: Editorial · Tier 1 — author identity surface, no outbound operator links */}
-      <Breadcrumbs
-        items={[
-          { label: "About", href: "/about" },
-          { label: "Authors", href: "/about" },
-          { label: mockAuthor.name },
-        ]}
-      />
+      <Breadcrumbs items={[{ label: "About", href: "/about" }, { label: mockAuthor.name }]} />
 
       <section className="flex flex-col gap-4 md:gap-5 border-t border-border-divider border-b py-4 md:py-5">
-        <div className="flex flex-col md:flex-row items-start md:items-start gap-4 md:gap-6">
+        <div className="flex flex-col wide:flex-row items-start gap-4 wide:gap-6">
           <div className="w-24 h-24 md:w-30 md:h-30 rounded-full placeholder-asset shrink-0" />
           <div className="min-w-0 flex flex-col gap-2">
-            <h1 className="heading-serif text-4xl md:text-5xl-tablet leading-heading">
+            <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
               {mockAuthor.name}
             </h1>
             <div className="text-sm text-text-meta">{mockAuthor.credentialLine}</div>
@@ -78,26 +72,30 @@ export default function AuthorPage() {
       </section>
 
       <section>
-        <h2 className="heading-serif text-h2-serif leading-heading mb-3">Coverage areas</h2>
+        <h2 className="heading text-h2 leading-heading mb-3">Coverage areas</h2>
         <div className="flex gap-2 flex-wrap">
           {authorBeats.map((b) => (
-            <Link key={b} href="/categories/sample" className="btn-secondary rounded-full">
+            <Link
+              key={b}
+              href="/categories/sample"
+              className="btn-secondary rounded-full min-h-0 py-1.5 px-3 text-xs"
+            >
               {b}
             </Link>
           ))}
         </div>
       </section>
 
-      <section>
-        <h2 className="heading-serif text-h2-serif leading-heading mb-1">Recent work</h2>
+      <section className="flex flex-col gap-3">
+        <h2 className="heading text-h2 leading-heading">Recent work</h2>
         {/* TODO(cms): article list renders from posts where author === this record. */}
         <div className="flex flex-col">
           {authorArticles.map((a) => (
             <PostRow
               key={a.title}
               post={a}
-              wrapperClassName="flex gap-4 items-start justify-between py-4.5 border-b border-border-hairline no-underline"
-              titleClassName="heading-serif text-2xl leading-snug mb-1.5 text-pretty"
+              wrapperClassName="flex gap-4 items-start justify-between py-4 border-b border-border-hairline no-underline"
+              titleClassName="heading text-xl leading-snug mb-1.5 text-pretty"
               thumbnailClassName="w-18 h-13.5 lg:w-24 lg:h-17 shrink-0 rounded-sm placeholder-asset text-2xs text-text-subtle font-mono"
             />
           ))}
@@ -105,7 +103,7 @@ export default function AuthorPage() {
       </section>
 
       <section>
-        <h2 className="heading-serif text-h2-serif leading-heading mb-3">How this author works</h2>
+        <h2 className="heading text-h2 leading-heading mb-3">How this author works</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3 mb-3">
           {authorStandards.map((s) => (
             <div key={s.title} className="border-t border-border-divider pt-3">

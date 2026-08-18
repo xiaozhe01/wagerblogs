@@ -64,10 +64,10 @@ export default function NotFound() {
       </section>
 
       <header className="flex flex-col gap-3 max-w-155">
-        <h1 className="heading-serif text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           We couldn&apos;t find that page
         </h1>
-        <p className="font-serif text-xl md:text-2xl leading-relaxed text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           The link may be out of date, or the page may have moved. Everything below is a way back to
           what you were probably looking for.
         </p>

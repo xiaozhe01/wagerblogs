@@ -27,7 +27,7 @@ export default function PostRow({
       <div className="min-w-0">
         <div className="meta-label-caps mb-1.5">{post.kicker}</div>
         <div className={titleClassName}>{post.title}</div>
-        <div className="text-xs text-text-subtle font-mono">{post.meta}</div>
+        <div className="text-xs font-medium text-text-subtle font-mono">{post.meta}</div>
       </div>
       <div className={thumbnailClassName}>[img]</div>
     </>
@@ -38,7 +38,10 @@ export default function PostRow({
   }
 
   return (
-    <Link href={post.href ?? "#"} className={wrapperClassName}>
+    <Link
+      href={post.href ?? "#"}
+      className={`${wrapperClassName} -mx-3 px-3 rounded-md transition-colors hover:bg-bg-subtle`}
+    >
       {content}
     </Link>
   );

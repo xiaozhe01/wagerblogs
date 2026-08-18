@@ -28,11 +28,11 @@ export default function ReviewsIndexPage() {
       {/* Register: Comparison · Tier 2/3 — CTA-bearing, one primary-domain entry per list */}
       <Breadcrumbs items={[{ label: "Reviews" }]} />
 
-      <header className="flex flex-col gap-3 max-w-160 border-t border-text-primary pt-4 lg:pt-5">
-        <h1 className="heading-serif text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
+      <header className="flex flex-col gap-3 max-w-160">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Sportsbook & casino reviews
         </h1>
-        <p className="font-serif text-xl leading-copy text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder standfirst — how these operators are tested, scored, and re-verified.]
         </p>
       </header>
