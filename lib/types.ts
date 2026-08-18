@@ -13,6 +13,36 @@ export type PrimaryDomainLinkData = {
   relAttribute: RelAttribute;
 };
 
+/** A non-primary operator's own outbound link (their own site, not ours to
+ * monetize). No relAttribute — unlike PrimaryDomainLinkData, this is never a
+ * choice: every render site hardcodes rel="nofollow" in the JSX itself, not
+ * as configurable data, so equity can never accidentally leak to a
+ * competitor. Kept as its own type, not reused from PrimaryDomainLinkData,
+ * so the two can never be confused for each other. */
+export type OperatorLinkData = {
+  anchorText: string;
+  url: string;
+};
+
+/** Featured-bonus card entry — discriminated on isPrimaryDomain so
+ * primaryDomainLink/operatorLink narrow correctly at call sites instead of
+ * both being optional on every entry. */
+export type BonusOffer =
+  | {
+      name: string;
+      headline: string;
+      code: string;
+      isPrimaryDomain: true;
+      primaryDomainLink: PrimaryDomainLinkData;
+    }
+  | {
+      name: string;
+      headline: string;
+      code: string;
+      isPrimaryDomain: false;
+      operatorLink: OperatorLinkData;
+    };
+
 export type Author = {
   id: string;
   slug: string;

@@ -92,7 +92,19 @@ not as new scope layered on top.
 4. Operators collection (for ranked lists/comparison tables): name, score,
    category score breakdown, advantages array, lastVerified date, terms
    text, and an `isPrimaryDomain` boolean — only one operator may have it
-   true per rendered list.
+   true per rendered list. `primaryDomainLink` group (anchorText, url,
+   relAttribute: dofollow/sponsored/nofollow, default sponsored) — same
+   shape as the Posts collection's field in item 1 — with
+   `admin.condition` hiding it unless `isPrimaryDomain` is true.
+   Non-primary operators get no link field at all: per Phase 2 item 2
+   below, they render text-only with no outbound link, so there is
+   nothing for the CMS to store.
+   (Note: `FeaturedBonusesCard`'s bonus-offer content is a distinct data
+   shape, not sourced from this collection — its competitor entries DO
+   carry a real, nofollow'd outbound link [`operatorLink`, typed as
+   `OperatorLinkData` in `lib/types.ts`, deliberately separate from
+   `primaryDomainLink` so the two can never be confused]. That content
+   needs its own CMS collection spec; not written here.)
 
 ### Phase 2 — Link-policy components
 

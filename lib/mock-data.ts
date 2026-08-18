@@ -1,6 +1,7 @@
 import type {
   Author,
   AtAGlanceItem,
+  BonusOffer,
   ComparisonOperator,
   NewsItem,
   Operator,
@@ -549,8 +550,6 @@ export const categoryCompareLinks: PostTeaser[] = [
   },
 ];
 
-export const categoryFinderStates = ["New York", "New Jersey", "Pennsylvania", "View All →"];
-
 // app/legal/[doc]/page.tsx content. TODO(cms): counsel-reviewed copy required before
 // publish — every section body below is placeholder text; each document must stay in
 // draft until a LegalReview record exists (reviewerName, firmOrBar, reviewedAt,
@@ -845,7 +844,7 @@ export const sampleComments = [
 // only (nav, footer, legal links, category/region/filter lists); everything
 // below is content and belongs here instead.
 
-export const bonusOffers = [
+export const bonusOffers: BonusOffer[] = [
   {
     name: "PeakWager",
     headline: "Bet $5 Get $200 in Bonus Bets",
@@ -855,11 +854,29 @@ export const bonusOffers = [
       anchorText: "Claim Offer",
       url: "https://example.com",
       relAttribute: "sponsored",
-    } as PrimaryDomainLinkData,
+    },
   },
-  { name: "BlueHorizon Bet", headline: "10x $100 Bet Match Bonus", code: "BLUE100" },
-  { name: "Crownline Coins", headline: "1.5M Coins + 75 Free SC", code: "CROWN75" },
-  { name: "IronStake Sports", headline: "Double Your First 10 Wagers", code: "IRONX2" },
+  {
+    name: "BlueHorizon Bet",
+    headline: "10x $100 Bet Match Bonus",
+    code: "BLUE100",
+    isPrimaryDomain: false,
+    operatorLink: { anchorText: "Claim Offer", url: "https://example.com" },
+  },
+  {
+    name: "Crownline Coins",
+    headline: "1.5M Coins + 75 Free SC",
+    code: "CROWN75",
+    isPrimaryDomain: false,
+    operatorLink: { anchorText: "Claim Offer", url: "https://example.com" },
+  },
+  {
+    name: "IronStake Sports",
+    headline: "Double Your First 10 Wagers",
+    code: "IRONX2",
+    isPrimaryDomain: false,
+    operatorLink: { anchorText: "Claim Offer", url: "https://example.com" },
+  },
 ];
 
 export const methodSteps = [
