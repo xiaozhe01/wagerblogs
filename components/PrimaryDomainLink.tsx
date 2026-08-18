@@ -27,11 +27,11 @@ export default function PrimaryDomainLink({
       href={url}
       rel={relMap[relAttribute]}
       target="_blank"
-      className={`btn-primary gap-1.5${className ? ` ${className}` : ""}`}
+      className={`btn-primary gap-1.5 min-h-0 py-1.5 px-3 text-xs${className ? ` ${className}` : ""}`}
       data-link-tier={linkTier}
     >
       {anchorText}
-      <SquareArrowOutUpRight size={16} aria-hidden="true" />
+      <SquareArrowOutUpRight size={12} className="shrink-0" aria-hidden="true" />
     </Link>
   );
 }

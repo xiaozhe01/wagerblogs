@@ -32,9 +32,11 @@ export default function SiteFooter() {
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="flex items-center min-h-11 lg:min-h-0 lg:mb-2 text-sm text-text-on-dark-muted no-underline"
+                  className="group flex items-center min-h-11 lg:min-h-0 lg:mb-2 text-sm text-text-on-dark-muted no-underline"
                 >
-                  {l.label}
+                  <span className="relative after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out after:content-[''] group-hover:after:scale-x-100">
+                    {l.label}
+                  </span>
                 </Link>
               ))}
             </div>
@@ -52,7 +54,11 @@ export default function SiteFooter() {
       <section className="mt-4">
         <div className="flex gap-3.5 flex-wrap mb-3.5">
           {legalLinks.map((l) => (
-            <Link key={l.label} href={l.href} className="text-xs text-text-body underline">
+            <Link
+              key={l.label}
+              href={l.href}
+              className="relative text-xs text-text-body after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out after:content-[''] hover:after:scale-x-100"
+            >
               {l.label}
             </Link>
           ))}

@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import Link from "next/link";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -35,7 +36,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
               {i > 0 && <BreadcrumbSeparator />}
               <BreadcrumbItem>
                 {item.href ? (
-                  <BreadcrumbLink render={<a href={item.href} />}>{item.label}</BreadcrumbLink>
+                  <BreadcrumbLink render={<Link href={item.href} />}>{item.label}</BreadcrumbLink>
                 ) : (
                   <BreadcrumbPage>{item.label}</BreadcrumbPage>
                 )}

@@ -39,7 +39,10 @@ export default function Comments() {
       </div>
 
       <div className="pt-2.5">
-        <Link href="/about" className="text-2xs text-text-subtle underline">
+        <Link
+          href="/about"
+          className="text-2xs text-text-subtle underline transition-colors hover:text-text-primary"
+        >
           comment policy
         </Link>
       </div>

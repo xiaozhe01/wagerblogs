@@ -56,8 +56,13 @@
   --color-bg-dark-block: #1a1a1a;
   --color-border-on-dark: #333333;
 
-  /* Typography — families */
-  --font-serif: "Newsreader", Georgia, "Times New Roman", serif;
+  /* Typography — families. Was 2 fonts (Newsreader serif for editorial
+     headings, Inter sans for comparison-register headings + everything
+     else) — unified to one sans family sitewide per direct instruction,
+     after a live computed-style comparison against rg.org (the project's
+     own reference site) confirmed it uses exactly one font family
+     throughout. --font-serif removed; see .heading below (formerly
+     .heading-serif/.heading-sans, now one class). */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, Menlo, monospace;
 
@@ -82,7 +87,7 @@
   --text-5xl-mobile: 30px; /* h1 hero, mobile */
   --text-5xl-tablet: 38px; /* h1 hero, tablet */
   --text-5xl-desktop: 44px; /* h1 hero, desktop */
-  --text-h2-serif: 25px; /* editorial h2 (Newsreader) */
+  --text-h2: 25px; /* editorial h2 */
 
   /* Line heights actually used */
   --leading-tight: 1;
@@ -243,6 +248,14 @@ body {
     font-size: var(--text-base);
     text-decoration: none;
     white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  .btn-primary:hover {
+    background: #2a2a2a;
+  }
+  .btn-primary:active {
+    background: #000000;
   }
   .btn-secondary {
     display: inline-flex;
@@ -258,6 +271,17 @@ body {
     font-size: var(--text-base);
     text-decoration: none;
     white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .btn-secondary:hover {
+    background: var(--color-bg-subtle);
+    border-color: var(--color-text-primary);
+  }
+  .btn-secondary:active {
+    background: var(--color-border-hairline);
   }
 
   /* Touch-target minimum — icon buttons (search, menu). 44px is exactly
@@ -297,23 +321,18 @@ body {
     letter-spacing: 0.05em;
   }
 
-  /* Editorial heading (serif) — Tier 1 only: hero h1, article titles,
-     editorial h2s (e.g. Home's "Latest news", Blog-Post, Category, Author,
-     RG-Directory). Do NOT apply to Tier 2/3 comparison-register headings
-     (Operator-Review/Review-Post h1 and h2, Home's "Top-Rated Sportsbooks" /
-     "Compare Sportsbooks Side by Side") — those render in the plain sans
-     stack by design; use .heading-sans there instead. */
-  .heading-serif {
-    font-family: var(--font-serif);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-text-primary);
-    letter-spacing: -0.015em;
-  }
-  .heading-sans {
+  /* Heading — sitewide, one treatment. Was split into .heading-serif
+     (Tier 1 editorial, Newsreader) and .heading-sans (Tier 2/3 comparison,
+     bold Inter, zero actual call sites) — unified into one class on one
+     font family. Kept .heading-serif's weight/letter-spacing values
+     rather than .heading-sans's, since .heading-serif was the one
+     actually establishing the site's heading hierarchy; sizing/weight
+     itself is a separate pass, not addressed here. */
+  .heading {
     font-family: var(--font-sans);
     font-weight: var(--font-weight-bold);
     color: var(--color-text-primary);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
 
   /* Hairline row divider — feed items, footer link lists */
@@ -321,13 +340,16 @@ body {
     border-bottom: 1px solid var(--color-border-hairline);
   }
 
-  /* Editorial link card — category tiles, toolbox items, related-reading cards.
-     Tier 1 only, per .heading-serif's register note. */
+  /* Editorial link card — category tiles, toolbox items, related-reading cards. */
   .editorial-link-card {
     display: block;
     text-decoration: none;
     border-top: 1px solid var(--color-border-divider);
     padding-top: var(--spacing-3);
+    transition: border-color 0.2s ease;
+  }
+  .editorial-link-card:hover {
+    border-top-color: var(--color-text-primary);
   }
 }
 

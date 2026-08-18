@@ -56,51 +56,6 @@ export default function SideNav({ activeId }: { activeId?: string }) {
           WagerBlogs
         </Link>
       </div>
-      {/* <nav className="flex flex-col gap-0.5 mb-3">
-        {navGroups.map((g: NavGroup) => {
-          const expandable = g.subs.length > 0;
-          const isOpen = open === g.id;
-          return (
-            <div key={g.id}>
-              <Link
-                href={expandable ? "#" : g.href}
-                onClick={
-                  expandable
-                    ? (e) => {
-                        e.preventDefault();
-                        setOpen(isOpen ? null : g.id);
-                      }
-                    : undefined
-                }
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md no-underline cursor-pointer ${g.id === activeId ? "bg-bg-subtle" : ""}`}
-              >
-                <span className="w-6.5 h-6.5 shrink-0 border border-border-default rounded-sm flex items-center justify-center text-sm text-text-muted">
-                  {g.glyph}
-                </span>
-                <span className="text-md text-text-strong-secondary font-medium flex-1">
-                  {g.label}
-                </span>
-                {expandable && (
-                  <span className="text-2xs text-text-subtle font-mono">{isOpen ? "▾" : "▸"}</span>
-                )}
-              </Link>
-              {expandable && isOpen && (
-                <div className="flex flex-col gap-px pt-1 pb-2 pl-9.5">
-                  {g.subs.map((s: NavGroup["subs"][number]) => (
-                    <Link
-                      key={s.label}
-                      href={s.href}
-                      className="text-sm text-text-muted no-underline py-1"
-                    >
-                      {s.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </nav> */}
 
       <NavigationMenu side="right" className="max-w-none flex-1 items-stretch justify-start">
         <NavigationMenuList className="flex-col items-stretch justify-start gap-2">
@@ -128,7 +83,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                             {s.trailingIcon && (
                               <ChevronRight
                                 strokeWidth={2.5}
-                                className="size-3 transition duration-300 group-hover:translate-x-1"
+                                className="size-3 shrink-0 transition duration-300 group-hover:translate-x-1"
                                 aria-hidden="true"
                               />
                             )}

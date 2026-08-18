@@ -15,13 +15,13 @@ export default function TopHeader() {
         {/* TODO: wire up real search + mobile nav drawer */}
         <button
           aria-label="Search"
-          className="w-11 h-11 border border-border-default rounded-full flex items-center justify-center"
+          className="w-11 h-11 border border-border-default rounded-full flex items-center justify-center cursor-pointer transition-colors hover:bg-bg-subtle hover:border-text-primary"
         >
           <Search />
         </button>
         <button
           aria-label="Menu"
-          className="w-11 h-11 border border-border-default rounded-md flex items-center justify-center"
+          className="w-11 h-11 border border-border-default rounded-md flex items-center justify-center cursor-pointer transition-colors hover:bg-bg-subtle hover:border-text-primary"
         >
           <Menu />
         </button>

@@ -32,14 +32,22 @@ export default function ChipList({
         const key = item.key ?? i;
         if (as === "Link") {
           return (
-            <Link key={key} href={item.href ?? "#"} className={className}>
+            <Link
+              key={key}
+              href={item.href ?? "#"}
+              className={`${className} min-h-0 py-1.5 px-3 text-xs transition-opacity hover:opacity-80`}
+            >
               {item.label}
             </Link>
           );
         }
         if (as === "button") {
           return (
-            <button key={key} type="button" className={className}>
+            <button
+              key={key}
+              type="button"
+              className={`${className} min-h-0 py-1.5 px-3 text-xs transition-opacity hover:opacity-80`}
+            >
               {item.label}
             </button>
           );
