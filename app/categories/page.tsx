@@ -5,7 +5,6 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import HelpLineCard from "@/components/rail/HelpLineCard";
 import InfoCard from "@/components/rail/InfoCard";
 import SearchInput from "@/components/rail/SearchInput";
-import ArrowLink from "@/components/ui/ArrowLink";
 import TeaserCardBody from "@/components/cards/TeaserCardBody";
 import RecentPublishedSection from "@/components/section/RecentPublishedSection";
 import { categories } from "@/lib/site-data";
@@ -20,20 +19,11 @@ export const metadata: Metadata = {
 export default function CategoriesIndexPage() {
   const rail = (
     <>
-      <div className="card">
-        <SearchInput placeholder="Search categories..." />
-      </div>
+      <SearchInput placeholder="Search categories..." />
       <InfoCard
         title="Editorial standards"
         body="How we research, source, and correct our category coverage."
-        cta={
-          <ArrowLink
-            href="/about"
-            className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group"
-          >
-            Read our methodology
-          </ArrowLink>
-        }
+        cta={{ href: "/about", label: "Read our methodology" }}
       />
       <HelpLineCard />
     </>
@@ -56,9 +46,13 @@ export default function CategoriesIndexPage() {
 
       <section className="flex flex-col gap-3">
         <h2 className="heading text-h2 leading-heading">All categories</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3">
           {categories.map((c) => (
-            <Link key={c.name} href="/categories/sample" className="editorial-link-card">
+            <Link
+              key={c.name}
+              href="/categories/sample"
+              className="editorial-link-card min-h-11 lg:min-h-0"
+            >
               <TeaserCardBody title={c.name} desc={c.desc} />
             </Link>
           ))}

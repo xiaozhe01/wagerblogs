@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowDown } from "lucide-react";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import HelpLineCard from "@/components/rail/HelpLineCard";
 import InfoCard from "@/components/rail/InfoCard";
 import AnchorList from "@/components/rail/AnchorList";
 import ArrowLink from "@/components/ui/ArrowLink";
+import SelfAssessment from "@/components/section/SelfAssessment";
+import { selfAssessmentSource } from "@/lib/self-assessment";
 import {
   rgWarningSigns,
-  rgSelfCheckQuestions,
   rgTools,
   rgResources,
   rgCommitments,
@@ -23,32 +26,19 @@ export default function ResponsibleGamblingPage() {
       <HelpLineCard />
       <AnchorList
         title="On this page"
+        cardClassName="card pb-1"
         items={rgToc}
-        itemClassName="flex items-center min-h-11 lg:min-h-8 text-sm text-text-body no-underline border-b border-border-hairline-alt leading-snug"
+        itemClassName="flex items-center min-h-11 lg:min-h-9.5 text-sm text-text-body no-underline border-b border-border-hairline-alt last:border-b-0 leading-snug"
       />
       <InfoCard
         title="Our commitments"
         body="How an affiliate publisher handles responsible gambling honestly."
-        cta={
-          <ArrowLink
-            href="/about"
-            className="inline-flex items-center gap-1 min-h-11 text-xs text-text-primary font-semibold group"
-          >
-            About WagerBlogs
-          </ArrowLink>
-        }
+        cta={{ href: "/about", label: "About WagerBlogs" }}
       />
       <InfoCard
         title="Corrections"
         body="A resource listed here out of date? Tell us and we'll fix it."
-        cta={
-          <ArrowLink
-            href="/contact"
-            className="inline-flex items-center gap-1 min-h-11 text-xs text-text-primary font-semibold group"
-          >
-            Report an issue
-          </ArrowLink>
-        }
+        cta={{ href: "/contact", label: "Report an issue" }}
       />
     </>
   );
@@ -58,7 +48,7 @@ export default function ResponsibleGamblingPage() {
       <Breadcrumbs items={[{ label: "Responsible Gambling" }]} />
 
       {/* Register: Editorial · Tier 1 — required trust page, no monetization, no operator links */}
-      <section className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-bg-dark-block text-white rounded-md p-5">
+      <section className="card-dark p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         <div className="min-w-0">
           <div className="text-md md:text-xl font-bold leading-snug mb-2">
             If gambling has stopped being fun, help is free, confidential, and available now.
@@ -67,16 +57,24 @@ export default function ResponsibleGamblingPage() {
             Helpline: [{helplineNumber} — verify before launch] · 24/7 · call or text
           </div>
         </div>
-        <a href="#get-help" className="btn-primary bg-bg-card text-text-primary font-bold shrink-0">
-          Find help below ↓
-        </a>
+        <Link
+          href="#get-help"
+          className="btn-primary bg-bg-card text-text-primary font-bold gap-1.5 shrink-0 group"
+        >
+          Find help below
+          <ArrowDown
+            strokeWidth={2}
+            className="size-3 shrink-0 transition duration-300 group-hover:translate-y-1"
+            aria-hidden="true"
+          />
+        </Link>
       </section>
 
       <header className="flex flex-col gap-3 max-w-160">
-        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet  leading-snug text-pretty">
           Responsible gambling
         </h1>
-        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-body text-pretty">
           [Placeholder standfirst — why this page exists, what readers will find on it, and a plain
           statement that WagerBlogs earns commission from operators and still wants readers to bet
           less, not more, when it stops being entertainment.]
@@ -84,9 +82,7 @@ export default function ResponsibleGamblingPage() {
       </header>
 
       <section id="warning-signs" className="flex flex-col gap-3">
-        <h2 className="heading text-h2 leading-heading">
-          Warning signs worth taking seriously
-        </h2>
+        <h2 className="heading text-h2 leading-heading">Warning signs worth taking seriously</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
           {rgWarningSigns.map((w) => (
             <div
@@ -99,30 +95,26 @@ export default function ResponsibleGamblingPage() {
         </div>
       </section>
 
-      <section id="self-check">
+      <section id="self-check" className="max-w-160">
         <h2 className="heading text-h2 leading-heading mb-3">A quick self-check</h2>
-        <p className="text-2xl font-medium leading-copy text-text-strong-secondary mb-4 max-w-160 text-pretty">
-          [Placeholder intro — these questions are adapted from screening tools used by
-          problem-gambling organisations; answering &ldquo;yes&rdquo; to any of them is a reason to
-          talk to someone.]
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary mb-4 text-pretty">
+          These ten questions are the {selfAssessmentSource.instrument}, reproduced from the{" "}
+          {selfAssessmentSource.organisation}. Answering &ldquo;yes&rdquo; to any of them is a
+          reason to talk to someone.
         </p>
-        <div className="border border-border-divider rounded-md p-4 md:p-5 max-w-160 flex flex-col gap-1">
-          {rgSelfCheckQuestions.map((q) => (
-            <div
-              key={q}
-              className="flex gap-3 items-start py-2.5 border-b border-border-hairline-alt min-h-11"
-            >
-              <span className="w-5 h-5 shrink-0 border border-border-input rounded-sm" />
-              <span className="text-md text-text-strong-secondary leading-relaxed">{q}</span>
-            </div>
-          ))}
-        </div>
+        <SelfAssessment />
+        <p className="text-xs text-text-meta font-medium leading-lead mt-3 text-pretty">
+          Source:{" "}
+          <a href={selfAssessmentSource.url} rel="noopener" target="_blank" className="underline">
+            {selfAssessmentSource.organisation} — Problem Gambling Self-Assessment
+          </a>
+          . Questions are reproduced verbatim; WagerBlogs is not affiliated with the{" "}
+          {selfAssessmentSource.organisation} and this tool does not diagnose.
+        </p>
       </section>
 
       <section id="tools" className="flex flex-col gap-3">
-        <h2 className="heading text-h2 leading-heading">
-          Tools that actually limit play
-        </h2>
+        <h2 className="heading text-h2 leading-heading">Tools that actually limit play</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
           {rgTools.map((t) => (
             <div key={t.title} className="card">
@@ -139,7 +131,7 @@ export default function ResponsibleGamblingPage() {
           {rgResources.map((r) => (
             <div
               key={r.name}
-              className="flex flex-col md:flex-row gap-2 md:gap-6 items-start md:items-center justify-between py-4 border-b border-border-hairline"
+              className="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between py-4 border-b border-border-hairline"
             >
               <div className="min-w-0">
                 <div className="text-md font-semibold text-text-primary mb-1.5">{r.name}</div>
@@ -162,10 +154,8 @@ export default function ResponsibleGamblingPage() {
       {/* TODO(cms): stateSelfExclusion[] — never link to an unverified registry.
           Required per state: programName, officialUrl, verifiedAt. Finder omitted here. */}
       <section id="self-exclusion">
-        <h2 className="heading text-h2 leading-heading mb-3">
-          Self-exclusion in your state
-        </h2>
-        <p className="text-2xl font-medium leading-copy text-text-strong-secondary max-w-160 text-pretty">
+        <h2 className="heading text-h2 leading-heading mb-3">Self-exclusion in your state</h2>
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-160 text-pretty">
           [Placeholder — most legal states run their own self-exclusion registers; enrolling bars
           every licensed operator in that state at once.]
         </p>
@@ -175,7 +165,7 @@ export default function ResponsibleGamblingPage() {
         <h2 className="heading text-h2 leading-heading mb-3">
           If you&apos;re worried about someone else
         </h2>
-        <p className="text-2xl font-medium leading-copy text-text-strong-secondary max-w-160 text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-160 text-pretty">
           [Placeholder — guidance for friends and family: what tends to help, what tends to
           backfire, and where support exists for you as well as for them.]
         </p>
@@ -185,8 +175,11 @@ export default function ResponsibleGamblingPage() {
         <h2 className="heading text-h2 leading-heading">What we do on our side</h2>
         <div className="flex flex-col max-w-160">
           {rgCommitments.map((c, i) => (
-            <div key={c} className="flex gap-3.5 items-start py-3 border-b border-border-hairline">
-              <span className="text-xs text-text-subtle font-mono shrink-0 w-6">
+            <div
+              key={c}
+              className="flex gap-3.5 items-baseline py-3 border-b border-border-hairline"
+            >
+              <span className="text-xs text-text-subtle font-mono shrink-0">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="text-md text-text-strong-secondary leading-copy">{c}</span>

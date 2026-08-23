@@ -7,13 +7,7 @@ export default function RecentPublishedSection() {
     <EditorialSection title="Recently published">
       <div className="flex flex-col">
         {recentPosts.map((p, i) => (
-          <PostRow
-            key={i}
-            post={p}
-            wrapperClassName="flex gap-4 items-start justify-between py-4 border-b border-border-hairline no-underline"
-            titleClassName="heading text-xl leading-snug mb-1.5 text-pretty"
-            thumbnailClassName="w-18 h-13.5 lg:w-24 lg:h-17 shrink-0 placeholder-asset rounded-sm text-2xs text-text-subtle font-mono flex items-center justify-center text-center"
-          />
+          <PostRow key={i} post={p} />
         ))}
       </div>
     </EditorialSection>

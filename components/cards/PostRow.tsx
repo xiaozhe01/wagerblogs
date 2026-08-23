@@ -3,33 +3,24 @@ import type { PostTeaser } from "@/lib/types";
 
 type PostRowProps = {
   post: PostTeaser;
+  /** Non-interactive variant for rows with no destination (CMS records without an href). */
   as?: "Link" | "div";
-  wrapperClassName: string;
-  titleClassName: string;
-  thumbnailClassName: string;
-  itemKey?: string | number;
 };
 
-// "Post row" pattern (thumbnail + kicker/title/meta) repeated across
-// recent-posts/author-articles/category-articles lists. Every className is
-// a required pass-through since call sites differ (py-4 vs py-4.5, text-xl
-// vs text-2xl, Link vs non-interactive div) — this only removes the
-// repeated JSX shape, not the per-site styling.
-export default function PostRow({
-  post,
-  as = "Link",
-  wrapperClassName,
-  titleClassName,
-  thumbnailClassName,
-}: PostRowProps) {
+const wrapperClassName = "flex gap-4 items-start py-4 border-b border-border-hairline no-underline";
+const titleClassName = "heading text-xl leading-snug mb-1.5 text-pretty";
+const thumbnailClassName =
+  "w-24 sm:w-32 md:w-40 lg:w-56 aspect-[2/1] shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle font-mono text-center";
+
+export default function PostRow({ post, as = "Link" }: PostRowProps) {
   const content = (
     <>
-      <div className="min-w-0">
+      <div className={thumbnailClassName}>[img]</div>
+      <div className="flex-1 min-w-0">
         <div className="meta-label-caps mb-1.5">{post.kicker}</div>
         <div className={titleClassName}>{post.title}</div>
         <div className="text-xs font-medium text-text-subtle font-mono">{post.meta}</div>
       </div>
-      <div className={thumbnailClassName}>[img]</div>
     </>
   );
 
@@ -40,7 +31,7 @@ export default function PostRow({
   return (
     <Link
       href={post.href ?? "#"}
-      className={`${wrapperClassName} -mx-3 px-3 rounded-md transition-colors hover:bg-bg-subtle`}
+      className={`${wrapperClassName} -mx-3 px-3 last:border-b-0 transition-colors hover:bg-bg-subtle`}
     >
       {content}
     </Link>

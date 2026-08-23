@@ -2,14 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import HelpLineCard from "@/components/rail/HelpLineCard";
 import ArrowLink from "@/components/ui/ArrowLink";
 import AnchorList from "@/components/rail/AnchorList";
 import ChipList from "@/components/ui/ChipList";
 import { legalDocs } from "@/lib/mock-data";
 
 const anchorListItemClassName =
-  "flex items-center min-h-11 lg:min-h-8 text-sm text-text-body no-underline border-b border-border-hairline-alt leading-snug";
+  "flex items-center min-h-11 lg:min-h-9.5 text-sm text-text-body no-underline border-b border-border-hairline-alt last:border-b-0 leading-snug";
 
 type DocSlug = keyof typeof legalDocs;
 
@@ -42,6 +41,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
     <>
       <AnchorList
         title="In this document"
+        cardClassName="card pb-1"
         items={sections.map((s) => ({
           href: `#${s.anchorId}`,
           label: `${s.num} · ${s.title}`,
@@ -51,14 +51,14 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
       />
       <AnchorList
         title="All legal documents"
-        as="Link"
+        cardClassName="card pb-1"
         items={Object.entries(legalDocs).map(([slug, d]) => ({
           href: `/legal/${slug}`,
           label: d.title,
           key: slug,
         }))}
         itemClassName={(item) =>
-          `flex items-center min-h-11 lg:min-h-8 text-sm no-underline border-b border-border-hairline-alt leading-snug ${item.key === docSlug ? "text-text-primary font-bold" : "text-text-body"}`
+          `flex items-center min-h-11 lg:min-h-9.5 text-sm no-underline border-b border-border-hairline-alt last:border-b-0 leading-snug ${item.key === docSlug ? "text-text-primary font-bold" : "text-text-body"}`
         }
       />
       <div className="card">
@@ -68,7 +68,6 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
           No revisions recorded yet.
         </div>
       </div>
-      <HelpLineCard />
     </>
   );
 
@@ -79,7 +78,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         items={[{ label: "Legal", href: "/legal/terms-of-service" }, { label: doc.title }]}
       />
 
-      <header className="flex flex-col gap-3 max-w-160">
+      <header className="flex flex-col gap-3">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           {doc.title}
         </h1>
@@ -91,7 +90,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         </div>
       </header>
 
-      <nav className="flex gap-2 flex-wrap">
+      <nav aria-label="Legal documents" className="flex gap-2 flex-wrap">
         <ChipList
           as="Link"
           items={Object.entries(legalDocs).map(([slug, d]) => ({
@@ -105,8 +104,8 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         />
       </nav>
 
-      <section className="bg-bg-subtle border border-border-divider rounded-md p-4 md:p-5 max-w-160">
-        <div className="meta-label-caps mb-2.5">Plain-language summary</div>
+      <section className="bg-bg-subtle border border-border-divider rounded-md p-4 md:p-5">
+        <div className="meta-label-caps mb-1.5">Plain-language summary</div>
         <div className="text-lg leading-copy text-text-strong-secondary text-pretty">
           {doc.summary}
         </div>
@@ -115,18 +114,20 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         </div>
       </section>
 
-      <div className="flex flex-col max-w-160">
+      <div className="flex flex-col">
         {sections.map((s) => (
           <section
             key={s.anchorId}
             id={s.anchorId}
-            className="border-t border-border-hairline pt-5 pb-1"
+            className="grid grid-cols-[3.5rem_1fr] md:grid-cols-[4.5rem_1fr] gap-x-3 border-t border-border-hairline py-3.5"
           >
-            <h2 className="heading text-xl leading-heading mb-2.5">
-              <span className="text-text-subtle mr-2.5">{s.num}</span>
-              {s.title}
-            </h2>
-            <p className="text-sm leading-copy text-text-strong-secondary text-pretty">{s.body}</p>
+            <div className="text-sm text-text-subtle font-mono pt-0.5">#{s.num}</div>
+            <div className="min-w-0">
+              <h2 className="heading text-xl leading-heading mb-2.5">{s.title}</h2>
+              <p className="text-xl leading-loose text-text-strong-secondary text-pretty max-w-[68ch]">
+                {s.body}
+              </p>
+            </div>
           </section>
         ))}
       </div>
@@ -134,7 +135,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
       {/* TODO(cms): LegalReview — no counsel sign-off connected. Required: reviewerName,
           firmOrBar, reviewedAt, documentVersion. Document must stay in draft until then. */}
 
-      <section className="card max-w-160">
+      <section className="border-t border-border-hairline pt-5">
         <div className="text-md font-semibold text-text-primary mb-1.5">
           Questions about this document
         </div>
@@ -143,7 +144,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         </div>
         <ArrowLink
           href="/contact"
-          className="inline-flex items-center gap-1 min-h-11 text-md text-text-primary font-semibold group"
+          className="inline-flex items-center gap-1 min-h-11 text-md text-text-primary font-semibold group w-fit"
         >
           Contact us
         </ArrowLink>

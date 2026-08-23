@@ -1,12 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
-import HelpLineCard from "@/components/rail/HelpLineCard";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import AnchorList from "@/components/rail/AnchorList";
 import ExploreSection from "@/components/section/ExploreSection";
-import RecentPublishedSection from "@/components/section/RecentPublishedSection";
-import ArrowLink from "@/components/ui/ArrowLink";
-import InfoCard from "@/components/rail/InfoCard";
-import SearchInput from "@/components/rail/SearchInput";
 import { popular } from "@/lib/mock-data";
 
 export const metadata: Metadata = {
@@ -24,81 +21,38 @@ export const metadata: Metadata = {
 export default function NotFound() {
   const rail = (
     <>
-      <div className="card">
-        <div className="font-bold text-sm text-text-primary mb-2.5">Popular right now</div>
-        {popular.map((p, i) => (
-          <Link
-            key={i}
-            href="#"
-            className="flex items-center min-h-11 lg:min-h-9.5 text-sm text-text-body no-underline border-b border-border-hairline-alt leading-relaxed"
-          >
-            {p}
-          </Link>
-        ))}
-      </div>
-      <InfoCard
-        title="Start from the top"
-        body="Our latest coverage, guides, and category directory in one place."
-        cta={
-          <ArrowLink
-            href="/"
-            className="inline-flex items-center gap-1 text-xs text-text-primary font-semibold group w-fit"
-          >
-            Go to the homepage
-          </ArrowLink>
-        }
+      {/* TODO(cms): hrefs must come from the same dynamic popular-posts data as the labels */}
+      <AnchorList
+        title="Popular right now"
+        cardClassName="card pb-0"
+        items={popular.map((p, i) => ({ href: "/blog/sample-post", label: p, key: i }))}
+        itemClassName="flex items-center min-h-11 lg:min-h-9.5 text-sm text-text-body no-underline border-b border-border-hairline-alt last:border-b-0 leading-snug"
       />
-      <HelpLineCard />
     </>
   );
 
   return (
     <PageShell rail={rail}>
-      <section className="flex items-center gap-3 flex-wrap">
-        <span className="font-mono text-2xs tracking-wide px-2.5 py-1 rounded-sm bg-bg-accent text-text-on-accent">
-          HTTP 404
-        </span>
-        <span className="font-mono text-xs text-text-subtle leading-relaxed">
-          requested path: [/the-path-that-was-requested]
-        </span>
-      </section>
+      <Breadcrumbs items={[{ label: "Page not found" }]} />
 
-      <header className="flex flex-col gap-3 max-w-155">
-        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
-          We couldn&apos;t find that page
+      <section className="flex flex-col items-center text-center gap-3 py-2 md:py-4">
+        <h1 className="font-sans font-heavy text-[96px] md:text-[160px] leading-none tracking-[-0.02em] text-text-subtle select-none">
+          <span aria-hidden="true">404</span>
+          <span className="sr-only">We couldn&apos;t find that page</span>
         </h1>
-        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          The link may be out of date, or the page may have moved. Everything below is a way back to
-          what you were probably looking for.
-        </p>
-      </header>
-
-      <section className="">
-        <div className="meta-label-caps mb-2.5">Search the site</div>
-        <div className="flex  flex-col md:flex-row gap-2.5">
-          <SearchInput />
-          <Link href="#" className="btn-primary min-h-12 px-5">
-            Search
+        <p className="text-xl md:text-2xl font-medium leading-copy text-text-body text-pretty max-w-160">
+          {`The page you're looking for doesn't exist, has moved, or the URL has a typo. Try starting over at our `}
+          <Link
+            href="/"
+            className="text-text-body underline underline-offset-6 transition-colors hover:text-text-primary"
+          >
+            Homepage
           </Link>
-        </div>
+          .
+        </p>
       </section>
 
       <ExploreSection />
-
-      <RecentPublishedSection />
-
-      <section className="flex flex-col items-start gap-1 max-w-full border-t border-border-divider pt-4">
-        <div className="text-sm text-text-body leading-relaxed">
-          Landed here from a link on our own site? That&apos;s a bug on our side — tell us and
-          we&apos;ll fix it.
-        </div>
-        <ArrowLink
-          href="/contact"
-          className="inline-flex items-center center gap-1 min-h-11 text-xs text-text-primary font-semibold group w-fit"
-        >
-          Report a broken link
-        </ArrowLink>
-      </section>
     </PageShell>
   );
 }

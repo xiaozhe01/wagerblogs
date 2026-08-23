@@ -27,17 +27,16 @@ export type RouteUnderTest = {
 export const routes: RouteUnderTest[] = [
   { path: "/", label: "Home", register: "mixed" },
   { path: "/blog/how-odds-boosts-actually-work", label: "Blog post", register: "editorial" },
-  { path: "/reviews/peakwager", label: "Operator review (quick)", register: "comparison" },
-  {
-    path: "/reviews/peakwager/full-review",
-    label: "Operator review (full-length comparison)",
-    register: "comparison",
-  },
+  { path: "/reviews/peakwager", label: "Operator review", register: "comparison" },
   { path: "/categories/esports-betting", label: "Category directory", register: "editorial" },
   { path: "/authors/jane-placeholder", label: "Author bio", register: "editorial" },
   { path: "/legal/privacy-policy", label: "Legal — Privacy Policy", register: "utility" },
   { path: "/legal/terms-of-service", label: "Legal — Terms of Service", register: "utility" },
-  { path: "/legal/affiliate-disclosure", label: "Legal — Affiliate Disclosure", register: "utility" },
+  {
+    path: "/legal/affiliate-disclosure",
+    label: "Legal — Affiliate Disclosure",
+    register: "utility",
+  },
   { path: "/legal/cookie-policy", label: "Legal — Cookie Policy", register: "utility" },
   { path: "/responsible-gambling", label: "Responsible Gambling", register: "editorial" },
   {

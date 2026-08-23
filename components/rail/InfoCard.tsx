@@ -1,22 +1,25 @@
 import type { ReactNode } from "react";
+import ArrowLink from "@/components/ui/ArrowLink";
+
+export const railCtaClassName =
+  "inline-flex items-center gap-1 min-h-4 text-sm text-text-primary font-semibold group w-fit";
+export const railCtaOnDarkClassName =
+  "inline-flex items-center gap-1 min-h-4 text-sm text-text-on-dark font-semibold group w-fit";
 
 type InfoCardProps = {
   title: string;
-  titleClassName?: string;
   body: ReactNode;
-  cta: ReactNode;
+  cta: { href: string; label: string };
 };
 
-// "title + body copy + one CTA" rail-card shape (Editorial standards,
-// Corrections, and siblings). `cta` is a slot rather than a fixed link
-// renderer since call sites vary between the ArrowLink icon style and a
-// plain underlined link — each keeps its own exact styling.
-export default function InfoCard({ title, titleClassName, body, cta }: InfoCardProps) {
+export default function InfoCard({ title, body, cta }: InfoCardProps) {
   return (
-    <div className="card">
-      <div className={titleClassName ?? "font-bold text-sm text-text-primary mb-2.5"}>{title}</div>
-      <div className="text-xs text-text-body leading-loose mb-3">{body}</div>
-      {cta}
+    <div className="card flex flex-col gap-2.5">
+      <div className="font-bold text-sm text-text-primary">{title}</div>
+      <div className="text-xs text-text-body leading-loose">{body}</div>
+      <ArrowLink href={cta.href} className={railCtaClassName}>
+        {cta.label}
+      </ArrowLink>
     </div>
   );
 }

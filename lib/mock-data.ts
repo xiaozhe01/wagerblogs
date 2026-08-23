@@ -384,15 +384,16 @@ export const reviewTrustIndex = [
   { num: "3/3", label: "Trustpilot", note: "Third-party; shown only with real profile data." },
 ];
 
-// app/reviews/[slug]/full-review/page.tsx (long-form comparison template) content.
-export const fullReviewBonusTerms = [
+// app/reviews/[slug]/page.tsx "Bonus detail" + FAQ content (merged in from
+// the retired full-review template).
+export const reviewBonusTerms = [
   { label: "Minimum deposit", value: "[$10]" },
   { label: "Wagering requirement", value: "[1x]" },
   { label: "Expiry", value: "[7 days]" },
   { label: "Eligible states", value: "[list required]" },
 ];
 
-export const fullReviewFaqs = [
+export const reviewFaqs = [
   {
     q: "[Placeholder] Is it legal in my state?",
     a: "[Placeholder answer — points at our state-by-state category page rather than making a blanket claim.]",
@@ -407,44 +408,24 @@ export const fullReviewFaqs = [
   },
 ];
 
-export const fullReviewRelated: PostTeaser[] = [
-  {
-    kicker: "Comparison",
-    title: "BlueHorizon Bet review",
-    meta: "Reviews · 9.1 / 10",
-    href: "/reviews/bluehorizon",
-  },
-  {
-    kicker: "Comparison",
-    title: "IronStake Sports review",
-    meta: "Reviews · 8.9 / 10",
-    href: "/reviews/ironstake",
-  },
-  {
-    kicker: "Guide",
-    title: "[Placeholder] How we score payout speed",
-    meta: "Blog · Tier 1 surface",
-    href: "/blog/sample",
-  },
-];
-
-export const fullReviewAtAGlance: AtAGlanceItem[] = [
-  { label: "Overall", value: "9.4 / 10" },
-  { label: "States live", value: "[26]" },
-  { label: "Payout speed", value: "[1–3 days]" },
-  { label: "Min deposit", value: "[$10]" },
-  { label: "Last verified", value: "[Jun 30, 2026]" },
-];
-
-export const fullReviewJumpLinks = [
-  "Verdict & scores",
-  "Strengths & trade-offs",
-  "Compared to alternatives",
-  "Bonus detail",
-  "FAQ",
-];
-
 // app/blog/[slug]/page.tsx (sample blog post) content.
+// TODO(cms): becomes the post record fetched by slug — title/kicker/dates/author
+// all flow from this one object into metadata, breadcrumbs, H1, and the byline
+// (mirroring how the reviews templates consume mockPeakWagerReview).
+export const mockBlogPost = {
+  slug: "sample-post",
+  kicker: "Guides",
+  title: "[Placeholder] How moneylines actually work — and what the numbers are telling you",
+  publishedAt: "[Jul 18, 2026]",
+  updatedAt: "[Jul 24, 2026]",
+  readTime: "9 min read",
+  author: {
+    name: "Jane Placeholder",
+    credential: "Example Analyst, Example Credential Body",
+    profileHref: "/authors/jane-placeholder",
+  },
+};
+
 export const blogToc = [
   { label: "Reading the number", href: "#reading-the-number" },
   { label: "The worked example", href: "#the-worked-example" },
@@ -683,14 +664,9 @@ export const rgWarningSigns = [
   "[Placeholder] Betting to escape stress, low mood, or boredom",
 ];
 
-// TODO(cms): screening questions must be sourced from a recognised instrument
-// (e.g. a published screener) and credited — do not write our own.
-export const rgSelfCheckQuestions = [
-  "[Placeholder screening question 1 — sourced from a recognised instrument]",
-  "[Placeholder screening question 2]",
-  "[Placeholder screening question 3]",
-  "[Placeholder screening question 4]",
-];
+// Screening questions moved to lib/self-assessment.ts — they are now the real,
+// credited NODS instrument rather than placeholders, so they no longer belong in
+// this file (see the DRY-4 split rule: this file is placeholder content only).
 
 export const rgTools = [
   {
@@ -849,6 +825,10 @@ export const bonusOffers: BonusOffer[] = [
     name: "PeakWager",
     headline: "Bet $5 Get $200 in Bonus Bets",
     code: "PEAK200",
+    benefits: [
+      "[Placeholder benefit copy — fast payouts]",
+      "[Placeholder benefit copy — deep same-game parlay markets]",
+    ],
     isPrimaryDomain: true,
     primaryDomainLink: {
       anchorText: "Claim Offer",
@@ -860,6 +840,10 @@ export const bonusOffers: BonusOffer[] = [
     name: "BlueHorizon Bet",
     headline: "10x $100 Bet Match Bonus",
     code: "BLUE100",
+    benefits: [
+      "[Placeholder benefit copy — wide market coverage]",
+      "[Placeholder benefit copy — strong live-betting UI]",
+    ],
     isPrimaryDomain: false,
     operatorLink: { anchorText: "Claim Offer", url: "https://example.com" },
   },
@@ -867,6 +851,10 @@ export const bonusOffers: BonusOffer[] = [
     name: "Crownline Coins",
     headline: "1.5M Coins + 75 Free SC",
     code: "CROWN75",
+    benefits: [
+      "[Placeholder benefit copy — free-to-play sweepstakes games]",
+      "[Placeholder benefit copy — fast SC redemptions]",
+    ],
     isPrimaryDomain: false,
     operatorLink: { anchorText: "Claim Offer", url: "https://example.com" },
   },
@@ -874,6 +862,10 @@ export const bonusOffers: BonusOffer[] = [
     name: "IronStake Sports",
     headline: "Double Your First 10 Wagers",
     code: "IRONX2",
+    benefits: [
+      "[Placeholder benefit copy — low minimum deposit]",
+      "[Placeholder benefit copy — frequent odds boosts]",
+    ],
     isPrimaryDomain: false,
     operatorLink: { anchorText: "Claim Offer", url: "https://example.com" },
   },
@@ -1016,6 +1008,15 @@ export const recentPosts: PostTeaser[] = [
 ];
 
 // TODO(cms): analytics-driven, Tier 1 only.
+// TODO(cms): trending list must come from real editorial/analytics data —
+// never ship unmarked realistic headlines.
+export const trendingHeadlines = [
+  "[Placeholder headline — NFL week 1 lines]",
+  "[Placeholder headline — new sweepstakes casino launch]",
+  "[Placeholder headline — same-game parlay boosts]",
+  "[Placeholder headline — Editor's Pick update]",
+];
+
 export const popular = [
   "[Dynamic — popular Tier 1 post 1]",
   "[Dynamic — popular Tier 1 post 2]",

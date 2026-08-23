@@ -2,8 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import HelpLineCard from "@/components/rail/HelpLineCard";
-import InfoCard from "@/components/rail/InfoCard";
 import AnchorList from "@/components/rail/AnchorList";
 import {
   Pagination,
@@ -33,36 +31,20 @@ export const metadata: Metadata = { title: `${sampleCategoryName} — WagerBlogs
 export default function CategoryPage() {
   const rail = (
     <>
-      <div className="card">
-        <SearchInput placeholder={`Search within ${sampleCategoryName}...`} />
-      </div>
-      <div className="card">
+      <SearchInput placeholder={`Search within ${sampleCategoryName}...`} />
+      <div className="card pb-0">
         <div className="font-bold text-sm text-text-primary mb-2.5">All categories</div>
         <AnchorList
-          as="Link"
           items={categories.map((c) => ({
             href: "/categories/sample",
             label: c.name,
             key: c.name,
           }))}
           itemClassName={(item) =>
-            `flex items-center min-h-11 lg:min-h-8 text-sm no-underline border-b border-border-hairline-alt leading-snug ${typeof item.label === "string" && item.label.toLowerCase() === sampleCategoryName.toLowerCase() ? "text-text-primary font-bold" : "text-text-body"}`
+            `flex items-center min-h-11 lg:min-h-9.5 text-sm no-underline border-b border-border-hairline-alt last:border-b-0 leading-snug ${typeof item.label === "string" && item.label.toLowerCase() === sampleCategoryName.toLowerCase() ? "text-text-primary font-bold" : "text-text-body"}`
           }
         />
       </div>
-      <InfoCard
-        title="Editorial standards"
-        body="How we research, source, and correct our category coverage."
-        cta={
-          <ArrowLink
-            href="/about"
-            className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group"
-          >
-            Read our methodology
-          </ArrowLink>
-        }
-      />
-      <HelpLineCard />
     </>
   );
 
@@ -73,7 +55,7 @@ export default function CategoryPage() {
         items={[{ label: "Categories", href: "/categories" }, { label: sampleCategoryName }]}
       />
 
-      <header className="flex flex-col gap-3 max-w-160">
+      <header className="flex flex-col gap-3">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           {sampleCategoryName}
         </h1>
@@ -90,21 +72,21 @@ export default function CategoryPage() {
       </header>
 
       {/* Browse by States */}
-      <nav className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 flex-wrap">
         <ChipList
-          as="button"
+          as="div"
           items={categoryFilters.map((f, i) => ({ label: f, active: i === 0 }))}
           activeClassName="btn-primary"
           inactiveClassName="btn-secondary"
         />
-      </nav>
+      </div>
 
       <section>
         <Link
           href="/blog/sample-post"
-          className="flex flex-col wide:flex-row gap-3.5 wide:gap-6 items-stretch wide:items-center no-underline border-t border-b border-border-divider py-4 wide:py-6"
+          className="flex flex-col md:flex-row gap-3.5 md:gap-4 items-stretch md:items-center no-underline border-t border-b border-border-divider py-4 md:py-5"
         >
-          <div className="w-full wide:w-[320px] h-45 wide:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle font-mono text-center">
+          <div className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle font-mono text-center">
             [lead image — credit line required]
           </div>
           <div className="min-w-0 flex flex-col gap-2">
@@ -116,7 +98,7 @@ export default function CategoryPage() {
               [Placeholder excerpt — two lines summarising the piece, written to work as a
               standalone summary in search and social previews.]
             </div>
-            <div className="text-xs text-text-subtle font-mono">
+            <div className="text-xs font-medium text-text-subtle font-mono">
               07/22/2026 · 11 min · byline required before publish
             </div>
           </div>
@@ -135,37 +117,27 @@ export default function CategoryPage() {
         </div>
         <div className="flex flex-col">
           {categoryArticles.map((a) => (
-            <PostRow
-              key={a.title}
-              post={a}
-              wrapperClassName="flex gap-4 items-start justify-between py-4 border-b border-border-hairline no-underline"
-              titleClassName="heading text-xl leading-snug mb-1.5 text-pretty"
-              thumbnailClassName="w-18 h-13.5 lg:w-24 lg:h-17 shrink-0 rounded-sm placeholder-asset text-2xs text-text-subtle font-mono"
-            />
+            <PostRow key={a.title} post={a} />
           ))}
         </div>
         <Pagination className="justify-start mx-0 mt-5">
           <PaginationContent>
             <PaginationItem>
-              <PaginationLink href="/categories/sample" isActive className="rounded-sm">
+              <PaginationLink href="/categories/sample" isActive>
                 1
               </PaginationLink>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink href="/categories/sample" className="rounded-sm">
-                2
-              </PaginationLink>
+              <PaginationLink href="/categories/sample">2</PaginationLink>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink href="/categories/sample" className="rounded-sm">
-                3
-              </PaginationLink>
+              <PaginationLink href="/categories/sample">3</PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
-              <PaginationNext href="/categories/sample" className="rounded-sm" />
+              <PaginationNext href="/categories/sample" />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
@@ -189,27 +161,12 @@ export default function CategoryPage() {
         <h2 className="heading text-h2 leading-heading mb-3">Compare operators in this category</h2>
         <TeaserCardGrid
           items={categoryCompareLinks}
-          titleClassName="text-sm font-bold text-text-primary mb-1 leading-snug"
+          titleClassName="text-md font-semibold text-text-primary mb-1.5 leading-snug"
         />
       </section>
 
       {/* TODO(cms): SourcedStat[] — category market data needs a real source + period
           per figure, or the strip stays absent. Omitted here. */}
-
-      <section>
-        <h2 className="heading text-h2 leading-heading mb-3">About this coverage</h2>
-        <p className="text-2xl font-medium leading-copy text-text-body max-w-160 mb-2 text-pretty">
-          [Placeholder about-this-category copy — how often the vertical is reviewed, who writes it,
-          and what falls outside its scope. Two or three sentences; this is the block search engines
-          read as the category&apos;s descriptive text.]
-        </p>
-        <ArrowLink
-          href="/about"
-          className="inline-flex items-center gap-1 min-h-11 text-md text-text-primary font-semibold group"
-        >
-          Read our editorial standards
-        </ArrowLink>
-      </section>
     </PageShell>
   );
 }
