@@ -7,8 +7,8 @@ import ArrowLink from "@/components/ui/ArrowLink";
 export default function SiteFooter() {
   return (
     <>
-      <section className="mt-4">
-        <div className="rounded-md bg-bg-accent text-text-on-accent p-legacy-6 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <section aria-label="Responsible gambling" className="mt-4">
+        <div className="rounded-md bg-bg-accent text-text-on-accent p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div className="text-md font-semibold leading-relaxed text-text-on-accent">
             Gambling problem? Call [{helplineNumber}] or visit our Responsible Gambling resources.
           </div>
@@ -25,14 +25,14 @@ export default function SiteFooter() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-legacy-4 md:gap-3 mb-4">
           {footerCols.map((col) => (
             <div key={col.heading}>
-              <div className="text-sm font-bold text-white uppercase tracking-wide mb-3">
+              <div className="text-sm font-bold text-text-on-dark uppercase tracking-wide mb-3">
                 {col.heading}
               </div>
               {col.links.map((l) => (
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="group flex items-center min-h-11 lg:min-h-0 lg:mb-2 text-sm text-text-on-dark-muted no-underline"
+                  className="group flex items-center min-h-0 mb-2 text-sm text-text-on-dark-muted no-underline"
                 >
                   <span className="relative after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out after:content-[''] group-hover:after:scale-x-100">
                     {l.label}
@@ -42,7 +42,7 @@ export default function SiteFooter() {
             </div>
           ))}
         </div>
-        <div className="border-t border-border-on-dark pt-4 text-xs text-text-on-dark-muted leading-loose">
+        <div className="border-t border-border-on-dark pt-4 text-xs text-text-on-dark-muted leading-lead">
           <p className="mb-2">
             WagerBlogs is an independent media and affiliate publisher. We may earn commission from
             partner links. 21+. Gambling involves risk — please play responsibly.
@@ -51,7 +51,7 @@ export default function SiteFooter() {
         </div>
       </footer>
 
-      <section className="mt-4">
+      <section aria-label="Legal" className="mt-4">
         <div className="flex gap-3.5 flex-wrap mb-3.5">
           {legalLinks.map((l) => (
             <Link

@@ -3,10 +3,9 @@ import SideNav from "./SideNav";
 import TopHeader from "./TopHeader";
 import SiteFooter from "./SiteFooter";
 
-// Shared three-column shell (side-nav / content / rail) used by every content route.
-// Responsive behavior matches globals.css's documented breakpoints: mobile stacks
-// everything in one column, tablet adds a second column for the rail, desktop adds
-// the side-nav as a third track and swaps out TopHeader.
+const shellTracks =
+  "max-w-240 mx-auto wide:max-w-none wide:grid wide:grid-cols-[var(--grid-nav-width)_1fr_var(--grid-rail-width)] wide:gap-x-(--grid-gap-desktop)";
+
 export default function PageShell({
   activeNavId,
   rail,
@@ -18,19 +17,23 @@ export default function PageShell({
 }) {
   return (
     <div className="max-w-(--grid-max-width) mx-auto px-container-mobile md:px-container-tablet lg:px-container-desktop pt-container-mobile md:pt-container-tablet lg:pt-container-desktop pb-10">
-      <div className="md:grid md:grid-cols-[1fr_260px] md:gap-(--grid-gap-tablet) md:items-start lg:grid-cols-[var(--grid-nav-width)_1fr_var(--grid-rail-width)] lg:gap-(--grid-gap-desktop)">
+      <div className={`${shellTracks} wide:items-start`}>
         <SideNav activeId={activeNavId} />
-        <div className="flex flex-col gap-6 lg:gap-8 min-w-0">
+        <div className="min-w-0">
           <TopHeader />
-          {children}
+          <main className="flex flex-col gap-5 mt-4 wide:mt-0">{children}</main>
         </div>
         {rail && (
-          <aside className="flex flex-col gap-3 mt-4 md:mt-0 md:sticky md:top-(--spacing-container-tablet) lg:top-(--spacing-container-desktop)">
+          <aside className="hidden wide:flex flex-col gap-3 wide:sticky wide:top-container-desktop">
             {rail}
           </aside>
         )}
       </div>
-      <SiteFooter />
+      <div className={shellTracks}>
+        <div className="min-w-0 wide:col-start-2">
+          <SiteFooter />
+        </div>
+      </div>
     </div>
   );
 }

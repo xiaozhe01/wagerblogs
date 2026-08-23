@@ -44,11 +44,12 @@ function NavIconLabel({ icon: Icon, label }: { icon: LucideIcon; label: string }
 // Desktop-only rail nav (lg+). Mobile/tablet uses TopHeader instead — see globals.css
 // breakpoint doc block: side-nav replaces top-header only at lg (1024px+).
 export default function SideNav({ activeId }: { activeId?: string }) {
-  // const [open, setOpen] = useState<string | null>(null);
-
   return (
-    <div className="hidden lg:flex gap-3 lg:flex-col lg:sticky lg:top-(--spacing-container-desktop)">
-      <div className="flex items-center h-10">
+    <section
+      aria-label="Sidebar"
+      className="hidden wide:flex gap-3 wide:flex-col wide:sticky wide:top-container-desktop"
+    >
+      <div className="flex items-start h-10">
         <Link
           href="/"
           className="font-sans font-heavy text-3xl tracking-[-0.02em] text-text-primary no-underline"
@@ -67,7 +68,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                 {expandable ? (
                   <>
                     <NavigationMenuTrigger
-                      className={`w-full h-auto justify-start gap-2.5 px-2.5 py-2 rounded-md text-md text-text-strong-secondary font-medium ${g.id === activeId ? "bg-bg-subtle" : ""}`}
+                      className={`w-full h-auto justify-start gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "bg-bg-subtle" : ""}`}
                     >
                       <NavIconLabel icon={Icon} label={g.label} />
                     </NavigationMenuTrigger>
@@ -77,7 +78,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                           <NavigationMenuLink
                             key={s.label}
                             href={s.href}
-                            className="group text-sm text-primary font-medium"
+                            className="group text-sm text-text-primary font-medium"
                           >
                             {s.label}
                             {s.trailingIcon && (
@@ -93,10 +94,6 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                     </NavigationMenuContent>
                   </>
                 ) : (
-                  // <NavigationMenuTrigger
-                  //     className={`w-full justify-start gap-2.5 px-2.5 py-2 rounded-md text-md text-text-strong-secondary font-medium ${g.id === activeId ? "bg-bg-subtle" : ""}`}
-                  //   >
-                  //     <span className="w-6.5 h-6.5 shrink-0 flex items-center justify-center text-text-muted"></span>
                   <NavigationMenuLink
                     href={g.href}
                     className={`w-full gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "bg-bg-subtle" : ""}`}
@@ -114,6 +111,6 @@ export default function SideNav({ activeId }: { activeId?: string }) {
       <Link href="/login" className="btn-primary w-full">
         Log In
       </Link>
-    </div>
+    </section>
   );
 }
