@@ -66,8 +66,8 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
       </div>
       <div className="flex flex-col gap-2.5 lg:hidden">
         {operators.map((op, i) => (
-          <div key={op.name} className="card bg-bg-card">
-            <div className="font-bold text-md text-text-primary mb-2">{op.name}</div>
+          <div key={op.name} className="card">
+            <div className="text-md font-semibold text-text-primary mb-1.5">{op.name}</div>
             {compareRows.map((r) => (
               <div
                 key={r.label}
@@ -85,7 +85,7 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
       </div>
       <ArrowLink
         href="/reviews"
-        className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group"
+        className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group w-fit"
       >
         Full Comparison Tool
       </ArrowLink>

@@ -11,7 +11,7 @@ export default function SearchInput({ placeholder = "Search..." }: SearchInputPr
       <InputGroup className="w-full">
         <InputGroupInput placeholder={placeholder} />
         <InputGroupAddon>
-          <Search />
+          <Search className="shrink-0" aria-hidden="true" />
         </InputGroupAddon>
       </InputGroup>
     </div>

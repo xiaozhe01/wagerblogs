@@ -1,3 +1,4 @@
+import Link from "next/link";
 import BylineCard from "./BylineCard";
 
 export default function WriterQuoteCard() {
@@ -7,7 +8,7 @@ export default function WriterQuoteCard() {
             omit this section entirely until a real author is connected. */
     <BylineCard
       as="section"
-      wrapperClassName="card bg-bg-card flex gap-4 items-center"
+      wrapperClassName="card flex gap-4 items-center"
       profileHref="/authors/jane-placeholder"
     >
       <div className="text-sm text-text-strong-secondary italic leading-relaxed mb-2">
@@ -15,7 +16,14 @@ export default function WriterQuoteCard() {
         before it was scored.&rdquo;
       </div>
       <div className="text-sm text-text-meta font-semibold mb-1.5">
-        — Jane Placeholder · Example Analyst, Example Credential Body
+        —{" "}
+        <Link
+          href="/authors/jane-placeholder"
+          className="text-text-primary no-underline hover:underline underline-offset-2"
+        >
+          Jane Placeholder
+        </Link>{" "}
+        · Example Analyst, Example Credential Body
       </div>
     </BylineCard>
   );

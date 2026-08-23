@@ -11,7 +11,7 @@ export default function Comments() {
 
       {/* TODO(cms): composer assumes a signed-in viewer — placeholder only, not wired to auth */}
       <div className="flex gap-2.5 items-start py-3 border-b border-border-hairline-alt">
-        <div className="w-7 h-7 rounded-full placeholder-asset shrink-0" />
+        <div className="w-6 h-6 rounded-full placeholder-asset shrink-0" />
         <div className="min-w-0 flex-1">
           <div className="border border-dashed border-border-placeholder rounded-sm px-3 py-2.5 text-xs text-text-subtle font-mono mb-2">
             [comment input — plain text, no links to operators]

@@ -9,10 +9,6 @@ type TeaserCardGridProps = {
 
 const defaultGridClassName = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3";
 
-// "Compare further" / related-card grid duplicated across both reviews
-// templates and the category page. `titleClassName` stays a required prop
-// since the two reviews templates use text-sm/font-bold while categories
-// uses text-md/font-semibold.
 export default function TeaserCardGrid({
   items,
   titleClassName,

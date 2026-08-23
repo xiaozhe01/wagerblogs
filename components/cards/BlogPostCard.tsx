@@ -1,23 +1,25 @@
-import { blogPosts } from "@/lib/mock-data";
 import Link from "next/link";
 
-export default function BlogPostCard() {
+type BlogPostCardProps = {
+  href: string;
+  title: string;
+  kicker?: string;
+  excerpt?: string;
+  byline?: string;
+};
+
+export default function BlogPostCard({ href, title, kicker, excerpt, byline }: BlogPostCardProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
-      {blogPosts.map((p) => (
-        <Link
-          key={p.title}
-          href="/blog/sample-post"
-          className="card block no-underline transition-colors hover:bg-bg-subtle"
-        >
-          <div className="h-30 rounded-md placeholder-asset text-xs text-text-subtle font-mono mb-3">
-            [image]
-          </div>
-          <div className="heading text-2xl leading-snug mb-2 text-pretty">{p.title}</div>
-          <div className="text-md font-medium text-text-meta leading-loose mb-2">{p.excerpt}</div>
-          <div className="text-xs font-medium text-text-subtle font-mono">{p.byline}</div>
-        </Link>
-      ))}
-    </div>
+    <Link href={href} className="card block no-underline transition-colors hover:bg-bg-subtle">
+      <div className="h-30 rounded-md placeholder-asset text-2xs text-text-subtle font-mono mb-3">
+        [image]
+      </div>
+      {kicker && <div className="meta-label-caps mb-1.5">{kicker}</div>}
+      <div className="heading text-2xl leading-snug mb-2 text-pretty">{title}</div>
+      {excerpt && (
+        <div className="text-md font-medium text-text-meta leading-loose mb-2">{excerpt}</div>
+      )}
+      {byline && <div className="text-xs font-medium text-text-subtle font-mono">{byline}</div>}
+    </Link>
   );
 }

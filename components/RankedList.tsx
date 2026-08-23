@@ -11,8 +11,10 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
           className={`flex flex-col md:flex-row md:items-center gap-legacy-4 p-4 ${i < operators.length - 1 ? "border-b border-border-divider" : ""}`}
         >
           <div className="flex items-center gap-legacy-4">
-            <span className="w-3 shrink-0 text-base font-bold text-border-placeholder">{i + 1}</span>
-            <div className="w-6 h-6 shrink-0 placeholder-asset rounded-sm" />
+            <span className="w-3 shrink-0 text-base font-bold text-border-placeholder">
+              {i + 1}
+            </span>
+            <div className="w-6 h-6 shrink-0 placeholder-asset rounded-md" />
           </div>
           <div className="min-w-0 flex-1 flex flex-col gap-2">
             <div className="flex items-baseline gap-2 flex-wrap">
@@ -23,7 +25,7 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
               {operator.advantages.slice(0, 2).join(" · ")}
             </div>
           </div>
-          <div className="flex md:flex-col items-center gap-2 md:w-28 md:shrink-0">
+          <div className="flex items-center gap-2 md:flex-col md:w-28 md:shrink-0">
             <PrimaryDomainLink
               linkTier="tier2"
               primaryDomainLink={operator.primaryDomainLink}
@@ -31,7 +33,7 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
             />
             <Link
               href="/reviews/sample-operator"
-              className="btn-secondary min-h-0 py-1.5 px-3 text-xs md:w-full"
+              className="btn-secondary min-h-5 py-1.5 px-3 text-xs md:w-full"
             >
               Read review
             </Link>

@@ -5,8 +5,6 @@ type ProsConsSectionProps = {
   cons: string[];
 };
 
-// "Where it wins and where it doesn't" strengths/trade-offs section —
-// verbatim-identical between the two reviews templates (DRY-21).
 export default function ProsConsSection({ pros, cons }: ProsConsSectionProps) {
   return (
     <section>

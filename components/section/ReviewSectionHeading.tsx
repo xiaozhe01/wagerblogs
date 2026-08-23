@@ -4,9 +4,6 @@ type ReviewSectionHeadingProps = {
   note?: string;
 };
 
-// Comparison-register h2 ("text-2xl tracking-tight") used throughout the
-// reviews templates. With badge/note, renders the "TRUST BLOCK n/3"-style
-// header row; without, a plain standalone heading.
 export default function ReviewSectionHeading({ title, badge, note }: ReviewSectionHeadingProps) {
   if (badge || note) {
     return (
@@ -16,11 +13,11 @@ export default function ReviewSectionHeading({ title, badge, note }: ReviewSecti
             {badge}
           </span>
         )}
-        <h2 className="text-2xl text-text-primary tracking-tight">{title}</h2>
+        <h2 className="heading text-2xl">{title}</h2>
         {note && <span className="text-xs text-text-subtle font-mono leading-relaxed">{note}</span>}
       </div>
     );
   }
 
-  return <h2 className="text-2xl text-text-primary tracking-tight mb-3">{title}</h2>;
+  return <h2 className="heading text-2xl mb-3">{title}</h2>;
 }

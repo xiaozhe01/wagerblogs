@@ -8,10 +8,6 @@ type BylineCardProps = {
   children: ReactNode;
 };
 
-// Avatar + info block + "View author profile" arrow-link, shared by
-// WriterQuoteCard (a pull quote) and blog's inline article byline (name +
-// credential) — the surrounding chrome is identical, only the middle
-// content differs, so it's passed as children.
 export default function BylineCard({
   as = "div",
   wrapperClassName,
@@ -25,7 +21,7 @@ export default function BylineCard({
         {children}
         <ArrowLink
           href={profileHref}
-          className="inline-flex gap-1 text-sm text-text-primary font-semibold group"
+          className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group"
         >
           View author profile
         </ArrowLink>
