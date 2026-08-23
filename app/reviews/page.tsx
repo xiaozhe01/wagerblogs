@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import HelpLineCard from "@/components/rail/HelpLineCard";
+import InfoCard from "@/components/rail/InfoCard";
 import SearchInput from "@/components/rail/SearchInput";
 import RankedListSection from "@/components/section/RankedListSection";
+import ComparisonCard from "@/components/section/ComparisonCard";
+import ReviewCard from "@/components/section/ReviewCard";
+import WriterQuoteCard from "@/components/section/WriterQuoteCard";
 import { mockRankedSportsbooks, mockRankedCasinos } from "@/lib/mock-data";
 
 export const metadata: Metadata = {
@@ -11,14 +15,19 @@ export const metadata: Metadata = {
   description: "Independent, tested reviews of legal sportsbooks and online casinos.",
 };
 
-// Minimal reviews index — lists the same ranked operators shown on the
-// homepage. Individual operator pages live at /reviews/[slug].
+// Reviews hub: rankings → side-by-side comparison → methodology + editorial
+// trust. Individual operator pages live at /reviews/[slug].
 export default function ReviewsIndexPage() {
   const rail = (
     <>
       <div className="card">
         <SearchInput placeholder="Search reviews..." />
       </div>
+      <InfoCard
+        title="Editorial standards"
+        body="How we research, test with real deposits, and correct our reviews."
+        cta={{ href: "/about", label: "Read our methodology" }}
+      />
       <HelpLineCard />
     </>
   );
@@ -47,6 +56,12 @@ export default function ReviewsIndexPage() {
           operators={mockRankedCasinos}
         />
       </div>
+
+      <ComparisonCard />
+
+      <ReviewCard />
+
+      <WriterQuoteCard />
     </PageShell>
   );
 }
