@@ -29,7 +29,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
 
   return (
     <>
-      <Breadcrumb className="text-xs font-mono">
+      <Breadcrumb>
         <BreadcrumbList>
           {allItems.map((item, i) => (
             <Fragment key={`${item.label}-${i}`}>

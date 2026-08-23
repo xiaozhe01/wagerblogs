@@ -169,7 +169,7 @@
   --grid-rail-width: 300px;
   --grid-gap-desktop: 28px;
   --grid-gap-tablet: 24px;
-  --grid-max-width: 1360px;
+  --grid-max-width: 1560px;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -251,10 +251,13 @@ body {
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
-  .btn-primary:hover {
+  /* Hover/active shifts scoped to real controls — ChipList's static
+     as="div" chips share the .btn-* chrome but must not signal
+     clickability (same fake-affordance class as VC-37). */
+  :is(a, button).btn-primary:hover {
     background: #2a2a2a;
   }
-  .btn-primary:active {
+  :is(a, button).btn-primary:active {
     background: #000000;
   }
   .btn-secondary {
@@ -276,12 +279,22 @@ body {
       background-color 0.2s ease,
       border-color 0.2s ease;
   }
-  .btn-secondary:hover {
+  :is(a, button).btn-secondary:hover {
     background: var(--color-bg-subtle);
     border-color: var(--color-text-primary);
   }
-  .btn-secondary:active {
+  :is(a, button).btn-secondary:active {
     background: var(--color-border-hairline);
+  }
+
+  /* Keyboard focus for the hand-rolled interactive classes — the shadcn
+     components ship focus-visible rings; these keep parity so focus is
+     visible across both families. */
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible,
+  .editorial-link-card:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 2px;
   }
 
   /* Touch-target minimum — icon buttons (search, menu). 44px is exactly
