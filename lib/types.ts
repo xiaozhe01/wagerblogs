@@ -32,6 +32,7 @@ export type BonusOffer =
       name: string;
       headline: string;
       code: string;
+      benefits?: string[];
       isPrimaryDomain: true;
       primaryDomainLink: PrimaryDomainLinkData;
     }
@@ -39,6 +40,7 @@ export type BonusOffer =
       name: string;
       headline: string;
       code: string;
+      benefits?: string[];
       isPrimaryDomain: false;
       operatorLink: OperatorLinkData;
     };
