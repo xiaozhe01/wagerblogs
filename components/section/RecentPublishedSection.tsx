@@ -5,11 +5,13 @@ import EditorialSection from "./EditorialSection";
 export default function RecentPublishedSection() {
   return (
     <EditorialSection title="Recently published">
-      <div className="flex flex-col">
+      <ul role="list" className="flex flex-col">
         {recentPosts.map((p, i) => (
-          <PostRow key={i} post={p} />
+          <li key={i}>
+            <PostRow post={p} />
+          </li>
         ))}
-      </div>
+      </ul>
     </EditorialSection>
   );
 }

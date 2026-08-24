@@ -2,7 +2,9 @@ import type { ReactNode } from "react";
 import ArrowLink from "@/components/ui/ArrowLink";
 
 type BylineCardProps = {
-  as?: "section" | "div";
+  /** No "section": a byline/pull-quote is not a titled region, and an unnamed
+   * <section> is a landmark with no accessible name. */
+  as?: "div" | "figure";
   wrapperClassName: string;
   profileHref: string;
   children: ReactNode;
@@ -29,9 +31,8 @@ export default function BylineCard({
     </>
   );
 
-  return as === "section" ? (
-    <section className={wrapperClassName}>{inner}</section>
-  ) : (
-    <div className={wrapperClassName}>{inner}</div>
-  );
+  if (as === "figure") {
+    return <figure className={wrapperClassName}>{inner}</figure>;
+  }
+  return <div className={wrapperClassName}>{inner}</div>;
 }

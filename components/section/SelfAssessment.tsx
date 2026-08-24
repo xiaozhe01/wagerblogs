@@ -66,10 +66,10 @@ export default function SelfAssessment() {
   if (result) {
     return (
       <div className="border border-border-divider rounded-md p-4 md:p-5 flex flex-col gap-2 animate-in fade-in duration-300 motion-reduce:animate-none">
-        <div className="meta-label-caps">
+        <p className="meta-label-caps">
           Score {score} of {TOTAL}
-        </div>
-        <div className="heading text-3xl leading-snug">{result.label}</div>
+        </p>
+        <h3 className="heading text-3xl leading-snug">{result.label}</h3>
         <p className="text-md text-text-body leading-relaxed text-pretty">{result.description}</p>
         <p className="text-xs text-text-meta leading-lead text-pretty">
           This is a self-assessment, not a diagnosis. Only a qualified professional can diagnose a
@@ -99,9 +99,9 @@ export default function SelfAssessment() {
         aria-live="polite"
         className="animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none"
       >
-        <div className="text-lg font-semibold text-text-meta mb-1.5">
+        <p className="text-lg font-semibold text-text-meta mb-1.5">
           Question {index + 1} of {TOTAL}
-        </div>
+        </p>
         <fieldset>
           <legend className="heading text-xl leading-heading mb-4 text-pretty">
             {selfAssessmentQuestions[index]}

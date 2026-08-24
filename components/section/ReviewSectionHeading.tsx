@@ -14,7 +14,7 @@ export default function ReviewSectionHeading({ title, badge, note }: ReviewSecti
           </span>
         )}
         <h2 className="heading text-2xl">{title}</h2>
-        {note && <span className="text-xs text-text-subtle font-mono leading-relaxed">{note}</span>}
+        {note && <p className="text-xs text-text-subtle font-mono leading-relaxed">{note}</p>}
       </div>
     );
   }

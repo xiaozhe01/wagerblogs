@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { headingId } from "@/lib/utils";
 
 type EditorialSectionProps = {
   title: string;
@@ -11,9 +12,13 @@ export default function EditorialSection({
   className = "flex flex-col gap-5",
   children,
 }: EditorialSectionProps) {
+  const titleId = headingId("section", title);
+
   return (
-    <section className={className}>
-      <h2 className="heading text-h2 leading-heading">{title}</h2>
+    <section className={className} aria-labelledby={titleId}>
+      <h2 id={titleId} className="heading text-h2 leading-heading">
+        {title}
+      </h2>
       {children}
     </section>
   );
