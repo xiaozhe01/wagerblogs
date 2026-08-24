@@ -73,24 +73,25 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                       <NavIconLabel icon={Icon} label={g.label} />
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <div className="flex flex-col gap-px min-w-40">
+                      <ul role="list" className="flex flex-col gap-px min-w-40">
                         {g.subs.map((s: NavGroup["subs"][number]) => (
-                          <NavigationMenuLink
-                            key={s.label}
-                            href={s.href}
-                            className="group text-sm text-text-primary font-medium"
-                          >
-                            {s.label}
-                            {s.trailingIcon && (
-                              <ChevronRight
-                                strokeWidth={2.5}
-                                className="size-3 shrink-0 transition duration-300 group-hover:translate-x-1"
-                                aria-hidden="true"
-                              />
-                            )}
-                          </NavigationMenuLink>
+                          <li key={s.label}>
+                            <NavigationMenuLink
+                              href={s.href}
+                              className="group w-full text-sm text-text-primary font-medium"
+                            >
+                              {s.label}
+                              {s.trailingIcon && (
+                                <ChevronRight
+                                  strokeWidth={2.5}
+                                  className="size-3 shrink-0 transition duration-300 group-hover:translate-x-1"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </NavigationMenuLink>
+                          </li>
                         ))}
-                      </div>
+                      </ul>
                     </NavigationMenuContent>
                   </>
                 ) : (

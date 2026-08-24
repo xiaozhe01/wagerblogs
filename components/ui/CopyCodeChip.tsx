@@ -35,7 +35,7 @@ export default function CopyCodeChip({ code }: { code: string }) {
       className="flex items-center justify-between gap-2 w-full min-h-11 px-3 py-2 border border-dashed border-border-placeholder rounded-md bg-bg-subtle cursor-pointer transition-colors hover:border-text-primary"
     >
       <span className="text-xs text-text-subtle font-mono">
-        code: <span className="font-bold tracking-wide text-text-primary">{code}</span>
+        code: <code className="font-bold tracking-wide text-text-primary">{code}</code>
       </span>
       <span
         aria-live="polite"

@@ -14,6 +14,7 @@ function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
 function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
   return (
     <ol
+      role="list"
       data-slot="breadcrumb-list"
       className={cn(
         "flex flex-wrap items-center gap-2 text-base text-text-meta font-mono",

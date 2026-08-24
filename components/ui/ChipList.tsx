@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 
 type ChipListItem = {
@@ -12,50 +13,58 @@ type ChipListProps = {
   activeClassName: string;
   inactiveClassName: string;
   as?: "div" | "button" | "Link";
+  /** Wraps each chip in an <li> so the caller's wrapper can be a real <ul>. */
+  inList?: boolean;
 };
 
 // "Pill list, one item highlighted" pattern (category filters, region/doc
 // nav). Each call site decides which item is active and supplies its own
 // active/inactive className, since exact chip styling (rounded-full vs
 // rounded-lg, cursor-pointer, etc.) varies per site. Doesn't own the
-// surrounding wrapper (<nav> vs <div>) — callers keep that.
+// surrounding wrapper (<ul> vs <nav>) — callers keep that. Only wrap in <nav>
+// where the chips are real links (as="Link", e.g. legal/[doc]); the static
+// as="div" chips are not navigation, so <ul role="list"> is the ceiling until
+// filtering is wired.
 export default function ChipList({
   items,
   activeClassName,
   inactiveClassName,
   as = "div",
+  inList = false,
 }: ChipListProps) {
   return (
     <>
       {items.map((item, i) => {
         const className = item.active ? activeClassName : inactiveClassName;
         const key = item.key ?? i;
-        // .btn-primary/.btn-secondary own the hover treatment — no extra
-        // opacity fade stacked on top.
         const chipClassName = `${className} min-h-0 py-1.5 px-3 text-xs`;
+        let chip;
         if (as === "Link") {
-          return (
-            <Link key={key} href={item.href ?? "#"} className={chipClassName}>
+          chip = (
+            <Link href={item.href ?? "#"} className={chipClassName}>
               {item.label}
             </Link>
           );
-        }
-        if (as === "button") {
-          return (
-            <button key={key} type="button" className={chipClassName}>
+        } else if (as === "button") {
+          chip = (
+            <button type="button" className={chipClassName}>
               {item.label}
             </button>
           );
+        } else {
+          // Static display variant — same chrome, no interactivity. Use this
+          // (not as="button") until a real handler exists: a focusable button
+          // that does nothing is worse than a plain chip. cursor-default beats
+          // .btn-*'s cursor:pointer; the hover/active shifts are scoped to
+          // a/button in globals.css so a static chip never signals clickability.
+          chip = <span className={`${chipClassName} cursor-default`}>{item.label}</span>;
         }
-        // Static display variant — same chrome, no interactivity. Use this
-        // (not as="button") until a real handler exists: a focusable button
-        // that does nothing is worse than a plain chip. cursor-default beats
-        // .btn-*'s cursor:pointer; the hover/active shifts are scoped to
-        // a/button in globals.css so a div never signals clickability.
-        return (
-          <div key={key} className={`${chipClassName} cursor-default`}>
-            {item.label}
-          </div>
+        return inList ? (
+          <li key={key} className="flex">
+            {chip}
+          </li>
+        ) : (
+          <Fragment key={key}>{chip}</Fragment>
         );
       })}
     </>
