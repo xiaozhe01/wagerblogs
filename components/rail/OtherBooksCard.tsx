@@ -21,7 +21,7 @@ export default function OtherBooksCard({ books }: OtherBooksCardProps) {
           </>
         ),
       }))}
-      itemClassName="flex justify-between items-center min-h-11 lg:min-h-9.5 gap-2.5 text-sm text-text-body py-1.5 border-b border-border-hairline-alt last:border-b-0 no-underline"
+      itemClassName="flex justify-between items-center min-h-11 lg:min-h-9.5 gap-2.5 text-sm text-text-body py-1.5 border-b border-border-hairline-alt [li:last-child_&]:border-b-0 no-underline"
     />
   );
 }

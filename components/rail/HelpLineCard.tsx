@@ -4,12 +4,14 @@ import { helplineText } from "@/lib/mock-data";
 
 export default function HelpLineCard() {
   return (
-    <div className="card-dark">
-      <div className="font-bold text-sm mb-2.5">Play Responsibly</div>
-      <div className="text-xs text-text-on-dark-muted leading-loose">{helplineText}</div>
+    <section className="card-dark" aria-labelledby="rail-play-responsibly">
+      <h2 id="rail-play-responsibly" className="font-bold text-sm mb-2.5">
+        Play Responsibly
+      </h2>
+      <p className="text-xs text-text-on-dark-muted leading-loose">{helplineText}</p>
       <ArrowLink href="/responsible-gambling/help-directory" className={railCtaOnDarkClassName}>
         Find help near you
       </ArrowLink>
-    </div>
+    </section>
   );
 }

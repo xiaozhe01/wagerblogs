@@ -1,7 +1,12 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { headingId } from "@/lib/utils";
 
-const rowHoverClassName = "-mx-3 px-3 transition-colors hover:bg-bg-subtle";
+// Every anchor is the only child of its <li>, so `last:` would match all of them.
+// Row styling that should apply to the final row only must be scoped through the
+// <li> instead — call sites use `[li:last-child_&]:border-b-0` for the same reason.
+const rowHoverClassName =
+  "-mx-3 px-3 transition-colors hover:bg-bg-subtle [li:last-child>&]:hover:rounded-b-md";
 
 type AnchorListItem = {
   href: string;
@@ -31,27 +36,32 @@ export default function AnchorList({
     const className = typeof itemClassName === "function" ? itemClassName(item, i) : itemClassName;
     const key = item.key ?? i;
     return (
-      <Link key={key} href={item.href} className={`${className} ${rowHoverClassName}`}>
-        {item.label}
-      </Link>
+      <li key={key}>
+        <Link href={item.href} className={`${className} ${rowHoverClassName}`}>
+          {item.label}
+        </Link>
+      </li>
     );
   });
 
-  const list =
-    wrapperClassName !== undefined ? (
-      <div className={wrapperClassName}>{content}</div>
-    ) : (
-      <>{content}</>
-    );
+  const list = (
+    <ul role="list" className={wrapperClassName}>
+      {content}
+    </ul>
+  );
 
   if (title === undefined) {
     return list;
   }
 
+  const titleId = headingId("rail", title);
+
   return (
-    <div className={`${cardClassName}`}>
-      <div className="font-bold text-sm text-text-primary mb-2.5">{title}</div>
+    <section className={`${cardClassName}`} aria-labelledby={titleId}>
+      <h2 id={titleId} className="font-bold text-sm text-text-primary mb-2.5">
+        {title}
+      </h2>
       {list}
-    </div>
+    </section>
   );
 }

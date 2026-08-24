@@ -6,20 +6,24 @@ type AtAGlanceCardProps = {
 
 export default function AtAGlanceCard({ items }: AtAGlanceCardProps) {
   return (
-    <div className="card flex flex-col gap-2">
-      <div className="font-bold text-sm text-text-primary">At a glance</div>
-      {items.map((a) => (
-        <span
-          key={a.label}
-          className="flex justify-between gap-2.5 text-xs font-semibold text-text-muted py-1.5 text-center border-b border-border-hairline-alt last:border-b-0"
-        >
-          <span>{a.label}</span>
-          <span className="text-text-strong-secondary font-semibold text-right">{a.value}</span>
-        </span>
-      ))}
-      <div className="text-xs font-semibold text-text-subtle leading-relaxed py-1">
+    <section className="card flex flex-col gap-2" aria-labelledby="rail-at-a-glance">
+      <h2 id="rail-at-a-glance" className="font-bold text-sm text-text-primary">
+        At a glance
+      </h2>
+      <dl className="flex flex-col gap-2">
+        {items.map((a) => (
+          <div
+            key={a.label}
+            className="flex justify-between gap-2.5 text-xs font-semibold text-text-muted py-1.5 text-center border-b border-border-hairline-alt last:border-b-0"
+          >
+            <dt>{a.label}</dt>
+            <dd className="text-text-strong-secondary font-semibold text-right">{a.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="text-xs font-semibold text-text-subtle leading-relaxed py-1">
         21+. T&amp;Cs apply. [terms placeholder]
-      </div>
-    </div>
+      </p>
+    </section>
   );
 }
