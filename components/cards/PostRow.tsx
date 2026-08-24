@@ -15,23 +15,26 @@ const thumbnailClassName =
 export default function PostRow({ post, as = "Link" }: PostRowProps) {
   const content = (
     <>
-      <div className={thumbnailClassName}>[img]</div>
+      <div aria-hidden="true" className={thumbnailClassName}>
+        [img]
+      </div>
       <div className="flex-1 min-w-0">
-        <div className="meta-label-caps mb-1.5">{post.kicker}</div>
-        <div className={titleClassName}>{post.title}</div>
-        <div className="text-xs font-medium text-text-subtle font-mono">{post.meta}</div>
+        <p className="meta-label-caps mb-1.5">{post.kicker}</p>
+        <h3 className={titleClassName}>{post.title}</h3>
+        {/* TODO(cms): split `meta` into a real date + readTime so the date can render as <time dateTime>. */}
+        <p className="text-xs font-medium text-text-subtle font-mono">{post.meta}</p>
       </div>
     </>
   );
 
   if (as === "div") {
-    return <div className={wrapperClassName}>{content}</div>;
+    return <article className={wrapperClassName}>{content}</article>;
   }
 
   return (
     <Link
       href={post.href ?? "#"}
-      className={`${wrapperClassName} -mx-3 px-3 last:border-b-0 transition-colors hover:bg-bg-subtle`}
+      className={`${wrapperClassName} -mx-3 px-3 [li:last-child_&]:border-b-0 transition-colors hover:bg-bg-subtle`}
     >
       {content}
     </Link>

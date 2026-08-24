@@ -15,18 +15,21 @@ export default function TeaserCardGrid({
   gridClassName = defaultGridClassName,
 }: TeaserCardGridProps) {
   return (
-    <div className={gridClassName}>
+    <ul role="list" className={gridClassName}>
       {items.map((item) => (
-        <Link
-          key={item.title}
-          href={item.href ?? "#"}
-          className="card block transition-colors hover:bg-bg-subtle"
-        >
-          <div className="meta-label-caps mb-1.5">{item.kicker}</div>
-          <div className={titleClassName}>{item.title}</div>
-          <div className="text-xs text-text-meta leading-relaxed">{item.meta}</div>
-        </Link>
+        <li key={item.title} className="flex">
+          <article className="flex grow">
+            <Link
+              href={item.href ?? "#"}
+              className="card block grow transition-colors hover:bg-bg-subtle"
+            >
+              <p className="meta-label-caps mb-1.5">{item.kicker}</p>
+              <h3 className={titleClassName}>{item.title}</h3>
+              <p className="text-xs text-text-meta leading-relaxed">{item.meta}</p>
+            </Link>
+          </article>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
