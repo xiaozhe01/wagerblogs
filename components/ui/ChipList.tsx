@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import Link from "next/link";
+import ChipLink from "@/components/ui/ChipLink";
 
 type ChipListItem = {
   label: string;
@@ -13,8 +14,9 @@ type ChipListProps = {
   activeClassName: string;
   inactiveClassName: string;
   as?: "div" | "button" | "Link";
-  /** Wraps each chip in an <li> so the caller's wrapper can be a real <ul>. */
   inList?: boolean;
+  filter?: boolean;
+  scroll?: boolean;
 };
 
 // "Pill list, one item highlighted" pattern (category filters, region/doc
@@ -31,6 +33,7 @@ export default function ChipList({
   inactiveClassName,
   as = "div",
   inList = false,
+  filter = false,
 }: ChipListProps) {
   return (
     <>
@@ -40,7 +43,11 @@ export default function ChipList({
         const chipClassName = `${className} min-h-0 py-1.5 px-3 text-xs`;
         let chip;
         if (as === "Link") {
-          chip = (
+          chip = filter ? (
+            <ChipLink href={item.href ?? "#"} className={chipClassName}>
+              {item.label}
+            </ChipLink>
+          ) : (
             <Link href={item.href ?? "#"} className={chipClassName}>
               {item.label}
             </Link>

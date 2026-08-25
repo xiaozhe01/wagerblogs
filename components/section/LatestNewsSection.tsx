@@ -8,8 +8,8 @@ import { chipHref, resolveChip } from "@/lib/utils";
 
 export const NEWS_PARAM = "news";
 const ALL_CATEGORY = "All";
-/** Matches the id EditorialSection derives from the title, so choosing a category
- * returns the reader to the feed instead of the top of the page. */
+/** The id EditorialSection derives from the title, so choosing a category lands
+ * on the feed rather than the top of the page. */
 const NEWS_ANCHOR = "section-latest-news";
 
 export default function LatestNewsSection({
@@ -32,7 +32,6 @@ export default function LatestNewsSection({
             param: NEWS_PARAM,
             value: name,
             allValue: ALL_CATEGORY,
-            anchor: NEWS_ANCHOR,
           }),
           active: name === category,
         }))}

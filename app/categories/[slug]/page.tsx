@@ -98,6 +98,7 @@ export default async function CategoryPage({
           <ChipList
             as="Link"
             inList
+            filter
             items={categoryFilters.map((f) => ({
               label: f,
               key: f,
@@ -106,7 +107,6 @@ export default async function CategoryPage({
                 param: TYPE_PARAM,
                 value: f,
                 allValue: ALL_TYPES,
-                anchor: FEED_ANCHOR,
               }),
               active: f === activeType,
             }))}

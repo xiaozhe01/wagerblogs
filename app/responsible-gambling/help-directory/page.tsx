@@ -21,7 +21,6 @@ const regionHref = (region: string) =>
     param: REGION_PARAM,
     value: region,
     allValue: ALL_REGIONS,
-    anchor: DIRECTORY_ANCHOR,
   });
 
 export default async function RGDirectoryPage({
@@ -99,6 +98,7 @@ export default async function RGDirectoryPage({
           <ChipList
             as="Link"
             inList
+            filter
             items={regions.map((r) => ({
               label: r,
               key: r,

@@ -11,6 +11,7 @@ export default function LatestNewsCategory({ items }: LatestNewsCategoryProps) {
         <ChipList
           as="Link"
           inList
+          filter
           items={items}
           activeClassName="btn-primary"
           inactiveClassName="btn-secondary"
