@@ -9,7 +9,7 @@ import FeaturedBonusesCard from "@/components/section/FeaturedBonusesCard";
 import ComparisonCard from "@/components/section/ComparisonCard";
 import MarketCard from "@/components/section/MarketCard";
 import ExploreSection from "@/components/section/ExploreSection";
-import LatestNewsSection from "@/components/section/LatestNewsSection";
+import LatestNewsSection, { NEWS_PARAM } from "@/components/section/LatestNewsSection";
 import BlogSection from "@/components/section/BlogSection";
 import Divider from "@/components/ui/Divider";
 import BettingToolboxSection from "@/components/section/BettingToolboxSection";
@@ -27,14 +27,23 @@ export const metadata: Metadata = {
 // rules this scaffold intentionally leaves out.
 // ---------------------------------------------------------------------------
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+
   return (
     <PageShell activeNavId="home" rail={<HomeRail />}>
       {/* Register: Editorial · Tier 1 — no outbound operator links */}
       <TopHeroSection />
 
       {/* Register: Comparison · Tier 2/3 — CTA-bearing, one primary-domain entry per list */}
-      <div className="flex flex-col gap-5 bg-bg-subtle border border-border-divider rounded-md p-4">
+      <section
+        aria-label="Operator comparisons"
+        className="flex flex-col gap-5 bg-bg-subtle border border-border-divider rounded-md p-4"
+      >
         <RankedListSection
           title="Top-Rated Sportsbooks — July 2026"
           operators={mockRankedSportsbooks}
@@ -56,18 +65,18 @@ export default function Home() {
         {/* TODO(cms): SourcedStat[] — sample fixture from Component-Reference-Filled-States;
             each figure needs a real named source + reporting period, or the strip collapses. */}
         <MarketCard />
-      </div>
+      </section>
 
       {/* Register: Editorial · Tier 1 — internal links only */}
-      <section className="flex flex-col gap-5">
+      <div className="flex flex-col gap-5">
         <ExploreSection />
         <Divider />
-        <LatestNewsSection />
+        <LatestNewsSection categoryParam={params[NEWS_PARAM]} />
         <Divider />
         <BlogSection />
         <Divider />
         <BettingToolboxSection />
-      </section>
+      </div>
 
       {/* TODO(cms): "As Featured In" media placements — omitted entirely; no logo
           placeholders and no "as seen in" strip until a real placement exists. */}

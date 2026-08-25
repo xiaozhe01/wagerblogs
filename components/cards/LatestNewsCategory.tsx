@@ -1,16 +1,21 @@
-import { newsCategories } from "@/lib/site-data";
 import ChipList from "@/components/ui/ChipList";
 
-export default function LatestNewsCategory() {
+type LatestNewsCategoryProps = {
+  items: { label: string; key: string; href: string; active: boolean }[];
+};
+
+export default function LatestNewsCategory({ items }: LatestNewsCategoryProps) {
   return (
-    <ul role="list" className="flex gap-2 flex-wrap -mt-2">
-      <ChipList
-        as="div"
-        inList
-        items={newsCategories.map((category, i) => ({ label: category, active: i === 0 }))}
-        activeClassName="btn-primary"
-        inactiveClassName="btn-secondary"
-      />
-    </ul>
+    <nav aria-label="News categories" className="-mt-2">
+      <ul role="list" className="flex gap-2 flex-wrap">
+        <ChipList
+          as="Link"
+          inList
+          items={items}
+          activeClassName="btn-primary"
+          inactiveClassName="btn-secondary"
+        />
+      </ul>
+    </nav>
   );
 }
