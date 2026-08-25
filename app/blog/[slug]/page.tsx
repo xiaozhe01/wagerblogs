@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 const tocItemClassName =
-  "flex items-center min-h-11 lg:min-h-9.5 text-sm text-text-body no-underline border-b border-border-hairline-alt last:border-b-0 leading-snug";
+  "flex items-center min-h-11 lg:min-h-9.5 text-sm text-text-body no-underline border-b border-border-hairline-alt [li:last-child_&]:border-b-0 leading-snug";
 
 export default function BlogPostPage() {
   const rail = (
@@ -40,8 +40,12 @@ export default function BlogPostPage() {
       <AnchorList
         title="More in Guides"
         cardClassName="card pb-0"
-        items={blogMoreInGuides.map((m) => ({ href: "/blog", label: m, key: m }))}
-        itemClassName="block text-sm text-text-body py-3 border-b border-border-hairline-alt last:border-b-0 leading-snug no-underline"
+        items={blogMoreInGuides.map((m) => ({
+          href: "/blog",
+          label: m,
+          key: m,
+        }))}
+        itemClassName="block text-sm text-text-body py-3 border-b border-border-hairline-alt [li:last-child_&]:border-b-0 leading-snug no-underline"
       />
     </>
   );
@@ -49,7 +53,7 @@ export default function BlogPostPage() {
   return (
     <PageShell activeNavId="blog" rail={rail}>
       {/* Register: Editorial · Tier 1 — pure authority, no outbound operator links */}
-      <div className="w-full max-w-prose mx-auto items-center wide:max-w-none wide:mx-0 flex flex-col gap-5">
+      <article className="w-full max-w-prose mx-auto items-center wide:max-w-none wide:mx-0 flex flex-col gap-5">
         <Breadcrumbs
           items={[
             { label: "Blog", href: "/blog" },
@@ -59,7 +63,7 @@ export default function BlogPostPage() {
         />
 
         <header className="flex flex-col gap-3 max-w-prose items-center">
-          <div className="meta-label-caps">{mockBlogPost.kicker}</div>
+          <p className="meta-label-caps">{mockBlogPost.kicker}</p>
           <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
             {mockBlogPost.title}
           </h1>
@@ -77,11 +81,15 @@ export default function BlogPostPage() {
           readTime={mockBlogPost.readTime}
         />
 
-        <div className="w-full max-w-prose">
-          <div className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-subtle font-mono">
+        <figure className="w-full max-w-prose">
+          {/* TODO(cms): real <Image> + a <figcaption> credit line; both required before publish. */}
+          <div
+            aria-hidden="true"
+            className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-subtle font-mono"
+          >
             [hero image — 16:9, credit line required]
           </div>
-        </div>
+        </figure>
 
         <div className="flex flex-col max-w-prose">
           <p className="text-xl leading-copy text-text-strong-secondary mb-5 text-pretty">
@@ -94,8 +102,10 @@ export default function BlogPostPage() {
             placement for in-article jump links (content first, then navigation
             at the point where a reader decides to jump). Desktop uses the rail
             TOC instead. */}
-          <nav aria-label="On this page" className="card wide:hidden mb-5">
-            <div className="font-bold text-sm text-text-primary mb-2.5">On this page</div>
+          <nav aria-labelledby="blog-toc-heading" className="card wide:hidden mb-5">
+            <h2 id="blog-toc-heading" className="font-bold text-sm text-text-primary mb-2.5">
+              On this page
+            </h2>
             <AnchorList
               items={blogToc}
               itemClassName={tocItemClassName}
@@ -130,7 +140,10 @@ export default function BlogPostPage() {
           </p>
 
           <figure className="mt-2 mb-5">
-            <div className="h-40 md:h-65 rounded-md placeholder-asset text-xs text-text-subtle font-mono">
+            <div
+              aria-hidden="true"
+              className="h-40 md:h-65 rounded-md placeholder-asset text-xs text-text-subtle font-mono"
+            >
               [diagram / chart placeholder]
             </div>
             <figcaption className="text-xs text-text-subtle font-mono leading-loose mt-2">
@@ -144,7 +157,7 @@ export default function BlogPostPage() {
           <p className="text-xl leading-copy text-text-strong-secondary mb-5 text-pretty">
             [Placeholder body paragraph introducing the list below.]
           </p>
-          <ul className="mb-5 pl-5 flex flex-col gap-2 list-disc">
+          <ul role="list" className="mb-5 pl-5 flex flex-col gap-2 list-disc">
             {blogBodyList.map((li) => (
               <li key={li} className="text-xl leading-lead text-text-strong-secondary">
                 {li}
@@ -173,12 +186,20 @@ export default function BlogPostPage() {
           </p>
         </div>
 
-        <section className="max-w-prose border-l-2 border-text-primary pl-4 md:pl-5">
-          <div className="meta-label-caps mb-1.5">Key takeaways</div>
-          <ol className="flex flex-col gap-2.5">
+        <section
+          className="max-w-prose border-l-2 border-text-primary pl-4 md:pl-5"
+          aria-labelledby="key-takeaways"
+        >
+          <h2 id="key-takeaways" className="meta-label-caps mb-1.5">
+            Key takeaways
+          </h2>
+          <ol role="list" className="flex flex-col gap-2.5">
             {blogTakeaways.map((k, i) => (
               <li key={k} className="flex gap-2.5 items-start">
-                <span className="w-legacy-6 h-legacy-6 shrink-0 rounded-full bg-bg-accent text-text-on-accent flex items-center justify-center text-2xs font-bold">
+                <span
+                  aria-hidden="true"
+                  className="w-legacy-6 h-legacy-6 shrink-0 rounded-full bg-bg-accent text-text-on-accent flex items-center justify-center text-2xs font-bold"
+                >
                   {i + 1}
                 </span>
                 <span className="text-lg leading-relaxed text-text-strong-secondary">{k}</span>
@@ -189,21 +210,22 @@ export default function BlogPostPage() {
 
         {/* TODO(cms): Sources[] — every claim with a number needs a citation (publisher,
           title, url, retrievedAt) or it is cut from the body copy. Omitted here. */}
-      </div>
+      </article>
 
       <section className="flex flex-col gap-3">
         <h2 className="heading text-h2 leading-heading">Related reading</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
+        <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
           {blogRelated.map((r) => (
-            <BlogPostCard
-              key={r.title}
-              href={r.href ?? "#"}
-              kicker={r.kicker}
-              title={r.title}
-              byline={r.meta}
-            />
+            <li key={r.title}>
+              <BlogPostCard
+                href={r.href ?? "#"}
+                kicker={r.kicker}
+                title={r.title}
+                byline={r.meta}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
     </PageShell>
   );

@@ -46,7 +46,10 @@ export default function ReviewsIndexPage() {
         </p>
       </header>
 
-      <div className="flex flex-col gap-5 bg-bg-subtle border border-border-divider rounded-md p-4">
+      <section
+        aria-label="Operator rankings"
+        className="flex flex-col gap-5 bg-bg-subtle border border-border-divider rounded-md p-4"
+      >
         <RankedListSection
           title="Top-Rated Sportsbooks — July 2026"
           operators={mockRankedSportsbooks}
@@ -55,7 +58,7 @@ export default function ReviewsIndexPage() {
           title="Top-Rated Online Casinos — July 2026"
           operators={mockRankedCasinos}
         />
-      </div>
+      </section>
 
       <ComparisonCard />
 
