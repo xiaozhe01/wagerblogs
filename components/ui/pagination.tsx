@@ -1,8 +1,10 @@
 import * as React from "react";
 import Link from "next/link";
 
+import type { VariantProps } from "class-variance-authority";
+
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
@@ -34,9 +36,14 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 
 type PaginationLinkProps = {
   isActive?: boolean;
-} & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">;
+  size?: VariantProps<typeof buttonVariants>["size"];
+} & React.ComponentProps<"a">;
 
+// Composes buttonVariants onto the Link directly rather than rendering a
+// <Button render={<Link/>}>: both elements set data-slot, and base-ui resolved
+// that merge differently on the server than on the client, which hydration
+// flagged. It also keeps these as real links — base-ui was adding role="button"
+// and tabIndex to an <a href>, announcing pagination as buttons.
 function PaginationLink({
   className,
   isActive,
@@ -45,20 +52,13 @@ function PaginationLink({
   ...props
 }: PaginationLinkProps) {
   return (
-    <Button
-      variant={isActive ? "outline" : "ghost"}
-      size={size}
-      className={cn(className)}
-      nativeButton={false}
-      render={
-        <Link
-          href={href}
-          aria-current={isActive ? "page" : undefined}
-          data-slot="pagination-link"
-          data-active={isActive}
-          {...props}
-        />
-      }
+    <Link
+      href={href}
+      aria-current={isActive ? "page" : undefined}
+      data-slot="pagination-link"
+      data-active={isActive}
+      className={cn(buttonVariants({ variant: isActive ? "outline" : "ghost", size }), className)}
+      {...props}
     />
   );
 }
