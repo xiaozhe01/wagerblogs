@@ -10,7 +10,7 @@ export default function OtherBooksCard({ books }: OtherBooksCardProps) {
   return (
     <AnchorList
       title="Other books compared"
-      cardClassName="card pb-2"
+      cardClassName="card pb-0"
       items={books.map((o) => ({
         href: "/reviews",
         key: o.name,
