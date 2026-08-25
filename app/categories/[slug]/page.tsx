@@ -23,17 +23,39 @@ import {
   categoryCompareLinks,
 } from "@/lib/mock-data";
 import { categories, categoryFilters } from "@/lib/site-data";
+import { chipHref, chipMatches, resolveChip } from "@/lib/utils";
 
 // TODO(cms): replace with generateStaticParams() from the CMS taxonomy; sampleCategoryName
 // and all counts/lists below are static placeholders for one sample category.
-export const metadata: Metadata = { title: `${sampleCategoryName} — WagerBlogs` };
+export const metadata: Metadata = {
+  title: `${sampleCategoryName} — WagerBlogs`,
+};
 
-export default function CategoryPage() {
+const TYPE_PARAM = "type";
+const ALL_TYPES = "All";
+const FEED_ANCHOR = "latest-in-category";
+
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const { slug } = await params;
+  const query = await searchParams;
+  const activeType = resolveChip(categoryFilters, query[TYPE_PARAM], ALL_TYPES);
+  const visibleArticles =
+    activeType === ALL_TYPES
+      ? categoryArticles
+      : categoryArticles.filter((a) => chipMatches(a.kicker, activeType));
   const rail = (
     <>
       <SearchInput placeholder={`Search within ${sampleCategoryName}...`} />
-      <div className="card pb-0">
-        <div className="font-bold text-sm text-text-primary mb-2.5">All categories</div>
+      <section className="card pb-0" aria-labelledby="rail-all-categories">
+        <h2 id="rail-all-categories" className="font-bold text-sm text-text-primary mb-2.5">
+          All categories
+        </h2>
         <AnchorList
           items={categories.map((c) => ({
             href: "/categories/sample",
@@ -41,10 +63,10 @@ export default function CategoryPage() {
             key: c.name,
           }))}
           itemClassName={(item) =>
-            `flex items-center min-h-11 lg:min-h-9.5 text-sm no-underline border-b border-border-hairline-alt last:border-b-0 leading-snug ${typeof item.label === "string" && item.label.toLowerCase() === sampleCategoryName.toLowerCase() ? "text-text-primary font-bold" : "text-text-body"}`
+            `flex items-center min-h-11 lg:min-h-9.5 text-sm no-underline border-b border-border-hairline-alt [li:last-child_&]:border-b-0 leading-snug ${typeof item.label === "string" && item.label.toLowerCase() === sampleCategoryName.toLowerCase() ? "text-text-primary font-bold" : "text-text-body"}`
           }
         />
-      </div>
+      </section>
     </>
   );
 
@@ -64,48 +86,65 @@ export default function CategoryPage() {
           our coverage is organised. Editorial register: this page navigates and explains; it never
           sells.]
         </p>
-        <div className="flex gap-4 flex-wrap text-xs text-text-subtle font-mono">
-          <div>[n] guides</div>
-          <div>[n] reviews</div>
-          <div>Updated [Jul 24, 2026]</div>
-        </div>
+        <p className="flex gap-4 flex-wrap text-xs text-text-subtle font-mono">
+          <span>[n] guides</span>
+          <span>[n] reviews</span>
+          <span>Updated [Jul 24, 2026]</span>
+        </p>
       </header>
 
-      {/* Browse by States */}
-      <div className="flex gap-2 flex-wrap">
-        <ChipList
-          as="div"
-          items={categoryFilters.map((f, i) => ({ label: f, active: i === 0 }))}
-          activeClassName="btn-primary"
-          inactiveClassName="btn-secondary"
-        />
-      </div>
+      <nav aria-label="Filter by article type">
+        <ul role="list" className="flex gap-2 flex-wrap">
+          <ChipList
+            as="Link"
+            inList
+            items={categoryFilters.map((f) => ({
+              label: f,
+              key: f,
+              href: chipHref({
+                basePath: `/categories/${slug}`,
+                param: TYPE_PARAM,
+                value: f,
+                allValue: ALL_TYPES,
+                anchor: FEED_ANCHOR,
+              }),
+              active: f === activeType,
+            }))}
+            activeClassName="btn-primary"
+            inactiveClassName="btn-secondary"
+          />
+        </ul>
+      </nav>
 
-      <section>
+      <article aria-labelledby="editors-lead">
         <Link
           href="/blog/sample-post"
           className="flex flex-col md:flex-row gap-3.5 md:gap-4 items-stretch md:items-center no-underline border-t border-b border-border-divider py-4 md:py-5"
         >
-          <div className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle font-mono text-center">
+          <div
+            aria-hidden="true"
+            className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle font-mono text-center"
+          >
             [lead image — credit line required]
           </div>
           <div className="min-w-0 flex flex-col gap-2">
-            <div className="meta-label-caps">Editor&apos;s lead</div>
-            <div className="heading text-4xl leading-heading text-pretty">
+            <p className="meta-label-caps">Editor&apos;s lead</p>
+            <h2 id="editors-lead" className="heading text-4xl leading-heading text-pretty">
               [Placeholder] The state of esports betting going into the autumn season
-            </div>
-            <div className="text-lg leading-copy text-text-meta text-pretty">
+            </h2>
+            <p className="text-lg leading-copy text-text-meta text-pretty">
               [Placeholder excerpt — two lines summarising the piece, written to work as a
               standalone summary in search and social previews.]
-            </div>
-            <div className="text-xs font-medium text-text-subtle font-mono">
-              07/22/2026 · 11 min · byline required before publish
-            </div>
+            </p>
+            <p className="text-xs font-medium text-text-subtle font-mono">
+              <time dateTime="2026-07-22">07/22/2026</time> · 11 min · byline required before
+              publish
+            </p>
           </div>
         </Link>
-      </section>
+      </article>
 
-      <section>
+      <section id={FEED_ANCHOR}>
         <div className="flex items-baseline justify-between gap-4 flex-wrap mb-3">
           <h2 className="heading text-h2 leading-heading">Latest in {sampleCategoryName}</h2>
           <ArrowLink
@@ -115,11 +154,19 @@ export default function CategoryPage() {
             All coverage
           </ArrowLink>
         </div>
-        <div className="flex flex-col">
-          {categoryArticles.map((a) => (
-            <PostRow key={a.title} post={a} />
-          ))}
-        </div>
+        {visibleArticles.length === 0 ? (
+          <p className="text-sm text-text-meta leading-relaxed">
+            No {activeType.toLowerCase()} filed under {sampleCategoryName} yet.
+          </p>
+        ) : (
+          <ul role="list" className="flex flex-col">
+            {visibleArticles.map((a) => (
+              <li key={a.title}>
+                <PostRow post={a} />
+              </li>
+            ))}
+          </ul>
+        )}
         <Pagination className="justify-start mx-0 mt-5">
           <PaginationContent>
             <PaginationItem>
@@ -147,14 +194,17 @@ export default function CategoryPage() {
         <h2 className="heading text-h2 leading-heading mb-3">
           Browse {sampleCategoryName} by title
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3">
+        <ul
+          role="list"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3"
+        >
           {categorySubCategories.map((s) => (
-            <div key={s.name} className="editorial-link-card">
-              <div className="font-semibold text-md text-text-primary mb-1.5">{s.name}</div>
-              <div className="text-xs text-text-meta leading-relaxed">{s.count}</div>
-            </div>
+            <li key={s.name} className="editorial-link-card">
+              <h3 className="font-semibold text-md text-text-primary mb-1.5">{s.name}</h3>
+              <p className="text-xs text-text-meta leading-relaxed">{s.count}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       <section>
