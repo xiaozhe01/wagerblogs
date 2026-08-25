@@ -66,6 +66,8 @@ export type PostTeaser = {
 export type NewsItem = {
   title: string;
   meta: string;
+  /** Must match one of lib/site-data's newsCategories (excluding "All"). */
+  category: string;
 };
 
 /** "At a glance" rail-list shape, shared by both reviews templates. */

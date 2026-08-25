@@ -904,16 +904,23 @@ export const newsFeed: NewsItem[] = [
   {
     title: "[Placeholder headline — Football]",
     meta: "Football · 07/20/2026 · by [author] · 5 min",
+    category: "Football",
   },
   {
     title: "[Placeholder headline — Basketball]",
     meta: "Basketball · 07/19/2026 · by [author] · 3 min",
+    category: "Basketball",
   },
   {
     title: "[Placeholder headline — Soccer interview]",
     meta: "Soccer · 07/18/2026 · by [author] · 4 min",
+    category: "Soccer",
   },
-  { title: "[Placeholder headline — Esports]", meta: "Esports · 07/17/2026 · by [author] · 3 min" },
+  {
+    title: "[Placeholder headline — Esports]",
+    meta: "Esports · 07/17/2026 · by [author] · 3 min",
+    category: "Esports",
+  },
 ];
 
 export const blogPosts = [
