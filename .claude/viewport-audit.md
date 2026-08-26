@@ -3,11 +3,13 @@
 Living document. Re-scanned on request; see "Change log" at the bottom for
 what's added/resolved on each pass.
 
-**Status: all 7 findings from the initial pass resolved, plus 3 more found
-and fixed during the fix pass itself.** See the 2026-08-17 change-log
-entry for the full account. A 2026-08-18 strict re-sweep reconfirmed zero
-regressions on all 10 and found 2 new open items (VP-8, VP-9 — flagged
-not fixed per direct instruction) — see those entries below.
+**Status: all findings resolved — VP-1–7 (2026-08-17) and VP-8/VP-9
+(2026-08-18).** A 2026-08-18 strict re-sweep reconfirmed zero regressions,
+found VP-8/VP-9 (fixed later the same day), and two follow-up sweeps after
+the Group K implementation (see the sister visual-consistency doc) came
+back identical to the known-safe baseline. Nine additional squeeze-zone
+grids that cram without overflowing (so overflow sweeps can't catch them)
+are tracked as VC-51.
 
 **Method:** automated Playwright sweep of every route × five breakpoints
 (320px, 425px, 768px, 1024px, 1440px) checking for (a) non-200/404 HTTP
@@ -17,6 +19,7 @@ combinations were then screenshotted and read to confirm real visual
 breakage vs. false positives.
 
 **Confirmed clean, not re-checking unless something regresses:**
+
 - `/this-route-does-not-exist` returns genuine HTTP 404 (not a soft-404) at
   all five breakpoints — CLAUDE.md rule #6 compliance verified.
 - No route has page-level (`document.body`) horizontal scroll at any tested
@@ -49,15 +52,15 @@ breakage vs. false positives.
 - [x] **VP-6 — Homepage 1440px: `RankedList`'s dense row shows a 3px overflow.** Same — component was rebuilt since this finding, confirmed clean.
 - [x] **VP-7 — `responsible-gambling/help-directory` 1024px: one entry row overflows.** Root cause fully diagnosed (not just patched): the grid item lacked `min-w-0` (CSS Grid items default to `min-width: auto`, not 0), AND separately the 2-column grid jumped in at `md:` (768px) and never backed off when the sidebar appears at `lg:` (1024px) — the same root cause class as VP-1/VP-3, just not recognized as such in the original pass. Fixed both: added `min-w-0` to the grid item, and `lg:grid-cols-1 wide:grid-cols-2!` to defer the second column past the squeeze zone. Verified clean at 768/1024/1370/1440px after the fix.
 
-## Low severity — cosmetic, found 2026-08-18 (open, not fixed)
+## Low severity — cosmetic, found 2026-08-18, RESOLVED 2026-08-18
 
-- [ ] **VP-8 — `RankedList` operator-name column tight-wraps at 1024px on `/` and `/reviews`.**
+- [x] **VP-8 — `RankedList` operator-name column tight-wraps at 1024px on `/` and `/reviews`.** **RESOLVED** — pre-fix measurement showed it was worse than the original ~7px-overflow estimate: the text column was squeezed to **80px** at 1024px (row 332px wide, names on 3–4 lines), so the CTA-width-only variant of the suggested fix (which would recover ~20–30px) was rejected in favor of the full VP-1/VP-7 pattern: row reverts to the stacked mobile layout at `lg:` (`lg:flex-col lg:items-stretch`) and re-enables the dense row at `wide:` (`wide:flex-row! wide:items-center!`); the CTA container mirrors it (`lg:flex-row lg:w-auto wide:flex-col! wide:w-28!`). The buttons keep `md:w-full` (revised by hand during review), so in the 1024–1369px stacked zone they stretch across the row — half/half on the primary row, full-width on competitor rows. Verified via Playwright at 768/1024/1370/1440px on both routes: 1024px now stacks with a 284px text column and names on 1–2 lines, 1370px+ restores the one-line dense row (416px column), zero row overflow and zero page horizontal scroll at every width, plus screenshot confirmation at 1024px.
   - **Location:** `components/RankedList.tsx:17` — `<div className="min-w-0 flex-1 flex flex-col gap-2">` (the text column).
   - **What's broken:** at 1024px the sidebar squeezes the content column (same root-cause family as VP-1/VP-3/VP-7 — a component that only defers layout changes to the `wide:` 1370px breakpoint, not `lg:`), so long operator names (e.g. "Northline Sports (placeholder competitor)") wrap into 3-4 short lines instead of the intended 1-2. Measured ~7px `scrollWidth` overflow on ~6 rows per affected page. Confirmed via cropped screenshots, not just the heuristic: text wraps but is NOT clipped, NOT overlapping, and rank/logo/CTA all stay correctly positioned — readable, just visually cramped. Doesn't meet the bar for real visual breakage the way VP-1/VP-3/VP-7 did, hence low severity.
   - **Why it's new:** the 2026-08-17 fix pass's own closing note said "only the known-safe 16px `-mx-3` pattern remains anywhere" — `RankedList` has evidently been rebuilt/adjusted again since that final sweep (it went through several rebuild rounds that session; see `.claude/visual-consistency-audit.md`'s change log).
   - **Suggested fix:** same pattern as VP-1/VP-7 — defer the row's CTA-column width or overall layout to `wide:` instead of applying part of it at `md:`/default, so the text column doesn't get squeezed to its narrowest point in the 768-1369px zone. Not fixed in this pass — flagged per direct instruction.
 
-- [ ] **VP-9 — Homepage `BlogPostCard` grid crams at 1024px, same root-cause class as VP-1/VP-3/VP-7/VP-8, raised directly.**
+- [x] **VP-9 — Homepage `BlogPostCard` grid crams at 1024px, same root-cause class as VP-1/VP-3/VP-7/VP-8, raised directly.** **RESOLVED** — applied exactly as specified below (`grid-cols-1 md:grid-cols-2 lg:grid-cols-1 cards-wide:grid-cols-2! gap-legacy-4 md:gap-3`, mirroring `FeaturedBonusesCard`). Verified via Playwright: 1 column with 384px-wide cards at 1024px, 2 columns at 312px/card at 1280px — both comfortably above the ~184px cram this finding measured.
   - **Location:** `components/cards/BlogPostCard.tsx:6` — `grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3`.
   - **What's broken:** switches to 2 columns at `md:` (768px) and never backs off when the sidebar appears at `lg:` (1024px) — never defers to either of the project's own wider-breakpoint tokens the way the other VP-1-class fixes do. Measured on the live homepage via Playwright: at 1024px each card renders at **~184px wide**, headline text wrapping onto 3 short lines ("[Placeholder] How moneylines actually work" → 3 lines) — readable but visibly cramped, not the intended ~352px/card the original `BlogPostCard` rebuild targeted. Confirmed via screenshot at 1024px (cramped) vs. a simulated single-column preview at the same width (comfortable, titles on 1-2 lines) before proposing anything.
   - **Suggested fix — reuses an already-live pattern, not a new one:** `components/section/FeaturedBonusesCard.tsx:8` already solves this exact "2-up card grid squeezed by the sidebar" case with `grid-cols-1 md:grid-cols-2 lg:grid-cols-1 cards-wide:grid-cols-2!`, using the project's own `--breakpoint-cards-wide: 1250px` token (`globals.css:133`, documented specifically as "the earlier threshold for 2-up card grids, which need less room than a dense per-row layout to look right again" — as opposed to `--breakpoint-wide: 1370px`, reserved for denser per-row layouts like the reviews score grid). Applying the identical class list to `BlogPostCard.tsx:6` (`grid-cols-1 md:grid-cols-2 lg:grid-cols-1 cards-wide:grid-cols-2! gap-legacy-4 md:gap-3`) gives: <768px unchanged (single column); 768-1023px unchanged (2 columns, no squeeze there — tablet has no sidebar); 1024-1249px reverts to full-width single column; ≥1250px back to 2 columns at ~255-310px/card, matching `FeaturedBonusesCard`'s already-proven width at the same threshold. Confirmed via direct instruction to use the existing 1250px `cards-wide` convention rather than holding single-column out to 1440px. Not fixed in this pass — flagged per direct instruction, held here for a future implementation pass.
@@ -173,3 +176,17 @@ breakage vs. false positives.
   out to 1440px). Logged as VP-9 above — not implemented yet, held in
   this document per direct instruction ("hold that onto the audit md
   files") for a future pass.
+
+- **2026-08-18 (later) — second sweep ×2, nine more grids fixed.** Full
+  12-route × 6-breakpoint overflow sweep run twice this session (before
+  and after the Group K implementation in the sister doc): both identical
+  to the known-safe baseline — zero page-level overflow anywhere, only
+  the documented `-mx-3 px-3` hover rows and `sr-only` signatures, 404
+  status still genuine. Nine VP-9-class grids found by the static sweep
+  (not by overflow detection — they cram without overflowing) were
+  deferred past the 1024px squeeze via the `cards-wide:` convention: see
+  VC-51 in `.claude/visual-consistency-audit.md`. The blog related grid's
+  own `cards-wide:grid-cols-3!` was corrected to `2!` (193px/card
+  measured at 1250px). VP-9's "not implemented yet" hold note above is
+  superseded — VP-8/VP-9 landed earlier this same session (see their
+  RESOLVED entries).
