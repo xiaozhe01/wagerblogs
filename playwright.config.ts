@@ -17,6 +17,8 @@ export default defineConfig({
   use: {
     baseURL,
     trace: "retain-on-failure",
+    // Without this, axe can scan mid-fade-in and report a false contrast failure.
+    contextOptions: { reducedMotion: "reduce" },
   },
   projects: [
     // SideNav (desktop, lg+) and TopHeader (mobile/tablet, below lg) are two
