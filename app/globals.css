@@ -74,20 +74,34 @@
   --font-weight-heavy: 800;
 
   /* Typography — rationalized size scale (see inconsistency #1) */
-  --text-2xs: 10px; /* mono meta labels, timestamps, section eyebrows */
-  --text-xs: 11px; /* fine print, byline meta, breadcrumb */
-  --text-sm: 12px; /* body small, card labels, buttons (compact) */
-  --text-base: 13px; /* nav links, default UI text */
-  --text-md: 14px; /* emphasized UI text, rank row titles */
-  --text-lg: 15px; /* operator name, verdict title */
+  --text-2xs: 12px; /* mono meta labels, timestamps, section eyebrows */
+  --text-2xs--line-height: var(--leading-heading);
+  --text-xs: 14px; /* fine print, byline meta, breadcrumb */
+  --text-xs--line-height: var(--leading-copy);
+  --text-sm: 14px; /* body small, card labels, buttons (compact) */
+  --text-sm--line-height: var(--leading-relaxed);
+  --text-base: 14px; /* nav links, default UI text */
+  --text-base--line-height: var(--leading-heading);
+  --text-md: 15px; /* emphasized UI text, rank row titles */
+  --text-md--line-height: var(--leading-relaxed);
+  --text-lg: 16px; /* operator name, verdict title */
+  --text-lg--line-height: var(--leading-relaxed);
   --text-xl: 16px; /* lead paragraph (mobile) */
-  --text-2xl: 18px; /* h2 sans, blog title, brand wordmark (compact) */
+  --text-xl--line-height: var(--leading-loose);
+  --text-2xl: 19px; /* h2 sans, blog title, brand wordmark (compact) */
+  --text-2xl--line-height: var(--leading-heading);
   --text-3xl: 22px; /* stat values, brand wordmark (nav) */
+  --text-3xl--line-height: var(--leading-heading);
   --text-4xl: 28px; /* score display (e.g. "9.4") */
+  --text-4xl--line-height: var(--leading-heading);
   --text-5xl-mobile: 30px; /* h1 hero, mobile */
+  --text-5xl-mobile--line-height: var(--leading-heading);
   --text-5xl-tablet: 38px; /* h1 hero, tablet */
+  --text-5xl-tablet--line-height: var(--leading-snug);
   --text-5xl-desktop: 44px; /* h1 hero, desktop */
-  --text-h2: 25px; /* editorial h2 */
+  --text-5xl-desktop--line-height: var(--leading-snug);
+  --text-h2: 28px; /* editorial h2 */
+  --text-h2--line-height: var(--leading-heading);
 
   /* Line heights actually used */
   --leading-tight: 1;
@@ -246,6 +260,7 @@ body {
     border-radius: var(--radius-md);
     font-weight: var(--font-weight-semibold);
     font-size: var(--text-base);
+    line-height: var(--leading-heading);
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
@@ -272,6 +287,7 @@ body {
     border-radius: var(--radius-md);
     font-weight: var(--font-weight-medium);
     font-size: var(--text-base);
+    line-height: var(--leading-heading);
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
@@ -323,12 +339,16 @@ body {
   .meta-label {
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-heading);
     color: var(--color-text-subtle);
     letter-spacing: 0.05em;
   }
   .meta-label-caps {
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-heading);
     color: var(--color-text-subtle);
     text-transform: uppercase;
     letter-spacing: 0.05em;
