@@ -40,7 +40,7 @@ export default function ChipList({
       {items.map((item, i) => {
         const className = item.active ? activeClassName : inactiveClassName;
         const key = item.key ?? i;
-        const chipClassName = `${className} min-h-0 py-1.5 px-3 text-xs`;
+        const chipClassName = `${className} min-h-0 py-1.5 px-3 text-xs leading-heading`;
         let chip;
         if (as === "Link") {
           chip = filter ? (

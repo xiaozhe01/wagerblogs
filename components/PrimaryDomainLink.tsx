@@ -27,7 +27,7 @@ export default function PrimaryDomainLink({
       href={url}
       rel={relMap[relAttribute]}
       target="_blank"
-      className={`btn-primary gap-1.5 min-h-5 py-1.5 px-3 text-xs${className ? ` ${className}` : ""}`}
+      className={`btn-primary gap-1.5 min-h-5 py-1.5 px-3 text-xs leading-heading${className ? ` ${className}` : ""}`}
       data-link-tier={linkTier}
     >
       {anchorText}

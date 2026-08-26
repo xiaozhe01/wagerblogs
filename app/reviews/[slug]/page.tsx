@@ -138,7 +138,10 @@ export default function OperatorReviewPage() {
                 linkTier="tier3"
                 primaryDomainLink={mockPeakWagerReview.primaryDomainLink}
               />
-              <Link href="/about" className="btn-secondary min-h-5 py-1.5 px-3 text-xs">
+              <Link
+                href="/about"
+                className="btn-secondary min-h-5 py-1.5 px-3 text-xs leading-heading"
+              >
                 How we score
               </Link>
             </div>
@@ -299,7 +302,10 @@ export default function OperatorReviewPage() {
               <p className="text-2xs text-text-subtle font-mono mt-0.5">fetched [fetch date]</p>
             </div>
           </div>
-          <ArrowLink href="#" className="btn-secondary group min-h-0 py-1.5 px-3 gap-1 text-xs">
+          <ArrowLink
+            href="#"
+            className="btn-secondary group min-h-0 py-1.5 px-3 gap-1 text-xs leading-heading"
+          >
             Read Reviews
           </ArrowLink>
         </div>

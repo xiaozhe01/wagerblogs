@@ -36,7 +36,7 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
             />
             <Link
               href="/reviews/sample-operator"
-              className="btn-secondary min-h-5 py-1.5 px-3 text-xs md:w-full"
+              className="btn-secondary min-h-5 py-1.5 px-3 text-xs leading-heading md:w-full"
             >
               Read review
             </Link>

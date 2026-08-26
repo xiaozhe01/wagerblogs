@@ -39,7 +39,7 @@ export default function AuthorPage() {
         <ul role="list" className="flex gap-2 flex-wrap">
           {authorBeats.map((b) => (
             <li key={b} className="flex">
-              <Link href="/categories/sample" className="btn-secondary min-h-0 py-1.5 px-3 text-xs">
+              <Link href="/categories/sample" className="btn-secondary min-h-0 py-1.5 px-3 text-xs leading-heading">
                 {b}
               </Link>
             </li>
