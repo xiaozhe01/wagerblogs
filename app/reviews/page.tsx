@@ -20,9 +20,7 @@ export const metadata: Metadata = {
 export default function ReviewsIndexPage() {
   const rail = (
     <>
-      <div className="card">
-        <SearchInput placeholder="Search reviews..." />
-      </div>
+      <SearchInput placeholder="Search reviews..." />
       <InfoCard
         title="Editorial standards"
         body="How we research, test with real deposits, and correct our reviews."
