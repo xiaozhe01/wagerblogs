@@ -52,7 +52,7 @@ export default function OperatorReviewPage() {
               key={t.num}
               className="flex gap-2.5 items-baseline py-2 border-b border-border-hairline-alt last:border-b-0"
             >
-              <span className="text-2xs text-text-subtle font-mono shrink-0">{t.num}</span>
+              <span className="meta-label shrink-0">{t.num}</span>
               <div>
                 <h3 className="text-sm font-semibold text-text-primary mb-0.5">{t.label}</h3>
                 <p className="text-2xs font-semibold text-text-subtle leading-relaxed">{t.note}</p>
@@ -128,7 +128,7 @@ export default function OperatorReviewPage() {
                 {/* TODO(cms): stays bracketed on purpose. mockPeakWagerReview.lastVerified is
                     real ISO, but "tested with real deposits" is a trust claim that hasn't
                     happened — don't swap in the date (or a <time>) until it has. */}
-                <p className="text-2xs text-text-subtle font-mono mt-1">
+                <p className="meta-label mt-1">
                   Last Verified — [Jun 30, 2026] · tested with real deposits
                 </p>
               </div>
@@ -255,7 +255,7 @@ export default function OperatorReviewPage() {
                     <div className="flex gap-2 items-center flex-wrap">
                       <span className="text-sm font-semibold text-text-primary">{r.username}</span>
                       {/* TODO(cms): real review records carry an ISO timestamp — render as <time dateTime>. */}
-                      <span className="text-2xs text-text-subtle font-mono">{r.meta}</span>
+                      <span className="meta-label ">{r.meta}</span>
                     </div>
                     <p className="text-sm text-text-muted leading-relaxed wrap-break-word">
                       {r.text}
@@ -299,7 +299,7 @@ export default function OperatorReviewPage() {
                 ☆☆☆☆☆
               </p>
               <p className="text-xs text-text-meta">4.x / 5 — N Trustpilot reviews</p>
-              <p className="text-2xs text-text-subtle font-mono mt-0.5">fetched [fetch date]</p>
+              <p className="meta-label mt-0.5">fetched [fetch date]</p>
             </div>
           </div>
           <ArrowLink

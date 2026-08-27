@@ -61,7 +61,7 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
             <tr className="bg-bg-subtle border-b border-border-divider">
               <th
                 scope="col"
-                className={`${firstCellPadding} py-4 align-top text-left text-2xs text-text-subtle font-mono font-normal`}
+                className={`meta-label ${firstCellPadding} py-4 align-top text-left font-normal`}
               >
                 FEATURE
               </th>
@@ -98,7 +98,7 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
             <tr>
               <th
                 scope="row"
-                className={`${firstCellPadding} py-4 align-middle text-left text-2xs text-text-subtle font-mono font-normal`}
+                className={`meta-label ${firstCellPadding} py-4 align-middle text-left font-normal`}
               >
                 LINK
               </th>

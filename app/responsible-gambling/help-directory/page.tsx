@@ -156,7 +156,7 @@ export default async function RGDirectoryPage({
                         </div>
                       ))}
                     </dl>
-                    <p className="border-t border-dashed border-border-input pt-2.5 mt-auto text-2xs text-text-subtle font-mono leading-relaxed">
+                    <p className="meta-label border-t border-dashed border-border-input pt-2.5 mt-auto leading-relaxed">
                       Verified — [pending] · entry does not publish without this stamp
                     </p>
                   </article>

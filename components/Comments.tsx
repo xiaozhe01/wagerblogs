@@ -8,7 +8,7 @@ export default function Comments() {
         <h2 id="comments-heading" className="text-md font-bold text-text-primary">
           Comments
         </h2>
-        <span className="text-2xs text-text-subtle font-mono">[n] published</span>
+        <span className="meta-label ">[n] published</span>
       </div>
 
       {/* TODO(cms): wire to auth + the moderation queue, then drop the `disabled` flags.
@@ -37,7 +37,7 @@ export default function Comments() {
             >
               Post comment
             </button>
-            <p id="comment-moderation-note" className="text-2xs text-text-subtle font-mono">
+            <p id="comment-moderation-note" className="meta-label ">
               held for moderation before it appears
             </p>
           </div>
@@ -53,7 +53,7 @@ export default function Comments() {
                 <div className="flex gap-2 items-center flex-wrap">
                   <span className="text-sm font-semibold text-text-primary">{c.username}</span>
                   {/* TODO(cms): real comment records carry an ISO timestamp — render as <time dateTime>. */}
-                  <span className="text-2xs text-text-subtle font-mono">{c.date}</span>
+                  <span className="meta-label ">{c.date}</span>
                 </div>
                 <p className="text-sm text-text-body leading-relaxed wrap-break-word">{c.text}</p>
               </div>
