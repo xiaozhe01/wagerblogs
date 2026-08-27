@@ -41,7 +41,7 @@ export default function BonusOfferCard({
         </ul>
       )}
 
-      <div className="mb-2.5">
+      <div className="mt-auto mb-2.5">
         <CopyCodeChip code={offer.code} />
       </div>
 
