@@ -421,8 +421,11 @@ body {
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  /* --radius-sm and --radius-md are deliberately NOT redeclared here: this
+     project owns them above (6px compact / 8px card+CTA, with documented
+     roles). shadcn's calc() versions landed on the same 6px/8px only because
+     --radius happens to be 0.625rem, which made the project's own
+     declarations dead code. Larger steps stay for `shadcn add` components. */
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
