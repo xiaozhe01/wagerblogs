@@ -1,4 +1,5 @@
-import Link from "next/link";
+import ArrowLink from "@/components/ui/ArrowLink";
+import { railCtaClassName } from "@/components/rail/InfoCard";
 
 export default function EditorsCard() {
   return (
@@ -10,9 +11,9 @@ export default function EditorsCard() {
       <p className="text-xs text-text-muted leading-loose mb-3">
         [Placeholder editorial claim — must be backed by real score history before publish]
       </p>
-      <Link href={`/reviews/${"peakwager"}`} className="btn-primary">
+      <ArrowLink href={`/reviews/${"peakwager"}`} className={railCtaClassName}>
         Read our review
-      </Link>
+      </ArrowLink>
     </section>
   );
 }
