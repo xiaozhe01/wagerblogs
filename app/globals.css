@@ -35,6 +35,7 @@
 
   /* Color — borders / dividers */
   --color-border-input: #cccccc;
+  --color-border-input-hover: #999999;
   --color-border-default: #dddddd;
   --color-border-divider: #e4e4e4;
   --color-border-hairline: #f0f0f0;
@@ -52,6 +53,9 @@
 
   /* Color — dark / accent blocks (trust callouts, RG helpline, footer, primary CTA) */
   --color-bg-accent: #111111;
+  --color-bg-accent-hover: #2a2a2a;
+  --color-bg-accent-active: #000000;
+  --color-bg-subtle-active: #f0f0f0;
   --color-bg-dark-block: #1a1a1a;
   --color-border-on-dark: #333333;
 
@@ -62,8 +66,12 @@
      own reference site) confirmed it uses exactly one font family
      throughout. --font-serif removed; see .heading below (formerly
      .heading-serif/.heading-sans, now one class). */
+  /* Do not reintroduce a next/font webfont under this name — its class lands on
+     the same <html> element @theme targets, silently winning. */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, Menlo, monospace;
+  /* CopyCodeChip only; everything else uses tabular-nums. Menlo precedes
+     Consolas because Consolas is present on Macs with MS Office. */
+  --font-mono: ui-monospace, Menlo, "Cascadia Mono", Consolas, monospace;
 
   /* Typography — weights actually used */
   --font-weight-regular: 400;
@@ -101,9 +109,10 @@
   --text-5xl-desktop--line-height: var(--leading-snug);
   --text-h2: 28px; /* editorial h2 */
   --text-h2--line-height: var(--leading-heading);
+  --text-article: 18px; /* long-form article body — 16px measured 83 CPL, over the 60-75 band */
+  --text-article--line-height: var(--leading-copy);
 
   /* Line heights actually used */
-  --leading-tight: 1;
   --leading-snug: 1.12;
   --leading-heading: 1.2;
   --leading-relaxed: 1.5;
@@ -140,8 +149,13 @@
   --spacing-container-tablet: 20px;
   --spacing-container-desktop: 24px;
 
-  /* Second breakpoint below lg:'s 1024px shell switch — the content column is too narrow for dense per-row layouts until ~1370px. */
+  /* Second breakpoint below lg:'s 1024px shell switch — … */
   --breakpoint-wide: 1370px;
+
+  /* Long-form article measure — the value max-w-prose was already computing to.
+     Named because 65ch resolves against the container's 16px, not the 18px body
+     inside it, so "65 characters" measured as 77. */
+  --container-article: 655px;
 
   /* Border radius — separated by component class (see inconsistency #3).
      --radius-pill and --radius-full were removed: Tailwind v4 already
@@ -215,6 +229,50 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Affects anchor jumps and scrollIntoView only, not wheel/trackpad. */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--spacing-container-desktop);
+}
+
+/* Route change fade — see app/template.tsx. */
+@keyframes route-transition-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* No fill-mode: `both` painted the first frame at opacity 0, which is not a
+   contentful paint and delayed FCP on initial load for no gain — there is no
+   animation-delay for `backwards` to cover, and `forwards` only restates the
+   resting value. */
+.route-transition {
+  animation: route-transition-in 150ms ease-out;
+}
+
+/* Filter chip awaiting its server round-trip. */
+[data-pending] {
+  opacity: 0.6;
+  transition: opacity 120ms ease-out;
+}
+
+/* Motion is opt-out. The route fade must go with it or axe scans mid-fade and
+   reports false contrast failures — see playwright.config.ts. Skeleton is
+   targeted by data-slot so `shadcn add` cannot drop the guard. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .route-transition,
+  [data-slot="skeleton"] {
+    animation: none;
+  }
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -254,6 +312,7 @@ body {
     padding: 10px 16px;
     background: var(--color-bg-accent);
     color: var(--color-text-on-accent);
+    border: 1px solid transparent;
     border-radius: var(--radius-md);
     font-weight: var(--font-weight-semibold);
     font-size: var(--text-base);
@@ -261,16 +320,18 @@ body {
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    /* Same curve Tailwind's transition-colors uses, so buttons, rail rows and
+       cards all settle identically. */
+    transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   /* Hover/active shifts scoped to real controls — ChipList's static
      as="div" chips share the .btn-* chrome but must not signal
      clickability (same fake-affordance class as VC-37). */
   :is(a, button).btn-primary:hover {
-    background: #2a2a2a;
+    background: var(--color-bg-accent-hover);
   }
   :is(a, button).btn-primary:active {
-    background: #000000;
+    background: var(--color-bg-accent-active);
   }
   .btn-secondary {
     display: inline-flex;
@@ -279,25 +340,27 @@ body {
     min-height: calc(var(--spacing) * 11);
     padding: 10px 16px;
     background: transparent;
-    color: var(--color-text-strong-secondary);
+    /* Same weight and text strength as .btn-primary — the pair read as
+       different families when this was medium/#333 against semibold/#fff. */
+    color: var(--color-text-primary);
     border: 1px solid var(--color-border-input);
     border-radius: var(--radius-md);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-semibold);
     font-size: var(--text-base);
     line-height: var(--leading-heading);
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
     transition:
-      background-color 0.2s ease,
-      border-color 0.2s ease;
+      background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   :is(a, button).btn-secondary:hover {
     background: var(--color-bg-subtle);
-    border-color: var(--color-text-primary);
+    border-color: var(--color-border-input-hover);
   }
   :is(a, button).btn-secondary:active {
-    background: var(--color-border-hairline);
+    background: var(--color-bg-subtle-active);
   }
 
   /* Keyboard focus for the hand-rolled interactive classes — the shadcn
@@ -332,9 +395,8 @@ body {
     justify-content: center;
   }
 
-  /* Mono meta label — eyebrow labels, "Last Verified" timestamps, byline meta */
   .meta-label {
-    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
     font-size: var(--text-2xs);
     font-weight: var(--font-weight-medium);
     line-height: var(--leading-heading);
@@ -342,7 +404,7 @@ body {
     letter-spacing: 0.05em;
   }
   .meta-label-caps {
-    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
     font-size: var(--text-2xs);
     font-weight: var(--font-weight-medium);
     line-height: var(--leading-heading);
@@ -389,7 +451,8 @@ body {
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
+  /* --font-sans is deliberately absent: shadcn's `--font-sans: var(--font-sans)`
+     is circular without next/font injecting it, and CSS drops the declaration. */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
