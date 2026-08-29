@@ -7,7 +7,7 @@ type AtAGlanceCardProps = {
 export default function AtAGlanceCard({ items }: AtAGlanceCardProps) {
   return (
     <section className="card flex flex-col gap-2" aria-labelledby="rail-at-a-glance">
-      <h2 id="rail-at-a-glance" className="font-bold text-sm text-text-primary">
+      <h2 id="rail-at-a-glance" className="heading text-sm">
         At a glance
       </h2>
       <dl className="flex flex-col gap-2">
@@ -21,7 +21,7 @@ export default function AtAGlanceCard({ items }: AtAGlanceCardProps) {
           </div>
         ))}
       </dl>
-      <p className="text-xs font-semibold text-text-subtle leading-relaxed py-1">
+      <p className="text-xs font-medium text-text-subtle leading-relaxed py-1">
         21+. T&amp;Cs apply. [terms placeholder]
       </p>
     </section>

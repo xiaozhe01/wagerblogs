@@ -2,21 +2,26 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { headingId } from "@/lib/utils";
 
-// Every anchor is the only child of its <li>, so `last:` would match all of them.
-// Row styling that should apply to the final row only must be scoped through the
-// <li> instead — call sites use `[li:last-child_&]:border-b-0` for the same reason.
-const rowHoverClassName =
-  "-mx-3 px-3 transition-colors hover:bg-bg-subtle [li:last-child>&]:hover:rounded-b-md";
+// min-h-5 is 32px: --spacing-1..8 are named 4/8/16/24/32/40/48/60.
+const rowClassName =
+  "px-2 py-1.5 min-h-11 wide:min-h-5 flex items-center justify-between gap-2.5 rounded-sm text-sm font-medium leading-snug no-underline transition-colors hover:bg-bg-subtle";
+const rowRestClassName = "text-text-body";
+const rowCurrentClassName = "text-text-primary font-bold";
+const rowBleedClassName = "-mx-2";
 
 type AnchorListItem = {
   href: string;
   label: ReactNode;
   key?: string | number;
+  /** The row for the document/category being viewed. Bolds it and carries the
+   * state to assistive tech. */
+  current?: boolean;
 };
 
 type AnchorListProps = {
   items: AnchorListItem[];
-  itemClassName: string | ((item: AnchorListItem, index: number) => string);
+  /** State/colour only — geometry belongs to the component. */
+  itemClassName?: string | ((item: AnchorListItem, index: number) => string);
   wrapperClassName?: string;
   /** When set, AnchorList owns its own `<div className="card">` + title
    * header, matching sibling rail cards like AtAGlanceCard/OtherBooksCard
@@ -28,16 +33,22 @@ type AnchorListProps = {
 export default function AnchorList({
   items,
   itemClassName,
-  wrapperClassName,
+  wrapperClassName = "flex flex-col gap-2",
   title,
   cardClassName = "card",
 }: AnchorListProps) {
   const content = items.map((item, i) => {
-    const className = typeof itemClassName === "function" ? itemClassName(item, i) : itemClassName;
+    const extra =
+      (typeof itemClassName === "function" ? itemClassName(item, i) : itemClassName) ?? "";
+    const state = item.current ? rowCurrentClassName : rowRestClassName;
     const key = item.key ?? i;
     return (
-      <li key={key}>
-        <Link href={item.href} className={`${className} ${rowHoverClassName}`}>
+      <li key={key} className={rowBleedClassName}>
+        <Link
+          href={item.href}
+          aria-current={item.current ? "page" : undefined}
+          className={`${rowClassName} ${state} ${extra}`.trim()}
+        >
           {item.label}
         </Link>
       </li>
@@ -58,7 +69,7 @@ export default function AnchorList({
 
   return (
     <section className={`${cardClassName}`} aria-labelledby={titleId}>
-      <h2 id={titleId} className="font-bold text-sm text-text-primary mb-2.5">
+      <h2 id={titleId} className="heading text-sm mb-2.5">
         {title}
       </h2>
       {list}

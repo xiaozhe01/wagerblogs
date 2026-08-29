@@ -22,19 +22,22 @@ export default function BonusOfferCard({
 }: BonusOfferCardProps) {
   const benefits = offer.benefits;
   return (
-    <article className="card flex flex-col h-full">
+    <article className="card flex flex-col gap-2 h-full">
       <div className="flex items-center gap-2.5 mb-2.5">
-        <div className="w-9 h-9 shrink-0 placeholder-asset rounded-md" />
+        <div className="w-6 h-6 shrink-0 placeholder-asset rounded-md" />
         <span className="text-md font-semibold text-text-primary">{offer.name}</span>
       </div>
 
-      <h3 className="heading text-lg leading-snug mb-2 text-pretty">{offer.headline}</h3>
+      <h3 className="heading text-lg leading-snug text-pretty">{offer.headline}</h3>
 
       {benefits && benefits.length > 0 && (
         <ul role="list" className="flex flex-col gap-1 mb-2.5">
           {benefits.map((b) => (
-            <li key={b} className="flex items-start gap-1.5 text-xs text-text-body leading-relaxed">
-              <Check size={12} className="shrink-0 mt-0.5 text-text-primary" aria-hidden="true" />
+            <li
+              key={b}
+              className="flex items-start gap-1.5 text-xs text-text-body font-medium leading-relaxed"
+            >
+              <Check size={12} className="shrink-0 mt-1 text-text-primary" aria-hidden="true" />
               {b}
             </li>
           ))}
@@ -62,14 +65,14 @@ export default function BonusOfferCard({
         />
       )}
 
-      <p className="mt-2.5 pt-2 border-t border-border-hairline-alt text-2xs text-text-subtle leading-relaxed">
+      <p className="mt-2.5 pt-2 border-t border-border-hairline-alt text-2xs text-text-subtle font-medium leading-relaxed">
         <span>{termsSummary ?? "[bonus terms small print — wagering, expiry, eligibility]"}</span>{" "}
-        <span className="font-mono">
+        <span className="font-medium">
           · Last verified:{" "}
           {lastVerifiedAt ? (
             <time dateTime={lastVerifiedAt}>{lastVerifiedAt}</time>
           ) : (
-            <span className="text-text-meta">pending verification</span>
+            <span>pending verification</span>
           )}
         </span>
       </p>

@@ -25,7 +25,7 @@ export default function TeaserCardGrid({
             >
               <p className="meta-label-caps mb-1.5">{item.kicker}</p>
               <h3 className={titleClassName}>{item.title}</h3>
-              <p className="text-xs text-text-meta leading-relaxed">{item.meta}</p>
+              <p className="text-xs font-medium text-text-meta leading-relaxed">{item.meta}</p>
             </Link>
           </article>
         </li>

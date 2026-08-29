@@ -7,10 +7,10 @@ type PostRowProps = {
   as?: "Link" | "div";
 };
 
-const wrapperClassName = "flex gap-4 items-start py-4 border-b border-border-hairline no-underline";
+const wrapperClassName = "flex flex-col md:flex-row md:items-center gap-3 md:gap-3.5 no-underline";
 const titleClassName = "heading text-xl leading-snug mb-1.5 text-pretty";
 const thumbnailClassName =
-  "w-24 sm:w-32 md:w-40 lg:w-56 aspect-[2/1] shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle font-mono text-center";
+  "w-full md:w-56 lg:w-74 aspect-video shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle tabular-nums text-center";
 
 export default function PostRow({ post, as = "Link" }: PostRowProps) {
   const content = (
@@ -22,21 +22,24 @@ export default function PostRow({ post, as = "Link" }: PostRowProps) {
         <p className="meta-label-caps mb-1.5">{post.kicker}</p>
         <h3 className={titleClassName}>{post.title}</h3>
         {/* TODO(cms): split `meta` into a real date + readTime so the date can render as <time dateTime>. */}
-        <p className="text-xs font-medium text-text-subtle font-mono">{post.meta}</p>
+        <p className="text-xs font-medium text-text-subtle tabular-nums">{post.meta}</p>
       </div>
     </>
   );
 
   if (as === "div") {
-    return <article className={wrapperClassName}>{content}</article>;
+    return <article className={`card ${wrapperClassName}`}>{content}</article>;
   }
 
+  // The Link is the card, so the hover fill matches the clickable area.
   return (
-    <Link
-      href={post.href ?? "#"}
-      className={`${wrapperClassName} -mx-3 px-3 [li:last-child_&]:border-b-0 transition-colors hover:bg-bg-subtle`}
-    >
-      {content}
-    </Link>
+    <article>
+      <Link
+        href={post.href ?? "#"}
+        className={`card ${wrapperClassName} transition-colors hover:bg-bg-subtle`}
+      >
+        {content}
+      </Link>
+    </article>
   );
 }

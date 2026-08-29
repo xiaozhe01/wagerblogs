@@ -17,14 +17,16 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
             >
               {i + 1}
             </span>
-            <div className="w-6 h-6 shrink-0 placeholder-asset rounded-md" />
+            <div className="w-8 h-8 shrink-0 placeholder-asset rounded-md" />
           </div>
           <div className="min-w-0 flex-1 flex flex-col gap-2">
             <div className="flex items-baseline gap-2 flex-wrap">
               <h3 className="font-bold text-md text-text-primary">{operator.name}</h3>
-              <span className="font-bold text-sm text-text-primary">{operator.score}/10</span>
+              <span className="font-bold text-sm text-text-primary">
+                <data value={operator.score}>{operator.score}</data>/10
+              </span>
             </div>
-            <p className="text-xs text-text-muted text-wrap">
+            <p className="text-xs text-text-muted font-medium text-wrap">
               {operator.advantages.slice(0, 2).join(" · ")}
             </p>
           </div>

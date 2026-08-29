@@ -18,10 +18,10 @@ export default function InfoCard({ title, body, cta }: InfoCardProps) {
 
   return (
     <section className="card flex flex-col gap-2.5" aria-labelledby={titleId}>
-      <h2 id={titleId} className="font-bold text-sm text-text-primary">
+      <h2 id={titleId} className="heading text-sm">
         {title}
       </h2>
-      <p className="text-xs text-text-body leading-loose">{body}</p>
+      <p className="text-xs text-text-body font-medium leading-loose">{body}</p>
       <ArrowLink href={cta.href} className={railCtaClassName}>
         {cta.label}
       </ArrowLink>

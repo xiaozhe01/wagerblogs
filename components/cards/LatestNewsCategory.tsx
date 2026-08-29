@@ -6,7 +6,7 @@ type LatestNewsCategoryProps = {
 
 export default function LatestNewsCategory({ items }: LatestNewsCategoryProps) {
   return (
-    <nav aria-label="News categories" className="-mt-2">
+    <nav aria-label="News categories">
       <ul role="list" className="flex gap-2 flex-wrap">
         <ChipList
           as="Link"
