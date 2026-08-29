@@ -44,17 +44,25 @@ export default function ChipList({
         let chip;
         if (as === "Link") {
           chip = filter ? (
-            <ChipLink href={item.href ?? "#"} className={chipClassName}>
+            <ChipLink href={item.href ?? "#"} current={item.active} className={chipClassName}>
               {item.label}
             </ChipLink>
           ) : (
-            <Link href={item.href ?? "#"} className={chipClassName}>
+            <Link
+              href={item.href ?? "#"}
+              aria-current={item.active ? "page" : undefined}
+              className={chipClassName}
+            >
               {item.label}
             </Link>
           );
         } else if (as === "button") {
           chip = (
-            <button type="button" className={chipClassName}>
+            <button
+              type="button"
+              aria-current={item.active ? "page" : undefined}
+              className={chipClassName}
+            >
               {item.label}
             </button>
           );

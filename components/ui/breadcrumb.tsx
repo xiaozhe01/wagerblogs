@@ -17,7 +17,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
       role="list"
       data-slot="breadcrumb-list"
       className={cn(
-        "flex flex-wrap items-center gap-2 text-base text-text-meta font-mono",
+        "flex flex-wrap items-center gap-2 text-base text-text-meta tabular-nums",
         className,
       )}
       {...props}
@@ -41,7 +41,7 @@ function BreadcrumbLink({ className, render, ...props }: useRender.ComponentProp
     props: mergeProps<"a">(
       {
         className: cn(
-          "inline-flex items-center min-h-4 text-text-meta no-underline transition-colors hover:text-text-primary",
+          "inline-flex items-center min-h-4 text-text-meta font-medium no-underline transition-colors hover:text-text-primary",
           className,
         ),
       },
