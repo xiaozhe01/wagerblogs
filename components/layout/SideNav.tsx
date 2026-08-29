@@ -11,6 +11,29 @@ import {
   Ellipsis,
   type LucideIcon,
   ChevronRight,
+  Shield,
+  CircleDot,
+  Volleyball,
+  Gamepad2,
+  Building2,
+  Trophy,
+  Dices,
+  Ticket,
+  Gift,
+  Medal,
+  MapPin,
+  Layers,
+  Search,
+  BookOpen,
+  Target,
+  FlaskConical,
+  ScrollText,
+  Users,
+  BadgeCheck,
+  Info,
+  Mail,
+  LifeBuoy,
+  Scale,
 } from "lucide-react";
 import {
   NavigationMenu,
@@ -30,13 +53,43 @@ const navIcons: Record<string, LucideIcon> = {
   more: Ellipsis,
 };
 
+// Keyed by NavGroup.subs[].icon so the taxonomy in site-data stays free of
+// component imports.
+const subNavIcons: Record<string, LucideIcon> = {
+  shield: Shield,
+  "circle-dot": CircleDot,
+  volleyball: Volleyball,
+  gamepad: Gamepad2,
+  building: Building2,
+  newspaper: Newspaper,
+  trophy: Trophy,
+  dice: Dices,
+  ticket: Ticket,
+  gift: Gift,
+  star: Star,
+  medal: Medal,
+  "map-pin": MapPin,
+  layers: Layers,
+  search: Search,
+  book: BookOpen,
+  target: Target,
+  flask: FlaskConical,
+  scroll: ScrollText,
+  users: Users,
+  "badge-check": BadgeCheck,
+  info: Info,
+  mail: Mail,
+  "life-buoy": LifeBuoy,
+  scale: Scale,
+};
+
 function NavIconLabel({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
     <>
       <span className="w-6.5 h-6.5 shrink-0 flex items-center justify-center text-text-muted">
-        <Icon className="size-3" aria-hidden="true" />
+        <Icon strokeWidth={2.5} className="size-3" aria-hidden="true" />
       </span>
-      <span className="flex-1 text-left">{label}</span>
+      <span className="flex-1 text-left font-semibold">{label}</span>
     </>
   );
 }
@@ -74,29 +127,38 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <ul role="list" className="flex flex-col gap-px min-w-40">
-                        {g.subs.map((s: NavGroup["subs"][number]) => (
-                          <li key={s.label}>
-                            <NavigationMenuLink
-                              href={s.href}
-                              className="group w-full text-sm text-text-primary font-medium"
-                            >
-                              {s.label}
-                              {s.trailingIcon && (
-                                <ChevronRight
+                        {g.subs.map((s: NavGroup["subs"][number]) => {
+                          const SubIcon = subNavIcons[s.icon] ?? CircleDot;
+                          return (
+                            <li key={s.label}>
+                              <NavigationMenuLink
+                                href={s.href}
+                                className="group w-full gap-2 text-sm text-text-primary font-medium"
+                              >
+                                <SubIcon
                                   strokeWidth={2.5}
-                                  className="size-3 shrink-0 transition duration-300 group-hover:translate-x-1"
+                                  className="size-3 shrink-0 text-text-muted"
                                   aria-hidden="true"
                                 />
-                              )}
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
+                                <span className="flex-1 text-left">{s.label}</span>
+                                {s.trailingIcon && (
+                                  <ChevronRight
+                                    strokeWidth={2.5}
+                                    className="size-3 shrink-0 transition duration-300 group-hover:translate-x-1"
+                                    aria-hidden="true"
+                                  />
+                                )}
+                              </NavigationMenuLink>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </NavigationMenuContent>
                   </>
                 ) : (
                   <NavigationMenuLink
                     href={g.href}
+                    aria-current={g.id === activeId ? "page" : undefined}
                     className={`w-full gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "bg-bg-subtle" : ""}`}
                   >
                     <NavIconLabel icon={Icon} label={g.label} />

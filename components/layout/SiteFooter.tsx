@@ -25,21 +25,18 @@ export default function SiteFooter() {
       </section>
 
       <div className="mt-4 rounded-md bg-bg-dark-block text-text-on-dark-muted p-4">
-        <nav
-          aria-label="Footer"
-          className="grid grid-cols-2 lg:grid-cols-4 gap-legacy-4 md:gap-3 mb-4"
-        >
+        <nav aria-label="Footer" className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-3 mb-4">
           {footerCols.map((col) => (
             <div key={col.heading}>
-              <h3 className="text-sm font-bold text-text-on-dark uppercase tracking-wide mb-3">
+              <h3 className="text-2xs font-bold text-text-on-dark uppercase tracking-wide mb-3">
                 {col.heading}
               </h3>
-              <ul role="list">
+              <ul role="list" className="flex flex-col gap-3">
                 {col.links.map((l) => (
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="group flex items-center min-h-0 mb-2 text-sm text-text-on-dark-muted no-underline"
+                      className="group flex items-center min-h-0 text-2xs text-text-on-dark-muted font-medium no-underline"
                     >
                       <span className="relative after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out after:content-[''] group-hover:after:scale-x-100">
                         {l.label}
@@ -51,12 +48,11 @@ export default function SiteFooter() {
             </div>
           ))}
         </nav>
-        <div className="border-t border-border-on-dark pt-4 text-xs text-text-on-dark-muted leading-lead">
-          <p className="mb-2">
+        <div className="border-t border-border-on-dark pt-4 text-2xs text-text-on-dark-muted leading-copy">
+          <p className="mb-2 font-medium">
             WagerBlogs is an independent media and affiliate publisher. We may earn commission from
             partner links. 21+. Gambling involves risk — please play responsibly.
           </p>
-          <p>© 2026 WagerBlogs. All rights reserved.</p>
         </div>
       </div>
 
@@ -69,7 +65,7 @@ export default function SiteFooter() {
             <li key={l.label} className="flex">
               <Link
                 href={l.href}
-                className="relative text-xs text-text-body after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out after:content-[''] hover:after:scale-x-100"
+                className="relative text-2xs text-text-body font-medium after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out after:content-[''] hover:after:scale-x-100"
               >
                 {l.label}
               </Link>
@@ -78,18 +74,18 @@ export default function SiteFooter() {
         </ul>
         <div className="flex flex-col gap-2.5">
           {legalParagraphs.map((p, i) => (
-            <p key={i} className="text-xs text-text-meta leading-lead">
+            <p key={i} className="text-2xs text-text-meta font-medium leading-copy">
               {p}
             </p>
           ))}
         </div>
-        <p className="text-xs text-text-body leading-lead mt-3">
+        <p className="text-2xs text-text-body font-medium leading-copy mt-3">
           Publisher: WagerBlogs Media Ltd · Company No. [00000000] · [Registered address
           placeholder] · [contact@wagerblogs.com]
         </p>
         {/* TODO(cms): ComplianceBadge[] — intentionally omitted. Render only once real, verifiable
             certifications exist (name, issuer, reference, verifyUrl). Never ship placeholder badges. */}
-        <p className="border-t border-border-divider mt-4 pt-3.5 text-xs text-text-subtle leading-lead">
+        <p className="border-t border-border-divider mt-4 pt-3.5 text-2xs text-text-subtle font-medium leading-copy">
           © 2026 WagerBlogs Media Ltd. All rights reserved. All trademarks are the property of their
           respective owners and are used for identification purposes only.
         </p>
