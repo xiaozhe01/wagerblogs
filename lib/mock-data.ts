@@ -3,6 +3,7 @@ import type {
   AtAGlanceItem,
   BonusOffer,
   ComparisonOperator,
+  HelpDirectoryRegion,
   NewsItem,
   Operator,
   Post,
@@ -370,20 +371,6 @@ export const reviewAtAGlance: AtAGlanceItem[] = [
   { label: "Last verified", value: "[Jun 30, 2026]" },
 ];
 
-export const reviewTrustIndex = [
-  {
-    num: "1/3",
-    label: "Editorial score",
-    note: "Our tested verdict, named reviewer, public methodology.",
-  },
-  {
-    num: "2/3",
-    label: "Reader reviews",
-    note: "First-party member reviews, moderated, never blended into 1/3.",
-  },
-  { num: "3/3", label: "Trustpilot", note: "Third-party; shown only with real profile data." },
-];
-
 // app/reviews/[slug]/page.tsx "Bonus detail" + FAQ content (merged in from
 // the retired full-review template).
 export const reviewBonusTerms = [
@@ -475,7 +462,7 @@ export const blogMoreInGuides = [
 ];
 
 // app/categories/[slug]/page.tsx (sample category) content.
-export const sampleCategoryName = "Esports betting";
+export const sampleCategoryName = "Esports Betting";
 
 export const categoryArticles: PostTeaser[] = [
   {
@@ -654,6 +641,8 @@ export const legalDocs = {
   },
 } as const;
 
+export type DocSlug = keyof typeof legalDocs;
+
 // app/responsible-gambling/page.tsx content.
 export const rgWarningSigns = [
   "[Placeholder] Betting more than planned, more often than planned",
@@ -727,7 +716,7 @@ export const rgToc = [
 // verifiedAt stamp — an entry never ships without it. Re-verification cadence:
 // [90 days]; expired stamps re-enter the pending state and unpublish. Trimmed to a
 // few sample entries per region here; the full set covers more countries/regions.
-export const helpDirectory = [
+export const helpDirectory: HelpDirectoryRegion[] = [
   {
     region: "North America",
     entries: [
@@ -735,19 +724,13 @@ export const helpDirectory = [
         name: "[National problem gambling helpline — US]",
         country: "US",
         desc: "[Placeholder — 24/7 phone and text support; routes callers to state-level resources.]",
-        contacts: [
-          { kind: "phone", value: "[number — verify]" },
-          { kind: "site", value: "[URL — verify]" },
-        ],
+        contacts: { phone: "[number — verify]", site: "[URL — verify]", chat: "" },
       },
       {
         name: "[Provincial helpline network — Canada]",
         country: "CA",
         desc: "[Placeholder — per-province helplines and self-exclusion programs.]",
-        contacts: [
-          { kind: "phone", value: "[number — verify]" },
-          { kind: "site", value: "[URL — verify]" },
-        ],
+        contacts: { phone: "[number — verify]", site: "[URL — verify]", chat: "" },
       },
     ],
   },
@@ -758,16 +741,13 @@ export const helpDirectory = [
         name: "[National gambling helpline — UK]",
         country: "UK",
         desc: "[Placeholder — free 24/7 helpline and live chat, plus structured treatment referral.]",
-        contacts: [
-          { kind: "phone", value: "[number — verify]" },
-          { kind: "chat", value: "[URL — verify]" },
-        ],
+        contacts: { phone: "[number — verify]", site: "", chat: "[URL — verify]" },
       },
       {
         name: "[Problem gambling service — Ireland]",
         country: "IE",
         desc: "[Placeholder — counselling and residential treatment, publicly funded.]",
-        contacts: [{ kind: "phone", value: "[number — verify]" }],
+        contacts: { phone: "[number — verify]", site: "", chat: "" },
       },
     ],
   },
@@ -778,16 +758,13 @@ export const helpDirectory = [
         name: "[Federal addiction support — Germany]",
         country: "DE",
         desc: "[Placeholder — federal helpline with multilingual counselling.]",
-        contacts: [{ kind: "phone", value: "[number — verify]" }],
+        contacts: { phone: "[number — verify]", site: "", chat: "" },
       },
       {
         name: "[Support line — Nordics]",
         country: "SE / NO / DK",
         desc: "[Placeholder — shared Nordic helpline network with online programs.]",
-        contacts: [
-          { kind: "phone", value: "[number — verify]" },
-          { kind: "chat", value: "[URL — verify]" },
-        ],
+        contacts: { phone: "[number — verify]", site: "", chat: "[URL — verify]" },
       },
     ],
   },

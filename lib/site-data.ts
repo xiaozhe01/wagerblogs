@@ -8,7 +8,9 @@ export type NavGroup = {
   id: string;
   label: string;
   href: string;
-  subs: { label: string; href: string; trailingIcon?: boolean }[];
+  /** `icon` is a key, not a component — SideNav maps it to the lucide icon.
+   * Required so a new sub-item cannot ship without one. */
+  subs: { label: string; href: string; icon: string; trailingIcon?: boolean }[];
 };
 
 export const navGroups: NavGroup[] = [
@@ -18,12 +20,12 @@ export const navGroups: NavGroup[] = [
     label: "News",
     href: "/news",
     subs: [
-      { label: "Football", href: "/news" },
-      { label: "Basketball", href: "/news" },
-      { label: "Soccer", href: "/news" },
-      { label: "Esports", href: "/news" },
-      { label: "Industry", href: "/news" },
-      { label: "All News", href: "/news", trailingIcon: true },
+      { label: "Football", href: "/news", icon: "shield" },
+      { label: "Basketball", href: "/news", icon: "circle-dot" },
+      { label: "Soccer", href: "/news", icon: "volleyball" },
+      { label: "Esports", href: "/news", icon: "gamepad" },
+      { label: "Industry", href: "/news", icon: "building" },
+      { label: "All News", href: "/news", icon: "newspaper", trailingIcon: true },
     ],
   },
   {
@@ -31,11 +33,11 @@ export const navGroups: NavGroup[] = [
     label: "Reviews",
     href: "/reviews",
     subs: [
-      { label: "Sportsbooks", href: "/reviews" },
-      { label: "Online Casinos", href: "/reviews" },
-      { label: "Sweepstakes Casinos", href: "/reviews" },
-      { label: "Bonuses & Offers", href: "/reviews" },
-      { label: "All Reviews", href: "/reviews", trailingIcon: true },
+      { label: "Sportsbooks", href: "/reviews", icon: "trophy" },
+      { label: "Online Casinos", href: "/reviews", icon: "dice" },
+      { label: "Sweepstakes", href: "/reviews", icon: "ticket" },
+      { label: "Bonuses & Offers", href: "/reviews", icon: "gift" },
+      { label: "All Reviews", href: "/reviews", icon: "star", trailingIcon: true },
     ],
   },
   {
@@ -43,10 +45,10 @@ export const navGroups: NavGroup[] = [
     label: "Categories",
     href: "/categories",
     subs: [
-      { label: "By Sport", href: "/categories" },
-      { label: "By State", href: "/categories" },
-      { label: "By Vertical", href: "/categories" },
-      { label: "Market Search", href: "/categories", trailingIcon: true },
+      { label: "By Sport", href: "/categories", icon: "medal" },
+      { label: "By State", href: "/categories", icon: "map-pin" },
+      { label: "By Vertical", href: "/categories", icon: "layers" },
+      { label: "Market Search", href: "/categories", icon: "search", trailingIcon: true },
     ],
   },
   {
@@ -54,10 +56,10 @@ export const navGroups: NavGroup[] = [
     label: "Blog",
     href: "/blog",
     subs: [
-      { label: "Guides", href: "/blog" },
-      { label: "Strategy", href: "/blog" },
-      { label: "Research", href: "/blog" },
-      { label: "All Posts", href: "/blog", trailingIcon: true },
+      { label: "Guides", href: "/blog", icon: "book" },
+      { label: "Strategy", href: "/blog", icon: "target" },
+      { label: "Research", href: "/blog", icon: "flask" },
+      { label: "All Posts", href: "/blog", icon: "scroll", trailingIcon: true },
     ],
   },
   {
@@ -65,12 +67,12 @@ export const navGroups: NavGroup[] = [
     label: "More",
     href: "/about",
     subs: [
-      { label: "About Us", href: "/about" },
-      { label: "How We Review", href: "/about" },
-      { label: "FAQ", href: "/about" },
-      { label: "Contact", href: "/contact" },
-      { label: "Responsible Gambling", href: "/responsible-gambling" },
-      { label: "Disclaimer", href: "/legal/terms-of-service" },
+      { label: "About Us", href: "/about", icon: "users" },
+      { label: "How We Review", href: "/about", icon: "badge-check" },
+      { label: "FAQ", href: "/about", icon: "info" },
+      { label: "Contact", href: "/contact", icon: "mail" },
+      { label: "Responsible Gambling", href: "/responsible-gambling", icon: "life-buoy" },
+      { label: "Disclaimer", href: "/legal/terms-of-service", icon: "scale" },
     ],
   },
 ];
@@ -140,6 +142,14 @@ export const categoryFilters = ["All", "Guides", "Analysis", "Research", "News"]
 
 // Region filter chips on the gambling-help directory — structural taxonomy.
 export const regions = ["All regions", "North America", "UK & Ireland", "Europe", "Asia-Pacific"];
+
+// Query-string contract for the filter chips. The "all" values are the first
+// entry of their own list rather than repeated literals, so a rename cannot
+// leave a route filtering on a string the chips no longer emit.
+export const TYPE_PARAM = "type";
+export const ALL_TYPES = categoryFilters[0];
+export const REGION_PARAM = "region";
+export const ALL_REGIONS = regions[0];
 
 // Sport filter chips on the latest-news rail — structural taxonomy.
 export const newsCategories = ["All", "Football", "Basketball", "Soccer", "Esports"];

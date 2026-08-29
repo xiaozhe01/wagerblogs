@@ -117,3 +117,21 @@ export type ComparisonOperator = {
   isPrimaryDomain: boolean;
   primaryDomainLink?: PrimaryDomainLinkData;
 };
+
+export const HELP_CONTACT_KINDS = ["phone", "site", "chat"] as const;
+export type HelpContactKind = (typeof HELP_CONTACT_KINDS)[number];
+
+/** A Record, not an array: every entry must account for every contact kind, so
+ * cards in a row cannot end up different heights. An empty string means the
+ * organisation does not offer that channel — it is not missing data. */
+export type HelpDirectoryEntry = {
+  name: string;
+  country: string;
+  desc: string;
+  contacts: Record<HelpContactKind, string>;
+};
+
+export type HelpDirectoryRegion = {
+  region: string;
+  entries: HelpDirectoryEntry[];
+};
