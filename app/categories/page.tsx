@@ -6,6 +6,7 @@ import HelpLineCard from "@/components/rail/HelpLineCard";
 import InfoCard from "@/components/rail/InfoCard";
 import SearchInput from "@/components/rail/SearchInput";
 import TeaserCardBody from "@/components/cards/TeaserCardBody";
+import EditorialSection from "@/components/section/EditorialSection";
 import RecentPublishedSection from "@/components/section/RecentPublishedSection";
 import { categories } from "@/lib/site-data";
 
@@ -30,11 +31,11 @@ export default function CategoriesIndexPage() {
   );
 
   return (
-    <PageShell activeNavId="categories" rail={rail}>
+    <PageShell activeNavId="categories" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — category navigation, no outbound operator links */}
       <Breadcrumbs items={[{ label: "Categories" }]} />
 
-      <header className="flex flex-col gap-3 max-w-160">
+      <header className="flex flex-col gap-3">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Betting categories
         </h1>
@@ -44,8 +45,7 @@ export default function CategoriesIndexPage() {
         </p>
       </header>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="heading text-h2 leading-heading">All categories</h2>
+      <EditorialSection title="All categories" register="editorial">
         <ul
           role="list"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3"
@@ -58,9 +58,9 @@ export default function CategoriesIndexPage() {
             </li>
           ))}
         </ul>
-      </section>
+      </EditorialSection>
 
-      <RecentPublishedSection />
+      <RecentPublishedSection register="editorial" />
     </PageShell>
   );
 }
