@@ -75,7 +75,7 @@ export default function AuthorPage() {
         </ul>
         <ArrowLink
           href="/about"
-          className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group"
+          className="inline-flex items-center self-center gap-1 text-md text-text-primary font-semibold group"
         >
           Read our full editorial standards
         </ArrowLink>
@@ -83,7 +83,7 @@ export default function AuthorPage() {
 
       {/* TODO(cms): sameAs profiles — omitted; contact routes to the editorial desk instead. */}
       <section aria-label="Contact this author" className="flex flex-col items-start gap-1">
-        <p className="text-sm text-text-body leading-relaxed">
+        <p className="text-sm text-text-body font-medium leading-relaxed">
           Questions about this author&apos;s work?
         </p>
         <ArrowLink
