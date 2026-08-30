@@ -1,11 +1,12 @@
 # Accessibility handover — landmark naming & related findings, 2026-08-28
 
-**Not for commit.** Handover for a session that picks up accessibility work
-_after_ the spacing/gap refactor currently in progress finishes.
+**Status: §5 c/d/e open. §1 and §6 resolved.**
 
-The spacing work is touching the same files (section tags, wrappers, `<main>`
-children), so **do not start this in parallel** — the two will conflict on the
-same lines. Pick it up once the spacing pass is done.
+Written as a handover for accessibility work to follow the spacing/gap refactor,
+because both touch the same lines (section tags, wrappers, `<main>` children).
+**That refactor is now finished and committed**, so the sequencing warning no
+longer applies — and §1/§6 were completed inside it. What remains is §5 c/d/e,
+which is cross-cutting and overlaps nothing.
 
 ---
 

@@ -1,6 +1,6 @@
 # Article body → @tailwindcss/typography — migration reference
 
-**Not for this commit.** Written 2026-08-29 as the reference for wiring
+**Status: not started.** The plugin is deliberately not installed yet. Written 2026-08-29 as the reference for wiring
 `@tailwindcss/typography` once PayloadCMS is supplying article bodies.
 
 Scope: the long-form article body only — `app/blog/[slug]/page.tsx` today, plus

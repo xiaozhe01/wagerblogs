@@ -1,7 +1,7 @@
 # Mobile & touch audit — 2026-08-28
 
-**Not for commit.** Local working notes for the mobile pass that follows the
-current (desktop-scoped) staging.
+**Status: open.** The mobile pass; the desktop-scoped staging it followed is
+now committed. Committed 2026-08-29 in `ebdcc37`.
 
 Measured on the current tree at `localhost:3000`, after the rail refactor,
 motion work, and lib extraction. Viewports m320 / m390 / m425 / t768 across all
