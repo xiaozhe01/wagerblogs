@@ -1,4 +1,4 @@
-import ReviewSectionHeading from "@/components/section/ReviewSectionHeading";
+import ReviewSection from "@/components/section/ReviewSection";
 
 type ProsConsSectionProps = {
   pros: string[];
@@ -7,8 +7,7 @@ type ProsConsSectionProps = {
 
 export default function ProsConsSection({ pros, cons }: ProsConsSectionProps) {
   return (
-    <section>
-      <ReviewSectionHeading title="Where it wins and where it doesn't" />
+    <ReviewSection title="Where it wins and where it doesn't">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
         <div className="card">
           <h3 className="text-sm font-bold text-text-primary mb-2.5">Strengths</h3>
@@ -33,6 +32,6 @@ export default function ProsConsSection({ pros, cons }: ProsConsSectionProps) {
           </ul>
         </div>
       </div>
-    </section>
+    </ReviewSection>
   );
 }
