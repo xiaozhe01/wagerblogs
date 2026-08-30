@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { sampleComments } from "@/lib/mock-data";
 
 export default function Comments() {
   return (
-    <section className="pt-1" aria-labelledby="comments-heading">
+    <section aria-labelledby="comments-heading">
       <div className="border-t border-border-divider pt-4 flex items-baseline gap-3 flex-wrap mb-1">
         <h2 id="comments-heading" className="text-md font-bold text-text-primary">
           Comments
@@ -27,7 +26,7 @@ export default function Comments() {
             disabled
             aria-describedby="comment-moderation-note"
             placeholder="Plain text, no links to operators"
-            className="w-full resize-y border border-dashed border-border-placeholder rounded-sm px-3 py-2.5 text-xs text-text-subtle font-mono mb-2 disabled:cursor-not-allowed"
+            className="w-full resize-y border border-dashed border-border-placeholder rounded-sm px-3 py-2.5 text-xs text-text-subtle tabular-nums mb-2 disabled:cursor-not-allowed"
           />
           <div className="flex items-center gap-3 flex-wrap">
             <button
@@ -61,15 +60,6 @@ export default function Comments() {
           </li>
         ))}
       </ul>
-
-      <div className="pt-2.5">
-        <Link
-          href="/about"
-          className="text-2xs text-text-subtle underline transition-colors hover:text-text-primary"
-        >
-          comment policy
-        </Link>
-      </div>
     </section>
   );
 }

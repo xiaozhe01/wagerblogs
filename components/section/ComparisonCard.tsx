@@ -1,6 +1,7 @@
 import { operators, compareRows } from "@/lib/mock-data";
 import PrimaryDomainLink from "../PrimaryDomainLink";
 import ArrowLink from "@/components/ui/ArrowLink";
+import { headingId } from "@/lib/utils";
 import type { ComparisonOperator } from "@/lib/types";
 
 // The grid this replaced put its 24px edge inset and 16px column gaps *outside*
@@ -10,34 +11,31 @@ import type { ComparisonOperator } from "@/lib/types";
 const firstCellPadding = "pl-4 pr-2";
 const cellPadding = "px-2";
 
-function ComparisonLinkOrNote({
-  operator,
-  variant,
-}: {
-  operator: ComparisonOperator;
-  variant: "grid" | "card";
-}) {
+function ComparisonLinkOrNote({ operator }: { operator: ComparisonOperator }) {
   if (operator.isPrimaryDomain) {
     return <PrimaryDomainLink linkTier="tier2" primaryDomainLink={operator.primaryDomainLink} />;
   }
-  if (variant === "grid") {
-    return (
-      <p className="text-xs text-text-subtle font-mono leading-relaxed">
-        text-only comparison
-        <br />
-        no outbound link
-      </p>
-    );
-  }
   return (
-    <p className="text-xs text-text-subtle font-mono">text-only comparison · no outbound link</p>
+    <p className="text-2xs text-text-subtle font-medium leading-relaxed">
+      text-only comparison · no outbound link
+    </p>
   );
 }
 
+const TITLE = "Compare Sportsbooks Side by Side";
+
+// `id` is the caller's anchor target; the heading carries its own.
 export default function ComparisonCard({ id }: { id?: string } = {}) {
+  const titleId = headingId("section", TITLE);
   return (
-    <section id={id} className="flex flex-col gap-3">
-      <h2 className="heading text-2xl">Compare Sportsbooks Side by Side</h2>
+    <section
+      id={id}
+      aria-labelledby={titleId}
+      className="flex flex-col gap-3 bg-bg-subtle border border-border-divider rounded-md p-3"
+    >
+      <h2 id={titleId} className="heading text-2xl">
+        {TITLE}
+      </h2>
       <div className="hidden lg:block border border-border-divider rounded-md overflow-x-auto bg-bg-card">
         <table className="min-w-150 w-full table-fixed">
           <caption className="sr-only">
@@ -55,21 +53,17 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
             <col />
             <col />
             <col />
-            <col className="w-[16px]" />
           </colgroup>
-          <thead>
-            <tr className="bg-bg-subtle border-b border-border-divider">
-              <th
-                scope="col"
-                className={`meta-label ${firstCellPadding} py-4 align-top text-left font-normal`}
-              >
-                FEATURE
+          <thead className="bg-bg-subtle">
+            <tr className=" border-b border-border-divider">
+              <th scope="col" className={`${firstCellPadding} py-4 align-top text-left font-bold`}>
+                Feature
               </th>
               {operators.map((op) => (
                 <th
                   scope="col"
                   key={op.name}
-                  className={`${cellPadding} py-4 align-top text-left text-sm font-bold text-text-primary`}
+                  className={`${cellPadding} py-4 align-top text-center text-sm font-bold text-text-primary`}
                 >
                   {op.name}
                 </th>
@@ -81,33 +75,20 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
               <tr key={row.label} className="border-b border-border-hairline">
                 <th
                   scope="row"
-                  className={`${firstCellPadding} py-4 align-top text-left text-sm font-normal text-text-meta`}
+                  className={`${firstCellPadding} py-4 align-top text-left text-sm font-medium text-text-meta`}
                 >
                   {row.label}
                 </th>
                 {row.values.map((v, i) => (
                   <td
                     key={i}
-                    className={`${cellPadding} py-4 align-top text-sm text-text-strong-secondary`}
+                    className={`${cellPadding} py-4 align-top text-sm text-center font-medium text-text-strong-secondary`}
                   >
                     {v}
                   </td>
                 ))}
               </tr>
             ))}
-            <tr>
-              <th
-                scope="row"
-                className={`meta-label ${firstCellPadding} py-4 align-middle text-left font-normal`}
-              >
-                LINK
-              </th>
-              {operators.map((op) => (
-                <td key={op.name} className={`${cellPadding} py-4 align-middle`}>
-                  <ComparisonLinkOrNote operator={op} variant="grid" />
-                </td>
-              ))}
-            </tr>
           </tbody>
         </table>
       </div>
@@ -119,22 +100,22 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
               {compareRows.map((r) => (
                 <div
                   key={r.label}
-                  className="flex justify-between gap-3 text-sm text-text-muted py-1.5 border-b border-border-hairline-alt"
+                  className="flex justify-between gap-3 text-sm font-bold text-text-muted py-1.5 border-b border-border-hairline-alt"
                 >
                   <dt>{r.label}</dt>
-                  <dd className="text-text-strong-secondary font-semibold">{r.values[i]}</dd>
+                  <dd className="text-text-strong-secondary font-medium">{r.values[i]}</dd>
                 </div>
               ))}
             </dl>
             <div className="mt-3">
-              <ComparisonLinkOrNote operator={op} variant="card" />
+              <ComparisonLinkOrNote operator={op} />
             </div>
           </li>
         ))}
       </ul>
       <ArrowLink
         href="/reviews"
-        className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group w-fit"
+        className="inline-flex items-center self-center gap-1 text-md text-text-primary font-semibold group w-fit"
       >
         Full Comparison Tool
       </ArrowLink>
