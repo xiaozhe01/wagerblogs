@@ -24,13 +24,12 @@ export default function NotFound() {
       {/* TODO(cms): hrefs must come from the same dynamic popular-posts data as the labels */}
       <AnchorList
         title="Popular right now"
-        cardClassName="card pb-0"
+        cardClassName="card"
         items={popular.map((p, i) => ({
           href: "/blog/sample-post",
           label: p,
           key: i,
         }))}
-        itemClassName="flex items-center min-h-11 lg:min-h-9.5 text-sm text-text-body no-underline border-b border-border-hairline-alt [li:last-child_&]:border-b-0 leading-snug"
       />
     </>
   );

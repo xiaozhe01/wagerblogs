@@ -11,7 +11,6 @@ import MarketCard from "@/components/section/MarketCard";
 import ExploreSection from "@/components/section/ExploreSection";
 import LatestNewsSection, { NEWS_PARAM } from "@/components/section/LatestNewsSection";
 import BlogSection from "@/components/section/BlogSection";
-import Divider from "@/components/ui/Divider";
 import BettingToolboxSection from "@/components/section/BettingToolboxSection";
 import TopHeroSection from "@/components/section/TopHeroSection";
 
@@ -39,44 +38,37 @@ export default async function Home({
       {/* Register: Editorial · Tier 1 — no outbound operator links */}
       <TopHeroSection />
 
+      {/* No wrapper section here: it grouped both registers under one tag, so no
+          honest aria-label covered it, and its own gap set the page rhythm that
+          <main> owns everywhere else. Each block is a direct child instead. */}
+
       {/* Register: Comparison · Tier 2/3 — CTA-bearing, one primary-domain entry per list */}
-      <section
-        aria-label="Operator comparisons"
-        className="flex flex-col gap-5 bg-bg-subtle border border-border-divider rounded-md p-4"
-      >
-        <RankedListSection
-          title="Top-Rated Sportsbooks — July 2026"
-          operators={mockRankedSportsbooks}
-        />
+      <RankedListSection
+        title="Top-Rated Sportsbooks — July 2026"
+        operators={mockRankedSportsbooks}
+      />
+      <ReviewCard />
+      {/* TODO(cms): EditorialByline — requires a real Person record (photo, fullName,
+          credential, authorUrl, quote). Sample fixture shown for layout reference only;
+          omit this section entirely until a real author is connected. */}
+      <WriterQuoteCard />
+      <RankedListSection
+        title="Top-Rated Online Casinos — July 2026"
+        operators={mockRankedCasinos}
+      />
+      <FeaturedBonusesCard />
+      <ComparisonCard />
 
-        <ReviewCard />
-        {/* TODO(cms): EditorialByline — requires a real Person record (photo, fullName,
-            credential, authorUrl, quote). Sample fixture shown for layout reference only;
-            omit this section entirely until a real author is connected. */}
-        <WriterQuoteCard />
-        <RankedListSection
-          title="Top-Rated Online Casinos — July 2026"
-          operators={mockRankedCasinos}
-        />
+      {/* TODO(cms): SourcedStat[] — sample fixture from Component-Reference-Filled-States;
+          each figure needs a real named source + reporting period, or the strip collapses. */}
+      <MarketCard />
 
-        <FeaturedBonusesCard />
-        <ComparisonCard />
-
-        {/* TODO(cms): SourcedStat[] — sample fixture from Component-Reference-Filled-States;
-            each figure needs a real named source + reporting period, or the strip collapses. */}
-        <MarketCard />
-      </section>
-
-      {/* Register: Editorial · Tier 1 — internal links only */}
-      <div className="flex flex-col gap-5">
-        <ExploreSection />
-        <Divider />
-        <LatestNewsSection categoryParam={params[NEWS_PARAM]} />
-        <Divider />
-        <BlogSection />
-        <Divider />
-        <BettingToolboxSection />
-      </div>
+      {/* Register: Comparison · Tier 1 — carded like the blocks above, but
+          internal links only; docs/02 §5 has the homepage mixing both. */}
+      <ExploreSection />
+      <LatestNewsSection categoryParam={params[NEWS_PARAM]} />
+      <BlogSection />
+      <BettingToolboxSection />
 
       {/* TODO(cms): "As Featured In" media placements — omitted entirely; no logo
           placeholders and no "as seen in" strip until a real placement exists. */}

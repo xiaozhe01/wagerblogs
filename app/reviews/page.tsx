@@ -35,7 +35,7 @@ export default function ReviewsIndexPage() {
       {/* Register: Comparison · Tier 2/3 — CTA-bearing, one primary-domain entry per list */}
       <Breadcrumbs items={[{ label: "Reviews" }]} />
 
-      <header className="flex flex-col gap-3 max-w-160">
+      <header className="flex flex-col gap-3">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Sportsbook & casino reviews
         </h1>
@@ -44,10 +44,7 @@ export default function ReviewsIndexPage() {
         </p>
       </header>
 
-      <section
-        aria-label="Operator rankings"
-        className="flex flex-col gap-5 bg-bg-subtle border border-border-divider rounded-md p-4"
-      >
+      <section aria-label="Operator rankings" className="flex flex-col gap-5">
         <RankedListSection
           title="Top-Rated Sportsbooks — July 2026"
           operators={mockRankedSportsbooks}
