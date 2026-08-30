@@ -3,7 +3,7 @@ import BonusOfferCard from "@/components/cards/BonusOfferCard";
 
 export default function FeaturedBonusesCard() {
   return (
-    <section className="flex flex-col gap-3" aria-labelledby="featured-bonuses">
+    <section className="flex flex-col gap-3 card" aria-labelledby="featured-bonuses">
       <h2 id="featured-bonuses" className="heading text-2xl">
         Featured Bonuses This Week
       </h2>

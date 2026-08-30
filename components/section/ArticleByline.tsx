@@ -33,9 +33,9 @@ export default function ArticleByline({
           >
             {name}
           </Link>
-          <span className="text-xs text-text-meta"> · {credential}</span>
+          <span className="text-xs font-medium text-text-meta"> · {credential}</span>
         </address>
-        <p className="text-xs font-medium text-text-subtle font-mono leading-relaxed mt-2">
+        <p className="text-xs font-medium text-text-subtle tabular-nums leading-relaxed mt-2">
           Published {isoDate ? <time dateTime={isoDate}>{publishedAt}</time> : publishedAt} ·{" "}
           {readTime}
         </p>

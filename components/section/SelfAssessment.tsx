@@ -71,7 +71,7 @@ export default function SelfAssessment() {
         </p>
         <h3 className="heading text-3xl leading-snug">{result.label}</h3>
         <p className="text-md text-text-body leading-relaxed text-pretty">{result.description}</p>
-        <p className="text-xs text-text-meta leading-lead text-pretty">
+        <p className="text-xs text-text-meta leading-copy text-pretty">
           This is a self-assessment, not a diagnosis. Only a qualified professional can diagnose a
           gambling disorder. If anything here worries you, talk to someone — see our{" "}
           <Link href="/responsible-gambling/help-directory" className="underline">
@@ -110,7 +110,7 @@ export default function SelfAssessment() {
             {OPTIONS.map((option) => (
               <label
                 key={option.label}
-                className="flex items-center gap-3 min-h-11 px-3.5 py-2.5 rounded-md border border-border-input cursor-pointer transition-colors hover:bg-bg-subtle has-checked:border-text-primary has-checked:bg-bg-subtle has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-text-primary"
+                className="flex items-center gap-3 min-h-11 px-3.5 py-2.5 rounded-md border border-border-dark/50 cursor-pointer transition-colors hover:bg-bg-subtle has-checked:border-text-primary has-checked:bg-bg-subtle has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-text-primary"
               >
                 <input
                   type="radio"
@@ -119,13 +119,18 @@ export default function SelfAssessment() {
                   onChange={() => answer(option.value)}
                   className="sr-only peer"
                 />
-                <span className="size-5 shrink-0 rounded-full border-2 border-border-input peer-checked:border-6 peer-checked:border-text-primary transition-all" />
-                <span className="flex-1 text-md font-medium text-text-strong-secondary peer-checked:font-semibold peer-checked:text-text-primary">
+                {/* border-border-dark/50 matches the label's own boundary and
+                    clears 1.4.11; border-border-input was 1.61:1 against white,
+                    so the control was invisible until selected. */}
+                <span className="size-legacy-6 shrink-0 rounded-full border-2 border-border-dark/50 peer-checked:border-5 peer-checked:border-text-primary transition-all" />
+                {/* No weight change on check — it reflows the label. Selection
+                    is already carried by the ring, border, fill and colour. */}
+                <span className="flex-1 text-md font-medium text-text-strong-secondary peer-checked:text-text-primary">
                   {option.label}
                 </span>
                 <span
                   aria-hidden="true"
-                  className="size-5 shrink-0 grid place-items-center rounded-sm border border-border-hairline-alt text-2xs font-mono text-text-meta"
+                  className="size-legacy-6 shrink-0 grid place-items-center rounded-sm border border-border-dark/80 text-2xs tabular-nums text-text-meta font-bold"
                 >
                   {option.hint}
                 </span>
@@ -140,7 +145,7 @@ export default function SelfAssessment() {
           type="button"
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={index === 0}
-          className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-secondary disabled:opacity-60 disabled:cursor-not-allowed"
         >
           Previous
         </button>
@@ -148,7 +153,7 @@ export default function SelfAssessment() {
           type="button"
           onClick={next}
           disabled={current === null}
-          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isLast ? "See result" : "Next"}
         </button>

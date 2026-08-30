@@ -24,7 +24,7 @@ export default function ReviewCard() {
             >
               {i + 1}
             </span>
-            <p className="text-xs text-text-body leading-relaxed">{m}</p>
+            <p className="text-xs text-text-body font-medium leading-relaxed">{m}</p>
           </li>
         ))}
       </ol>

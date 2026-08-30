@@ -6,11 +6,7 @@ export default function WriterQuoteCard() {
     /* TODO(cms): EditorialByline — requires a real Person record (photo, fullName,
             credential, authorUrl, quote). Sample fixture shown for layout reference only;
             omit this section entirely until a real author is connected. */
-    <BylineCard
-      as="figure"
-      wrapperClassName="card flex gap-4 items-center"
-      profileHref="/authors/jane-placeholder"
-    >
+    <BylineCard as="figure" wrapperClassName="card flex gap-4 items-center">
       <blockquote className="text-sm text-text-strong-secondary italic leading-relaxed mb-2">
         <p>
           &ldquo;Every operator on this list was funded, wagered on, and withdrawn from by our team
