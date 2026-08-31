@@ -117,14 +117,14 @@ export default function BlogPostPage() {
             surfaces — for example{" "}
             <Link
               href="/blog"
-              className="text-text-body underline underline-offset-2 transition-colors hover:text-text-primary"
+              className="text-brand underline underline-offset-2 transition-colors hover:text-brand-hover"
             >
               our guide to odds formats
             </Link>{" "}
             or the{" "}
             <Link
               href="/reviews"
-              className="text-text-body underline underline-offset-2 transition-colors hover:text-text-primary"
+              className="text-brand underline underline-offset-2 transition-colors hover:text-brand-hover"
             >
               sportsbook comparison
             </Link>

@@ -32,7 +32,7 @@ export default function Comments() {
             <button
               type="submit"
               disabled
-              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Post comment
             </button>

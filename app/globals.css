@@ -57,6 +57,16 @@
   --color-bg-dark-block: #1a1a1a;
   --color-border-on-dark: #333333;
 
+  /* Wayfinding, and affirmative actions that are not the operator CTA.
+     Deliberately NOT used by .btn-primary: the outbound operator link must not
+     wear the site's identity colour, or the brand reads affiliate-first
+     (docs/02 §6). */
+  --color-brand: #1d3b73;
+  --color-brand-hover: #16305f;
+  --color-brand-active: #0f244b;
+  /* Dark surfaces only — 2.41:1 on light, so the two are never swappable. */
+  --color-brand-on-dark: #7fa3e0;
+
   /* Typography — families. Was 2 fonts (Newsreader serif for editorial
      headings, Inter sans for comparison-register headings + everything
      else) — unified to one sans family sitewide per direct instruction,
@@ -301,7 +311,9 @@ body {
     padding: var(--spacing-3);
   }
 
-  /* Buttons — primary (dark fill, e.g. Log In, CTAs) and secondary (outline) */
+  /* Buttons. .btn-primary is the outbound operator CTA only — it stays
+     near-black on purpose, see --color-brand. .btn-brand is every other
+     affirmative action. .btn-secondary is the outline variant. */
   .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -361,13 +373,54 @@ body {
     background: var(--color-bg-subtle-active);
   }
 
+  /* Affirmative actions that are not the operator CTA — auth, form submits.
+     Geometry matches .btn-primary exactly; only the fill differs. */
+  .btn-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(var(--spacing) * 11);
+    padding: 10px 16px;
+    background: var(--color-brand);
+    color: var(--color-text-on-accent);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-base);
+    line-height: var(--leading-heading);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  :is(a, button).btn-brand:hover {
+    background: var(--color-brand-hover);
+  }
+  :is(a, button).btn-brand:active {
+    background: var(--color-brand-active);
+  }
+
+  /* Active filter chip — a state, not a button. Chips borrowed .btn-primary's
+     near-black fill and so read as loud as the operator CTA. The tint is
+     derived from --color-brand rather than pinned to a second hex, so it
+     follows the token. Without color-mix support the background is dropped and
+     the chip still reads via its accent text and border. */
+  .chip-active {
+    background: color-mix(in srgb, var(--color-brand) 10%, transparent);
+    color: var(--color-brand);
+    border-color: var(--color-brand);
+  }
+
   /* Keyboard focus for the hand-rolled interactive classes — the shadcn
      components ship focus-visible rings; these keep parity so focus is
      visible across both families. */
   .btn-primary:focus-visible,
   .btn-secondary:focus-visible,
+  .btn-brand:focus-visible,
   .editorial-link-card:focus-visible {
-    outline: 2px solid var(--color-text-primary);
+    /* Accent, not text-primary: a near-black ring on near-black text is
+       indistinguishable from the content it is meant to single out. */
+    outline: 2px solid var(--color-brand);
     outline-offset: 2px;
   }
 

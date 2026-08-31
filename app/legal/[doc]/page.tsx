@@ -110,7 +110,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
                 active: slug === docSlug,
                 key: slug,
               }))}
-              activeClassName="btn-primary"
+              activeClassName="btn-secondary chip-active"
               inactiveClassName="btn-secondary"
             />
           </ul>

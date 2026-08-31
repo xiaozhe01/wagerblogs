@@ -122,7 +122,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                 {expandable ? (
                   <>
                     <NavigationMenuTrigger
-                      className={`w-full h-auto justify-start gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "bg-bg-subtle" : ""}`}
+                      className={`w-full h-auto justify-start gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "text-brand font-semibold" : ""}`}
                     >
                       <NavIconLabel icon={Icon} label={g.label} />
                     </NavigationMenuTrigger>
@@ -160,7 +160,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                   <NavigationMenuLink
                     href={g.href}
                     aria-current={g.id === activeId ? "page" : undefined}
-                    className={`w-full gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "bg-bg-subtle" : ""}`}
+                    className={`w-full gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "text-brand font-semibold" : ""}`}
                   >
                     <NavIconLabel icon={Icon} label={g.label} />
                   </NavigationMenuLink>
@@ -174,7 +174,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
       {/* TODO(cms): swap for real auth state — this is a static Log In link */}
       <Link
         href="/login"
-        className="group w-full min-h-5 px-2.5 py-1.5 flex items-center justify-start gap-2.5 rounded-md text-sm font-semibold leading-snug no-underline transition-colors duration-300 hover:bg-bg-subtle-active hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text-primary"
+        className="group w-full min-h-5 px-2.5 py-1.5 flex items-center justify-start gap-2.5 rounded-md text-sm font-semibold leading-snug no-underline transition-colors duration-300 hover:bg-bg-subtle-active hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
       >
         <span className="w-6.5 h-6.5 shrink-0 flex items-center justify-center">
           <User strokeWidth={2.5} aria-hidden="true" className="size-3" />

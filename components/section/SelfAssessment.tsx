@@ -110,7 +110,7 @@ export default function SelfAssessment() {
             {OPTIONS.map((option) => (
               <label
                 key={option.label}
-                className="flex items-center gap-3 min-h-11 px-3.5 py-2.5 rounded-md border border-border-dark/50 cursor-pointer transition-colors hover:bg-bg-subtle has-checked:border-text-primary has-checked:bg-bg-subtle has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-text-primary"
+                className="flex items-center gap-3 min-h-11 px-3.5 py-2.5 rounded-md border border-border-dark/50 cursor-pointer transition-colors hover:bg-bg-subtle has-checked:border-text-primary has-checked:bg-bg-subtle has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand"
               >
                 <input
                   type="radio"
@@ -153,7 +153,7 @@ export default function SelfAssessment() {
           type="button"
           onClick={next}
           disabled={current === null}
-          className="btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
+          className="btn-brand disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isLast ? "See result" : "Next"}
         </button>

@@ -224,7 +224,7 @@ export default function OperatorReviewPage() {
               Reviews are tied to an account — one per member per operator, held for moderation
               before they appear.
             </p>
-            <Link href="/login" className="btn-primary">
+            <Link href="/login" className="btn-brand">
               Sign in to review
             </Link>
           </div>

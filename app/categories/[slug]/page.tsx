@@ -130,7 +130,7 @@ export default async function CategoryPage({
                   }),
                   active: f === activeType,
                 }))}
-                activeClassName="btn-primary"
+                activeClassName="btn-secondary chip-active"
                 inactiveClassName="btn-secondary"
               />
             </ul>

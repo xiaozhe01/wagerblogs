@@ -6,7 +6,7 @@ import { headingId } from "@/lib/utils";
 const rowClassName =
   "px-2 py-1.5 min-h-11 wide:min-h-5 flex items-center justify-between gap-2.5 rounded-sm text-sm font-medium leading-snug no-underline transition-colors hover:bg-bg-subtle";
 const rowRestClassName = "text-text-body";
-const rowCurrentClassName = "text-text-primary font-bold";
+const rowCurrentClassName = "text-brand font-bold";
 const rowBleedClassName = "-mx-2";
 
 type AnchorListItem = {

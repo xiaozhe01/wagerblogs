@@ -13,7 +13,7 @@ export default function LatestNewsCategory({ items }: LatestNewsCategoryProps) {
           inList
           filter
           items={items}
-          activeClassName="btn-primary"
+          activeClassName="btn-secondary chip-active"
           inactiveClassName="btn-secondary"
         />
       </ul>

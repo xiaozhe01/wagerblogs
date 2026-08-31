@@ -109,7 +109,7 @@ export default async function RGDirectoryPage({
                 href: regionHref(r),
                 active: r === activeRegion,
               }))}
-              activeClassName="btn-primary"
+              activeClassName="btn-secondary chip-active"
               inactiveClassName="btn-secondary"
             />
           </ul>
