@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import BackToTop from "./BackToTop";
 import SideNav from "./SideNav";
 import TopHeader from "./TopHeader";
 import SiteFooter from "./SiteFooter";
@@ -25,7 +26,7 @@ export default function PageShell({
   children: ReactNode;
 }) {
   return (
-    <div className="max-w-(--grid-max-width) mx-auto px-container-mobile md:px-container-tablet lg:px-container-desktop pt-container-mobile md:pt-container-tablet lg:pt-container-desktop pb-10">
+    <div className="max-w-(--grid-max-width) mx-auto px-container-mobile md:px-container-tablet lg:px-container-desktop pt-container-mobile md:pt-container-tablet lg:pt-container-desktop">
       <div className={`${shellTracks} wide:items-start`}>
         <SideNav activeId={activeNavId} />
         <div className="min-w-0">
@@ -33,13 +34,15 @@ export default function PageShell({
           <main className={`flex flex-col ${MAIN_GAP[register]} mt-4 wide:mt-0`}>{children}</main>
         </div>
         {rail && (
-          <aside className="hidden wide:flex flex-col gap-3 wide:sticky wide:top-container-desktop wide:max-h-[calc(100dvh-(var(--spacing-container-desktop)*2))] wide:overflow-y-auto overscroll-contain">
-            {rail}
+          <aside className="hidden wide:flex flex-col justify-between gap-3 wide:sticky wide:top-container-desktop wide:h-[calc(100dvh-(var(--spacing-container-desktop)*2))] wide:overflow-y-auto overscroll-contain">
+            <div className="flex flex-col gap-3">{rail}</div>
+            <BackToTop />
           </aside>
         )}
-      </div>
-      <div className={shellTracks}>
-        <div className="min-w-0 wide:col-start-2">
+        {/* pb-10 sits here, not on the shell wrapper: as wrapper padding it put
+            the grid container's bottom 40px above the document's, so at max
+            scroll the sticky rail had 8px too little room and jumped up 16px. */}
+        <div className="min-w-0 wide:col-start-2 pb-10">
           <SiteFooter />
         </div>
       </div>
