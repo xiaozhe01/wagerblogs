@@ -8,6 +8,9 @@
     "start": "next start",
     "preview": "next build && next start -p 4400",
     "lint": "eslint",
+    "check:tokens": "node scripts/check-color-invariants.mjs",
+    "prebuild": "npm run check:tokens",
+    "pretest:a11y": "npm run check:tokens",
     "test:a11y": "playwright test"
   },
   "dependencies": {
