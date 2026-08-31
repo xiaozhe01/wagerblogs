@@ -2,6 +2,7 @@ import Link from "next/link";
 import { footerCols, legalLinks, legalParagraphs } from "@/lib/site-data";
 import { helplineNumber } from "@/lib/mock-data";
 import ArrowLink from "@/components/ui/ArrowLink";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 
 // RG banner + footer nav + extended legal strip. Present at the bottom of every route.
 // The RG banner and legal strip must stay INSIDE this <footer> or the publisher and
@@ -24,11 +25,11 @@ export default function SiteFooter() {
         </div>
       </section>
 
-      <div className="mt-4 rounded-md bg-bg-inverted text-text-on-inverted-muted p-4">
+      <div className="mt-4 rounded-md bg-bg-chrome text-text-on-chrome-muted p-4">
         <nav aria-label="Footer" className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-3 mb-4">
           {footerCols.map((col) => (
             <div key={col.heading}>
-              <h3 className="text-2xs font-bold text-text-on-inverted uppercase tracking-wide mb-3">
+              <h3 className="text-2xs font-bold text-text-on-chrome uppercase tracking-wide mb-3">
                 {col.heading}
               </h3>
               <ul role="list" className="flex flex-col gap-3">
@@ -36,7 +37,7 @@ export default function SiteFooter() {
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="group flex items-center min-h-0 text-2xs text-text-on-inverted-muted font-medium no-underline"
+                      className="group flex items-center min-h-0 text-2xs text-text-on-chrome-muted font-medium no-underline"
                     >
                       <span className="relative after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out after:content-[''] group-hover:after:scale-x-100">
                         {l.label}
@@ -48,7 +49,7 @@ export default function SiteFooter() {
             </div>
           ))}
         </nav>
-        <div className="border-t border-border-on-inverted pt-4 text-2xs text-text-on-inverted-muted leading-copy">
+        <div className="border-t border-border-on-chrome pt-4 text-2xs text-text-on-chrome-muted leading-copy">
           <p className="mb-2 font-medium">
             WagerBlogs is an independent media and affiliate publisher. We may earn commission from
             partner links. 21+. Gambling involves risk — please play responsibly.
@@ -85,10 +86,13 @@ export default function SiteFooter() {
         </p>
         {/* TODO(cms): ComplianceBadge[] — intentionally omitted. Render only once real, verifiable
             certifications exist (name, issuer, reference, verifyUrl). Never ship placeholder badges. */}
-        <p className="border-t border-border-divider mt-4 pt-3.5 text-2xs text-text-muted font-medium leading-copy">
-          © 2026 WagerBlogs Media Ltd. All rights reserved. All trademarks are the property of their
-          respective owners and are used for identification purposes only.
-        </p>
+        <div className="border-t border-border-divider mt-4 pt-3.5 flex flex-col md:flex-row md:items-start justify-between gap-3">
+          <p className="text-2xs text-text-muted font-medium leading-copy">
+            © 2026 WagerBlogs Media Ltd. All rights reserved. All trademarks are the property of
+            their respective owners and are used for identification purposes only.
+          </p>
+          <ThemeToggle />
+        </div>
       </section>
     </footer>
   );

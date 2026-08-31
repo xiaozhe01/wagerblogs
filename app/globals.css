@@ -28,10 +28,12 @@
   --color-text-strong-secondary: #343330;
   --color-text-body: #565551;
   --color-text-muted: #656460;
-  /* "Inverted" = breaks from the page ground, not "dark" — it flips under a
-     dark theme. "on-fill" = text over any solid filled control. */
+  /* "inverted" is the exceptional panel and flips under dark; "chrome" is
+     footer chrome and stays dark. "on-fill" is text over a solid control. */
   --color-text-on-inverted: #f1eee5;
   --color-text-on-inverted-muted: #bebbb3;
+  --color-text-on-chrome: #f1eee5;
+  --color-text-on-chrome-muted: #bebbb3;
   --color-text-on-fill: #fffdf7;
 
   /* Color — borders / dividers. Warm twins holding the previous ratio
@@ -53,13 +55,18 @@
   --color-bg-subtle: #f3ede0;
 
   /* --color-bg-accent is .btn-primary's fill plus the avatar/badge chrome —
-     it stays black because black means "leaves the site for an operator". */
+     it stays black because black means "leaves the site for an operator".
+     Was #111111, identical to --color-text-primary, from the file's first
+     commit until the warm-ink pass. Now deliberately apart: text takes chroma
+     0.006 and large fills 0.012, since perceived chroma scales with area. */
   --color-bg-accent: #13110b;
   --color-bg-accent-hover: #2d2a23;
   --color-bg-accent-active: #000000;
   --color-bg-subtle-active: #e9e1cf;
   --color-bg-inverted: #1c1a14;
   --color-border-on-inverted: #36332c;
+  --color-bg-chrome: #1c1a14;
+  --color-border-on-chrome: #36332c;
 
   /* Footer safety strip. Separation from --color-bg-accent is enforced by
      scripts/check-color-invariants.mjs. */
@@ -645,4 +652,49 @@ body {
   html {
     @apply font-sans;
   }
+}
+
+/* Must stay after shadcn's .dark above, or only half the site flips.
+   Derived in .claude/visual-harness/dark-ramp.mjs. */
+.dark {
+  --color-text-primary: #fefcf7;
+  --color-text-strong-secondary: #d3d1cb;
+  --color-text-body: #a3a19a;
+  --color-text-muted: #918e86;
+
+  --color-text-on-inverted: #201e1b;
+  --color-text-on-inverted-muted: #44423c;
+  --color-text-on-chrome: #f1eee5;
+  --color-text-on-chrome-muted: #bebbb3;
+  --color-text-on-fill: #17150f;
+
+  --color-border-input: #3f3c36;
+  --color-border-input-hover: #64615a;
+  --color-border-default: #312f28;
+  --color-border-divider: #2d2a24;
+  --color-border-hairline: #24211b;
+  --color-border-hairline-alt: #222019;
+  --color-border-placeholder: #4a4740;
+  --color-border-control: #d4d0c8;
+
+  --color-bg-page: #17150f;
+  --color-bg-card: #17150f;
+  --color-bg-subtle: #211e18;
+  --color-bg-subtle-active: #2a2720;
+
+  --color-bg-accent: #bab5ac;
+  --color-bg-accent-hover: #aaa79d;
+  --color-bg-accent-active: #cdc9bf;
+
+  --color-bg-inverted: #f6f3eb;
+  --color-border-on-inverted: #d4d0c8;
+  --color-bg-chrome: #211e18;
+  --color-border-on-chrome: #35322a;
+
+  --color-bg-safety: #4c6796;
+
+  --color-brand: #9fc5ff;
+  --color-brand-hover: #92b8f9;
+  --color-brand-active: #88acee;
+  --color-brand-on-inverted: #34548e;
 }
