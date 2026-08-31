@@ -43,7 +43,7 @@ export default function LatestNewsSection({
       {/* Keyed so only the feed replays the fade. */}
       <div key={category} className="route-transition">
         {items.length === 0 ? (
-          <p className="text-sm font-medium text-text-meta leading-relaxed">
+          <p className="text-sm font-medium text-text-muted leading-relaxed">
             No stories filed under {category} yet.
           </p>
         ) : (

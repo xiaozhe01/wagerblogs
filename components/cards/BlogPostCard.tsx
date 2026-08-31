@@ -19,16 +19,16 @@ export default function BlogPostCard({ href, title, kicker, excerpt, byline }: B
       >
         <div
           aria-hidden="true"
-          className="h-42 rounded-md placeholder-asset text-2xs text-text-subtle tabular-nums mb-3"
+          className="h-42 rounded-md placeholder-asset text-2xs text-text-muted tabular-nums mb-3"
         >
           [image]
         </div>
         {kicker && <p className="meta-label-caps mb-1.5">{kicker}</p>}
         <h3 className="heading text-2xl leading-snug mb-2 text-pretty">{title}</h3>
         {excerpt && (
-          <p className="text-md font-medium text-text-meta leading-loose mb-2">{excerpt}</p>
+          <p className="text-md font-medium text-text-muted leading-loose mb-2">{excerpt}</p>
         )}
-        {byline && <p className="text-xs font-medium text-text-subtle tabular-nums">{byline}</p>}
+        {byline && <p className="text-xs font-medium text-text-muted tabular-nums">{byline}</p>}
       </Link>
     </article>
   );

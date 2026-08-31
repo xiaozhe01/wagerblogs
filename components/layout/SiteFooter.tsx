@@ -74,7 +74,7 @@ export default function SiteFooter() {
         </ul>
         <div className="flex flex-col gap-2.5">
           {legalParagraphs.map((p, i) => (
-            <p key={i} className="text-2xs text-text-meta font-medium leading-copy">
+            <p key={i} className="text-2xs text-text-muted font-medium leading-copy">
               {p}
             </p>
           ))}
@@ -85,7 +85,7 @@ export default function SiteFooter() {
         </p>
         {/* TODO(cms): ComplianceBadge[] — intentionally omitted. Render only once real, verifiable
             certifications exist (name, issuer, reference, verifyUrl). Never ship placeholder badges. */}
-        <p className="border-t border-border-divider mt-4 pt-3.5 text-2xs text-text-subtle font-medium leading-copy">
+        <p className="border-t border-border-divider mt-4 pt-3.5 text-2xs text-text-muted font-medium leading-copy">
           © 2026 WagerBlogs Media Ltd. All rights reserved. All trademarks are the property of their
           respective owners and are used for identification purposes only.
         </p>

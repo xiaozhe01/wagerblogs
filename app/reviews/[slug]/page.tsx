@@ -95,7 +95,7 @@ export default function OperatorReviewPage() {
             <div className="flex items-center gap-3.5 min-w-0">
               <div
                 aria-hidden="true"
-                className="w-14 h-14 shrink-0 placeholder-asset rounded-md text-2xs text-text-subtle tabular-nums"
+                className="w-14 h-14 shrink-0 placeholder-asset rounded-md text-2xs text-text-muted tabular-nums"
               >
                 [logo]
               </div>
@@ -105,7 +105,7 @@ export default function OperatorReviewPage() {
                   <span className="text-4xl font-bold text-text-primary leading-none">
                     <data value={mockPeakWagerReview.score}>{mockPeakWagerReview.score}</data>
                   </span>
-                  <span className="text-sm text-text-meta">/ 10 editorial</span>
+                  <span className="text-sm text-text-muted">/ 10 editorial</span>
                 </p>
                 {/* TODO(cms): stays bracketed on purpose. mockPeakWagerReview.lastVerified is
                     real ISO, but "tested with real deposits" is a trust claim that hasn't
@@ -134,7 +134,7 @@ export default function OperatorReviewPage() {
                 key={s.label}
                 className="border border-border-divider rounded-sm p-2.5 bg-bg-card"
               >
-                <dt className="text-2xs text-text-meta tabular-nums mb-1 uppercase">{s.label}</dt>
+                <dt className="text-2xs text-text-muted tabular-nums mb-1 uppercase">{s.label}</dt>
                 <dd className="text-lg font-bold text-text-primary">
                   <data value={s.score}>{s.score}</data>
                 </dd>
@@ -156,7 +156,7 @@ export default function OperatorReviewPage() {
               , Example Analyst
             </p>
           </div>
-          <p className="text-2xs font-medium text-text-subtle leading-relaxed">
+          <p className="text-2xs font-medium text-text-muted leading-relaxed">
             21+. Bonus T&amp;Cs apply. [terms small print placeholder — wagering, expiry,
             eligibility, state availability]
           </p>
@@ -174,7 +174,7 @@ export default function OperatorReviewPage() {
               <h3 className="text-md font-semibold text-text-primary mb-1.5">
                 Bet $5 Get $200 in Bonus Bets
               </h3>
-              <p className="text-xs text-text-subtle tabular-nums">
+              <p className="text-xs text-text-muted tabular-nums">
                 code: <code>PEAK200</code> · verified [Jun 30, 2026]
               </p>
             </div>
@@ -194,7 +194,7 @@ export default function OperatorReviewPage() {
               </div>
             ))}
           </dl>
-          <p className="text-2xs font-medium text-text-subtle leading-relaxed mt-2.5">
+          <p className="text-2xs font-medium text-text-muted leading-relaxed mt-2.5">
             [full bonus terms small print placeholder — required before publish; links to
             operator&apos;s own terms page]
           </p>
@@ -214,7 +214,7 @@ export default function OperatorReviewPage() {
               summary and the block below it. */}
           <p className="flex items-baseline gap-2 pb-4 border-b border-border-hairline">
             <span className="text-2xl font-bold text-text-primary leading-none">[x.x]</span>
-            <span className="text-sm text-text-meta">/ 5 reader average · [n] reviews</span>
+            <span className="text-sm text-text-muted">/ 5 reader average · [n] reviews</span>
           </p>
           <div className="bg-bg-subtle border border-border-divider rounded-md p-3 flex flex-col items-start gap-2.5">
             <h3 className="text-md font-semibold text-text-primary">
@@ -271,7 +271,7 @@ export default function OperatorReviewPage() {
           <div className="flex items-center gap-3.5">
             <div
               aria-hidden="true"
-              className="w-22 h-9 shrink-0 placeholder-asset rounded-md text-2xs text-text-subtle tabular-nums"
+              className="w-22 h-9 shrink-0 placeholder-asset rounded-md text-2xs text-text-muted tabular-nums"
             >
               [TP logo]
             </div>
@@ -282,7 +282,7 @@ export default function OperatorReviewPage() {
               >
                 ☆☆☆☆☆
               </p>
-              <p className="text-xs font-medium text-text-meta">4.x / 5 — N Trustpilot reviews</p>
+              <p className="text-xs font-medium text-text-muted">4.x / 5 — N Trustpilot reviews</p>
               <p className="meta-label font-medium mt-0.5">fetched [fetch date]</p>
             </div>
           </div>

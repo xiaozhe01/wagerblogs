@@ -26,9 +26,7 @@
   --color-text-primary: #111111;
   --color-text-strong-secondary: #333333;
   --color-text-body: #555555;
-  --color-text-muted: #666666;
-  --color-text-meta: #6c6c6c;
-  --color-text-subtle: #727272;
+  --color-text-muted: #646464;
   --color-text-on-dark: #eeeeee;
   --color-text-on-dark-muted: #bbbbbb;
   --color-text-on-accent: #ffffff;
@@ -400,7 +398,7 @@ body {
     font-size: var(--text-2xs);
     font-weight: var(--font-weight-medium);
     line-height: var(--leading-heading);
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     letter-spacing: 0.05em;
   }
   .meta-label-caps {
@@ -408,7 +406,7 @@ body {
     font-size: var(--text-2xs);
     font-weight: var(--font-weight-medium);
     line-height: var(--leading-heading);
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }

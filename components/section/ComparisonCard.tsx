@@ -16,7 +16,7 @@ function ComparisonLinkOrNote({ operator }: { operator: ComparisonOperator }) {
     return <PrimaryDomainLink linkTier="tier2" primaryDomainLink={operator.primaryDomainLink} />;
   }
   return (
-    <p className="text-2xs text-text-subtle font-medium leading-relaxed">
+    <p className="text-2xs text-text-muted font-medium leading-relaxed">
       text-only comparison · no outbound link
     </p>
   );
@@ -75,7 +75,7 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
               <tr key={row.label} className="border-b border-border-hairline">
                 <th
                   scope="row"
-                  className={`${firstCellPadding} py-4 align-top text-left text-sm font-medium text-text-meta`}
+                  className={`${firstCellPadding} py-4 align-top text-left text-sm font-medium text-text-muted`}
                 >
                   {row.label}
                 </th>

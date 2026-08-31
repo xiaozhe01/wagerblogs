@@ -32,7 +32,7 @@ export default function ReviewSection({ title, badge, note, id, children }: Revi
             </span>
           )}
           {heading}
-          {note && <p className="text-xs text-text-subtle tabular-nums leading-relaxed">{note}</p>}
+          {note && <p className="text-xs text-text-muted tabular-nums leading-relaxed">{note}</p>}
         </div>
       ) : (
         heading

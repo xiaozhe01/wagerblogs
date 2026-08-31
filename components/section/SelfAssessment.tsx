@@ -71,7 +71,7 @@ export default function SelfAssessment() {
         </p>
         <h3 className="heading text-3xl leading-snug">{result.label}</h3>
         <p className="text-md text-text-body leading-relaxed text-pretty">{result.description}</p>
-        <p className="text-xs text-text-meta leading-copy text-pretty">
+        <p className="text-xs text-text-muted leading-copy text-pretty">
           This is a self-assessment, not a diagnosis. Only a qualified professional can diagnose a
           gambling disorder. If anything here worries you, talk to someone — see our{" "}
           <Link href="/responsible-gambling/help-directory" className="underline">
@@ -99,7 +99,7 @@ export default function SelfAssessment() {
         aria-live="polite"
         className="animate-in fade-in slide-in-from-right-4 duration-300 motion-reduce:animate-none"
       >
-        <p className="text-lg font-semibold text-text-meta mb-1.5">
+        <p className="text-lg font-semibold text-text-muted mb-1.5">
           Question {index + 1} of {TOTAL}
         </p>
         <fieldset>
@@ -130,7 +130,7 @@ export default function SelfAssessment() {
                 </span>
                 <span
                   aria-hidden="true"
-                  className="size-legacy-6 shrink-0 grid place-items-center rounded-sm border border-border-dark/80 text-2xs tabular-nums text-text-meta font-bold"
+                  className="size-legacy-6 shrink-0 grid place-items-center rounded-sm border border-border-dark/80 text-2xs tabular-nums text-text-muted font-bold"
                 >
                   {option.hint}
                 </span>

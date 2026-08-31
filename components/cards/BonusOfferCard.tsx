@@ -65,7 +65,7 @@ export default function BonusOfferCard({
         />
       )}
 
-      <p className="mt-2.5 pt-2 border-t border-border-hairline-alt text-2xs text-text-subtle font-medium leading-relaxed">
+      <p className="mt-2.5 pt-2 border-t border-border-hairline-alt text-2xs text-text-muted font-medium leading-relaxed">
         <span>{termsSummary ?? "[bonus terms small print — wagering, expiry, eligibility]"}</span>{" "}
         <span className="font-medium">
           · Last verified:{" "}

@@ -124,7 +124,7 @@ export default async function RGDirectoryPage({
           {visibleGroups.length === 0 && (
             /* Chips are a fixed taxonomy, so a region can legitimately have no listings
              yet — say so rather than rendering an empty page. */
-            <p className="text-sm font-medium text-text-meta leading-relaxed">
+            <p className="text-sm font-medium text-text-muted leading-relaxed">
               No organizations listed for {activeRegion} yet.{" "}
               <Link href={regionHref(ALL_REGIONS)} className="underline">
                 Show all regions
@@ -140,7 +140,7 @@ export default async function RGDirectoryPage({
                 >
                   {grp.region}
                 </h2>
-                <span className="text-xs text-text-subtle font-semibold tabular-nums">
+                <span className="text-xs text-text-muted font-semibold tabular-nums">
                   {grp.entries.length} Organizations
                 </span>
               </div>
@@ -161,11 +161,11 @@ export default async function RGDirectoryPage({
                         >
                           {e.name}
                         </h3>
-                        <span className="shrink-0 text-2xs text-text-meta font-semibold tabular-nums border border-border-divider rounded-sm px-1.5 py-1 whitespace-nowrap">
+                        <span className="shrink-0 text-2xs text-text-muted font-semibold tabular-nums border border-border-divider rounded-sm px-1.5 py-1 whitespace-nowrap">
                           {e.country}
                         </span>
                       </div>
-                      <p className="text-xs text-text-meta leading-relaxed mb-3">{e.desc}</p>
+                      <p className="text-xs text-text-muted leading-relaxed mb-3">{e.desc}</p>
                       <dl className="flex flex-col gap-1.5 mb-3.5">
                         {HELP_CONTACT_KINDS.map((kind) => {
                           const value = e.contacts[kind];
@@ -179,7 +179,7 @@ export default async function RGDirectoryPage({
                                   {value}
                                 </dd>
                               ) : (
-                                <dd className="text-xs font-medium text-text-meta border border-dashed border-border-placeholder rounded-sm px-2 py-1 min-w-0 flex-1">
+                                <dd className="text-xs font-medium text-text-muted border border-dashed border-border-placeholder rounded-sm px-2 py-1 min-w-0 flex-1">
                                   Not offered by this service
                                 </dd>
                               )}

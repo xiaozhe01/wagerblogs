@@ -10,7 +10,7 @@ type PostRowProps = {
 const wrapperClassName = "flex flex-col md:flex-row md:items-center gap-3 md:gap-3.5 no-underline";
 const titleClassName = "heading text-xl leading-snug mb-1.5 text-pretty";
 const thumbnailClassName =
-  "w-full md:w-56 lg:w-74 aspect-video shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle tabular-nums text-center";
+  "w-full md:w-56 lg:w-74 aspect-video shrink-0 rounded-md placeholder-asset text-2xs text-text-muted tabular-nums text-center";
 
 export default function PostRow({ post, as = "Link" }: PostRowProps) {
   const content = (
@@ -22,7 +22,7 @@ export default function PostRow({ post, as = "Link" }: PostRowProps) {
         <p className="meta-label-caps mb-1.5">{post.kicker}</p>
         <h3 className={titleClassName}>{post.title}</h3>
         {/* TODO(cms): split `meta` into a real date + readTime so the date can render as <time dateTime>. */}
-        <p className="text-xs font-medium text-text-subtle tabular-nums">{post.meta}</p>
+        <p className="text-xs font-medium text-text-muted tabular-nums">{post.meta}</p>
       </div>
     </>
   );

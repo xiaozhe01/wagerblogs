@@ -26,7 +26,7 @@ export default function Comments() {
             disabled
             aria-describedby="comment-moderation-note"
             placeholder="Plain text, no links to operators"
-            className="w-full resize-y border border-dashed border-border-placeholder rounded-sm px-3 py-2.5 text-xs text-text-subtle tabular-nums mb-2 disabled:cursor-not-allowed"
+            className="w-full resize-y border border-dashed border-border-placeholder rounded-sm px-3 py-2.5 text-xs text-text-muted tabular-nums mb-2 disabled:cursor-not-allowed"
           />
           <div className="flex items-center gap-3 flex-wrap">
             <button

@@ -74,7 +74,7 @@ export default async function CategoryPage({
           our coverage is organised. Editorial register: this page navigates and explains; it never
           sells.]
         </p>
-        <p className="flex gap-4 flex-wrap text-xs text-text-subtle tabular-nums">
+        <p className="flex gap-4 flex-wrap text-xs text-text-muted tabular-nums">
           <span>[n] guides</span>
           <span>[n] reviews</span>
           <span>Updated [Jul 24, 2026]</span>
@@ -88,7 +88,7 @@ export default async function CategoryPage({
         >
           <div
             aria-hidden="true"
-            className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-subtle tabular-nums text-center"
+            className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-muted tabular-nums text-center"
           >
             [lead image — credit line required]
           </div>
@@ -97,11 +97,11 @@ export default async function CategoryPage({
             <h2 id="editors-lead" className="heading text-4xl leading-heading text-pretty">
               [Placeholder] The state of esports betting going into the autumn season
             </h2>
-            <p className="text-lg leading-copy text-text-meta text-pretty">
+            <p className="text-lg leading-copy text-text-muted text-pretty">
               [Placeholder excerpt — two lines summarising the piece, written to work as a
               standalone summary in search and social previews.]
             </p>
-            <p className="text-xs font-medium text-text-subtle tabular-nums">
+            <p className="text-xs font-medium text-text-muted tabular-nums">
               <time dateTime="2026-07-22">07/22/2026</time> · 11 min · byline required before
               publish
             </p>
@@ -140,7 +140,7 @@ export default async function CategoryPage({
         {/* Keyed so only the feed replays the fade. */}
         <div key={activeType} className="route-transition">
           {visibleArticles.length === 0 ? (
-            <p className="text-sm font-medium text-text-meta leading-relaxed">
+            <p className="text-sm font-medium text-text-muted leading-relaxed">
               No {activeType.toLowerCase()} filed under {sampleCategoryName} yet.
             </p>
           ) : (

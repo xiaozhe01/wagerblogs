@@ -107,7 +107,7 @@ export default function ResponsibleGamblingPage() {
           reason to talk to someone.
         </p>
         <SelfAssessment />
-        <p className="text-xs text-text-meta font-medium leading-copy text-pretty">
+        <p className="text-xs text-text-muted font-medium leading-copy text-pretty">
           Source:{" "}
           <a href={selfAssessmentSource.url} rel="noopener" target="_blank" className="underline">
             {selfAssessmentSource.organisation} — Problem Gambling Self-Assessment
@@ -137,9 +137,9 @@ export default function ResponsibleGamblingPage() {
             >
               <div className="min-w-0">
                 <h3 className="text-md font-semibold text-text-primary mb-1.5">{r.name}</h3>
-                <p className="text-xs text-text-meta leading-relaxed">{r.desc}</p>
+                <p className="text-xs text-text-muted leading-relaxed">{r.desc}</p>
               </div>
-              <address className="text-sm not-italic text-text-subtle tabular-nums border border-dashed border-border-placeholder rounded-sm px-3 py-2 whitespace-nowrap shrink-0">
+              <address className="text-sm not-italic text-text-muted tabular-nums border border-dashed border-border-placeholder rounded-sm px-3 py-2 whitespace-nowrap shrink-0">
                 {r.contact}
               </address>
             </li>
@@ -182,7 +182,7 @@ export default function ResponsibleGamblingPage() {
             >
               <span
                 aria-hidden="true"
-                className="text-xs text-text-subtle font-bold tabular-nums shrink-0"
+                className="text-xs text-text-muted font-bold tabular-nums shrink-0"
               >
                 {String(i + 1).padStart(2, "0")}
               </span>

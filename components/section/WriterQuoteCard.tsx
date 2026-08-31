@@ -13,7 +13,7 @@ export default function WriterQuoteCard() {
           before it was scored.&rdquo;
         </p>
       </blockquote>
-      <p className="text-sm text-text-meta font-semibold mb-1.5">
+      <p className="text-sm text-text-muted font-semibold mb-1.5">
         — {/* not-italic: preflight doesn't reset <cite>'s UA italic. */}
         <cite className="not-italic">
           <Link

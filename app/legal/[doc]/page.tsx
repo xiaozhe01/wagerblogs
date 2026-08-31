@@ -58,7 +58,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
           Change log
         </h2>
         {/* TODO(cms): revisions[] — every published change appends a dated entry here. */}
-        <p className="text-xs text-text-subtle tabular-nums leading-loose">
+        <p className="text-xs text-text-muted tabular-nums leading-loose">
           No revisions recorded yet.
         </p>
       </section>
@@ -77,7 +77,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
           {doc.title}
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">{doc.intro}</p>
-        <p className="flex gap-4 flex-wrap text-xs text-text-subtle tabular-nums">
+        <p className="flex gap-4 flex-wrap text-xs text-text-muted tabular-nums">
           <span>Effective [date required]</span>
           <span>Last updated [date required]</span>
           <span>Version [n]</span>
@@ -92,7 +92,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
           Plain-language summary
         </h2>
         <p className="text-lg leading-copy text-text-strong-secondary text-pretty">{doc.summary}</p>
-        <p className="text-xs font-medium text-text-subtle leading-relaxed mt-2.5">
+        <p className="text-xs font-medium text-text-muted leading-relaxed mt-2.5">
           This summary is a courtesy; the numbered sections below are the binding text.
         </p>
       </section>
@@ -125,7 +125,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
               aria-labelledby={`${s.anchorId}-title`}
               className="grid grid-cols-[3.5rem_1fr] md:grid-cols-[4.5rem_1fr] gap-x-3 border-t border-border-hairline py-3.5"
             >
-              <div className="text-sm text-text-subtle tabular-nums pt-0.5">#{s.num}</div>
+              <div className="text-sm text-text-muted tabular-nums pt-0.5">#{s.num}</div>
               <div className="min-w-0">
                 <h2 id={`${s.anchorId}-title`} className="heading text-2xl leading-heading mb-2.5">
                   {s.title}

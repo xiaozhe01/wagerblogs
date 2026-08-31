@@ -21,7 +21,7 @@ export default function AtAGlanceCard({ items }: AtAGlanceCardProps) {
           </div>
         ))}
       </dl>
-      <p className="text-xs font-medium text-text-subtle leading-relaxed py-1">
+      <p className="text-xs font-medium text-text-muted leading-relaxed py-1">
         21+. T&amp;Cs apply. [terms placeholder]
       </p>
     </section>

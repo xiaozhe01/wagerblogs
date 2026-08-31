@@ -13,7 +13,7 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
           <div className="flex items-center gap-legacy-4">
             <span
               aria-hidden="true"
-              className="w-3 shrink-0 text-base font-bold tabular-nums text-text-subtle"
+              className="w-3 shrink-0 text-base font-bold tabular-nums text-text-muted"
             >
               {i + 1}
             </span>

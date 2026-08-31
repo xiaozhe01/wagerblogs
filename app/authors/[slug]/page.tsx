@@ -26,7 +26,7 @@ export default function AuthorPage() {
             <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
               {mockAuthor.name}
             </h1>
-            <p className="text-sm font-medium text-text-meta">{mockAuthor.credentialLine}</p>
+            <p className="text-sm font-medium text-text-muted">{mockAuthor.credentialLine}</p>
             <p className="text-sm text-text-body leading-relaxed">{mockAuthor.bio}</p>
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function AuthorPage() {
           {authorStandards.map((s) => (
             <li key={s.title} className="border-t border-border-hairline pt-3">
               <h3 className="text-md font-semibold text-text-primary mb-1.5">{s.title}</h3>
-              <p className="text-sm text-text-meta leading-loose">{s.body}</p>
+              <p className="text-sm text-text-muted leading-loose">{s.body}</p>
             </li>
           ))}
         </ul>

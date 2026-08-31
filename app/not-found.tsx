@@ -39,7 +39,7 @@ export default function NotFound() {
       <Breadcrumbs items={[{ label: "Page not found" }]} />
 
       <section className="flex flex-col items-center text-center gap-3 py-2 md:py-4">
-        <h1 className="font-sans font-heavy text-[96px] md:text-[160px] leading-none tracking-[-0.02em] text-text-subtle select-none">
+        <h1 className="font-sans font-heavy text-[96px] md:text-[160px] leading-none tracking-[-0.02em] text-text-muted select-none">
           <span aria-hidden="true">404</span>
           <span className="sr-only">We couldn&apos;t find that page</span>
         </h1>

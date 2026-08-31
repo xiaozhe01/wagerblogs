@@ -84,7 +84,7 @@ export default function BlogPostPage() {
           {/* TODO(cms): real <Image> + a <figcaption> credit line; both required before publish. */}
           <div
             aria-hidden="true"
-            className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-subtle tabular-nums"
+            className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
           >
             [hero image — 16:9, credit line required]
           </div>
@@ -138,11 +138,11 @@ export default function BlogPostPage() {
           <figure>
             <div
               aria-hidden="true"
-              className="h-40 md:h-65 rounded-md placeholder-asset text-xs text-text-subtle tabular-nums"
+              className="h-40 md:h-65 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
             >
               [diagram / chart placeholder]
             </div>
-            <figcaption className="text-xs text-text-subtle tabular-nums leading-loose mt-2">
+            <figcaption className="text-xs text-text-muted tabular-nums leading-loose mt-2">
               Fig. 1 — [caption placeholder]. Source: [named source required before publish].
             </figcaption>
           </figure>
