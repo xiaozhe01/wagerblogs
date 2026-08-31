@@ -10,7 +10,11 @@ import { dirname, resolve } from "node:path";
 const CSS =
   process.argv[2] ?? resolve(dirname(fileURLToPath(import.meta.url)), "..", "app", "globals.css");
 
-/** Rules. `a` and `b` must never resolve to the same colour in the named theme. */
+// Perceptual distance, not equality (one unit apart still reads identical) and
+// not contrast (luminance-only, so it can't tell a grey from a blue).
+const MIN_DE = 0.05;
+
+/** Rules. `a` and `b` must stay perceptually distinct in the named theme. */
 const MUST_DIFFER = [
   {
     a: "--color-bg-accent",
@@ -109,6 +113,25 @@ function deref(name, map, seen = new Set()) {
 
 const clamp = (v) => Math.min(255, Math.max(0, Math.round(v)));
 const unlin = (v) => (v <= 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1 / 2.4) - 0.055);
+const lin = (v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+
+/** "r,g,b" (0-255) -> OKLab {L,a,b}. */
+function oklab(triple) {
+  const [r, g, b] = triple.split(",").map((n) => lin(Number(n) / 255));
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return {
+    L: 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    a: 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    b: 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+  };
+}
+const deltaE = (t1, t2) => {
+  const A = oklab(t1),
+    B = oklab(t2);
+  return Math.hypot(A.L - B.L, A.a - B.a, A.b - B.b);
+};
 
 /** Normalise a colour to an "r,g,b" string, or null if not comparable. */
 function toRgb(value) {
@@ -181,9 +204,11 @@ for (const [themeName, map] of [
       skipped.push(`${themeName}: ${rule.a}/${rule.b} not comparable (${rawA} vs ${rawB})`);
       continue;
     }
-    if (A === B) {
+    const dE = deltaE(A, B);
+    if (dE < MIN_DE) {
       failures.push(
-        `  ${themeName}: ${rule.a} === ${rule.b}  (both resolve to rgb(${A}) — ${rawA} / ${rawB})\n` +
+        `  ${themeName}: ${rule.a} vs ${rule.b} — OKLab dE ${dE.toFixed(4)} (min ${MIN_DE})\n` +
+          `      ${rawA} rgb(${A})  /  ${rawB} rgb(${B})\n` +
           `      ${rule.why}\n      source: ${rule.source}`,
       );
     }
