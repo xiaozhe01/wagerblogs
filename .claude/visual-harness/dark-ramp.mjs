@@ -119,7 +119,7 @@ console.log("\n=== 6. fills (constraint-designed) ===");
 D.inverted = solveForRatio(D.page, cr(L.page, L.inverted), 0.010, HUE, true).hex;  // RG card, mirrors the 16.4 step
 D.accent = solveForRatio(D.page, 9.0, 0.014, HUE, true).hex;                       // operator CTA, loudest control
 const navy = rgb2oklch(L.brand);
-D.safety = solveForRatio(D.page, 3.2, navy.C * 0.8, navy.H, true).hex;             // panel, not a light bar
+D.safety = solveForRatio(D.page, 3.6, navy.C * 0.8, navy.H, true).hex;             // panel; 3.6 is the floor that keeps the btn-on-fill focus ring >= 3.0 on it
 D.brand = solveForRatio(D.page, tBrand, navy.C, navy.H, true).hex;                 // AAA links
 D.brandHover = solveForRatio(D.page, tBrand * 0.88, navy.C, navy.H, true).hex;
 D.brandActive = solveForRatio(D.page, tBrand * 0.78, navy.C, navy.H, true).hex;

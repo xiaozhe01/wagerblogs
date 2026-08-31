@@ -49,7 +49,7 @@ export default function ResponsibleGamblingPage() {
       <aside
         role="note"
         aria-label="Immediate help"
-        className="card-dark md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4"
+        className="card-inverted md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4"
       >
         <div className="min-w-0 flex flex-col gap-2">
           <p className="text-sm font-semibold leading-snug text-pretty">
@@ -61,7 +61,7 @@ export default function ResponsibleGamblingPage() {
         </div>
         <Link
           href="#get-help"
-          className="btn-brand-on-dark group gap-1.5 shrink-0 self-start md:self-auto"
+          className="btn-on-fill group gap-1.5 shrink-0 self-start md:self-auto"
         >
           Find help
           <ArrowDown

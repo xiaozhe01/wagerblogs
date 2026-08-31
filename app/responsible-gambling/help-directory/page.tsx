@@ -39,7 +39,7 @@ export default async function RGDirectoryPage({
       : helpDirectory.filter((g) => g.region === activeRegion);
   const rail = (
     <>
-      <section className="card-dark" aria-labelledby="rail-immediate-danger">
+      <section className="card-inverted" aria-labelledby="rail-immediate-danger">
         <h2 id="rail-immediate-danger" className="heading text-sm text-text-on-inverted mb-2.5">
           In immediate danger?
         </h2>

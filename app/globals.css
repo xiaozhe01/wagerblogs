@@ -35,6 +35,9 @@
   --color-text-on-chrome: #f1eee5;
   --color-text-on-chrome-muted: #bebbb3;
   --color-text-on-fill: #fffdf7;
+  /* Separate from on-fill: the safety strip keeps a dark ground under dark,
+     so its text stays light while on-fill flips. */
+  --color-text-on-safety: #fffdf7;
 
   /* Color — borders / dividers. Warm twins holding the previous ratio
      against the page. */
@@ -320,7 +323,7 @@ body {
     border-radius: var(--radius-sm);
     padding: 10px 12px;
   }
-  .card-dark {
+  .card-inverted {
     background: var(--color-bg-inverted);
     color: var(--color-text-on-inverted);
     border: 1px solid var(--color-border-on-inverted);
@@ -421,7 +424,7 @@ body {
      #1a1a1a measures 1.6:1. White keeps a safety CTA at full prominence and
      the navy label ties it to .btn-brand — so it no longer borrows
      .btn-primary, which means "this link leaves the site for an operator". */
-  .btn-brand-on-dark {
+  .btn-on-fill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -439,14 +442,14 @@ body {
     cursor: pointer;
     transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
-  :is(a, button).btn-brand-on-dark:hover {
+  :is(a, button).btn-on-fill:hover {
     background: var(--color-bg-subtle);
   }
-  :is(a, button).btn-brand-on-dark:active {
+  :is(a, button).btn-on-fill:active {
     background: var(--color-bg-subtle-active);
   }
   /* On a dark block the brand ring is invisible — 1.6:1. */
-  .btn-brand-on-dark:focus-visible {
+  .btn-on-fill:focus-visible {
     outline: 2px solid var(--color-text-on-inverted);
     outline-offset: 2px;
   }
@@ -667,6 +670,7 @@ body {
   --color-text-on-chrome: #f1eee5;
   --color-text-on-chrome-muted: #bebbb3;
   --color-text-on-fill: #17150f;
+  --color-text-on-safety: #fefcf7;
 
   --color-border-input: #3f3c36;
   --color-border-input-hover: #64615a;
@@ -691,7 +695,9 @@ body {
   --color-bg-chrome: #211e18;
   --color-border-on-chrome: #35322a;
 
-  --color-bg-safety: #4c6796;
+  /* Lightened from #4c6796: the .btn-on-fill focus ring sits on this strip and
+     measured 2.92, under 1.4.11's 3.0. */
+  --color-bg-safety: #546f9f;
 
   --color-brand: #9fc5ff;
   --color-brand-hover: #92b8f9;

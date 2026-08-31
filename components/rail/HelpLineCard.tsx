@@ -4,7 +4,7 @@ import { helplineText } from "@/lib/mock-data";
 
 export default function HelpLineCard() {
   return (
-    <section className="card-dark" aria-labelledby="rail-play-responsibly">
+    <section className="card-inverted" aria-labelledby="rail-play-responsibly">
       <h2 id="rail-play-responsibly" className="heading text-sm text-text-on-inverted mb-2.5">
         Play Responsibly
       </h2>
