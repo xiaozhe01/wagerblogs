@@ -110,7 +110,7 @@ export default function SelfAssessment() {
             {OPTIONS.map((option) => (
               <label
                 key={option.label}
-                className="flex items-center gap-3 min-h-11 px-3.5 py-2.5 rounded-md border border-border-dark/50 cursor-pointer transition-colors hover:bg-bg-subtle has-checked:border-text-primary has-checked:bg-bg-subtle has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand"
+                className="flex items-center gap-3 min-h-11 px-3.5 py-2.5 rounded-md border border-border-control/50 cursor-pointer transition-colors hover:bg-bg-subtle has-checked:border-text-primary has-checked:bg-bg-subtle has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand"
               >
                 <input
                   type="radio"
@@ -119,10 +119,10 @@ export default function SelfAssessment() {
                   onChange={() => answer(option.value)}
                   className="sr-only peer"
                 />
-                {/* border-border-dark/50 matches the label's own boundary and
+                {/* border-border-control/50 matches the label's own boundary and
                     clears 1.4.11; border-border-input was 1.61:1 against white,
                     so the control was invisible until selected. */}
-                <span className="size-legacy-6 shrink-0 rounded-full border-2 border-border-dark/50 peer-checked:border-5 peer-checked:border-text-primary transition-all" />
+                <span className="size-legacy-6 shrink-0 rounded-full border-2 border-border-control/50 peer-checked:border-5 peer-checked:border-text-primary transition-all" />
                 {/* No weight change on check — it reflows the label. Selection
                     is already carried by the ring, border, fill and colour. */}
                 <span className="flex-1 text-md font-medium text-text-strong-secondary peer-checked:text-text-primary">
@@ -130,7 +130,7 @@ export default function SelfAssessment() {
                 </span>
                 <span
                   aria-hidden="true"
-                  className="size-legacy-6 shrink-0 grid place-items-center rounded-sm border border-border-dark/80 text-2xs tabular-nums text-text-muted font-bold"
+                  className="size-legacy-6 shrink-0 grid place-items-center rounded-sm border border-border-control/80 text-2xs tabular-nums text-text-muted font-bold"
                 >
                   {option.hint}
                 </span>

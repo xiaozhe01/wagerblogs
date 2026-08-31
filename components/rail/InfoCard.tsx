@@ -5,7 +5,7 @@ import { headingId } from "@/lib/utils";
 export const railCtaClassName =
   "inline-flex items-center gap-1 min-h-4 text-sm text-text-primary font-semibold group w-fit";
 export const railCtaOnDarkClassName =
-  "inline-flex items-center gap-1 min-h-4 text-sm text-text-on-dark font-semibold group w-fit";
+  "inline-flex items-center gap-1 min-h-4 text-sm text-brand-on-inverted font-semibold group w-fit";
 
 type InfoCardProps = {
   title: string;

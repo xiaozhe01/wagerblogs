@@ -55,13 +55,13 @@ export default function ResponsibleGamblingPage() {
           <p className="text-sm font-semibold leading-snug text-pretty">
             If gambling has stopped being fun, help is free and confidential.
           </p>
-          <address className="not-italic text-xs font-medium text-text-on-dark-muted leading-snug">
+          <address className="not-italic text-xs font-medium text-text-on-inverted-muted leading-snug">
             Helpline: [{helplineNumber} — verify before launch] · 24/7 · call or text
           </address>
         </div>
         <Link
           href="#get-help"
-          className="group inline-flex items-center justify-center gap-1.5 shrink-0 self-start md:self-auto min-h-11 px-3 rounded-md bg-bg-card text-text-primary text-base leading-heading font-semibold no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text-on-dark"
+          className="btn-brand-on-dark group gap-1.5 shrink-0 self-start md:self-auto"
         >
           Find help
           <ArrowDown

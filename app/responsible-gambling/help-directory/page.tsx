@@ -40,10 +40,10 @@ export default async function RGDirectoryPage({
   const rail = (
     <>
       <section className="card-dark" aria-labelledby="rail-immediate-danger">
-        <h2 id="rail-immediate-danger" className="heading text-sm text-text-on-dark mb-2.5">
+        <h2 id="rail-immediate-danger" className="heading text-sm text-text-on-inverted mb-2.5">
           In immediate danger?
         </h2>
-        <p className="text-xs font-medium text-text-on-dark-muted leading-loose">
+        <p className="text-xs font-medium text-text-on-inverted-muted leading-loose">
           Contact your local emergency services. The organizations on this page support gambling
           harm; they are not crisis lines unless marked.
         </p>

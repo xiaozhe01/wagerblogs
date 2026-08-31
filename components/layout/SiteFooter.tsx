@@ -11,24 +11,24 @@ export default function SiteFooter() {
   return (
     <footer className="mt-4">
       <section aria-label="Responsible gambling">
-        <div className="rounded-md bg-bg-accent text-text-on-accent p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          <p className="text-md font-semibold leading-relaxed text-text-on-accent">
+        <div className="rounded-md bg-bg-safety text-text-on-fill p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <p className="text-md font-semibold leading-relaxed text-text-on-fill">
             Gambling problem? Call [{helplineNumber}] or visit our Responsible Gambling resources.
           </p>
           <ArrowLink
             href="/responsible-gambling/help-directory"
-            className="btn-primary bg-bg-card text-text-primary font-bold gap-1 group"
+            className="btn-brand-on-dark gap-1 group"
           >
             Get Help
           </ArrowLink>
         </div>
       </section>
 
-      <div className="mt-4 rounded-md bg-bg-dark-block text-text-on-dark-muted p-4">
+      <div className="mt-4 rounded-md bg-bg-inverted text-text-on-inverted-muted p-4">
         <nav aria-label="Footer" className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-3 mb-4">
           {footerCols.map((col) => (
             <div key={col.heading}>
-              <h3 className="text-2xs font-bold text-text-on-dark uppercase tracking-wide mb-3">
+              <h3 className="text-2xs font-bold text-text-on-inverted uppercase tracking-wide mb-3">
                 {col.heading}
               </h3>
               <ul role="list" className="flex flex-col gap-3">
@@ -36,7 +36,7 @@ export default function SiteFooter() {
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="group flex items-center min-h-0 text-2xs text-text-on-dark-muted font-medium no-underline"
+                      className="group flex items-center min-h-0 text-2xs text-text-on-inverted-muted font-medium no-underline"
                     >
                       <span className="relative after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out after:content-[''] group-hover:after:scale-x-100">
                         {l.label}
@@ -48,7 +48,7 @@ export default function SiteFooter() {
             </div>
           ))}
         </nav>
-        <div className="border-t border-border-on-dark pt-4 text-2xs text-text-on-dark-muted leading-copy">
+        <div className="border-t border-border-on-inverted pt-4 text-2xs text-text-on-inverted-muted leading-copy">
           <p className="mb-2 font-medium">
             WagerBlogs is an independent media and affiliate publisher. We may earn commission from
             partner links. 21+. Gambling involves risk — please play responsibly.

@@ -27,7 +27,7 @@ export default function ReviewSection({ title, badge, note, id, children }: Revi
       {badge || note ? (
         <div className="flex items-center gap-3 flex-wrap">
           {badge && (
-            <span className="text-2xs tracking-wide px-2 py-1 rounded-sm bg-bg-accent text-text-on-accent">
+            <span className="text-2xs tracking-wide px-2 py-1 rounded-sm bg-bg-accent text-text-on-fill">
               {badge}
             </span>
           )}

@@ -194,7 +194,7 @@ export default function BlogPostPage() {
               <li key={k} className="flex gap-2.5 items-start">
                 <span
                   aria-hidden="true"
-                  className="w-legacy-6 h-legacy-6 shrink-0 rounded-full bg-bg-accent text-text-on-accent flex items-center justify-center text-2xs font-bold"
+                  className="w-legacy-6 h-legacy-6 shrink-0 rounded-full bg-bg-accent text-text-on-fill flex items-center justify-center text-2xs font-bold"
                 >
                   {i + 1}
                 </span>
