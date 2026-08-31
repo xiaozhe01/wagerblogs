@@ -117,6 +117,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
           {navGroups.map((g: NavGroup) => {
             const expandable = g.subs.length > 0;
             const Icon = navIcons[g.id] ?? Ellipsis;
+            // TODO(theme): both active states below use text-brand, light-ground only
             return (
               <NavigationMenuItem key={g.id}>
                 {expandable ? (
