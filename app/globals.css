@@ -703,4 +703,14 @@ body {
   --color-brand-hover: #92b8f9;
   --color-brand-active: #88acee;
   --color-brand-on-inverted: #34548e;
+
+  /* Re-declared whole, not overridden: the stripe hexes are literals inside a
+     --background-image-* token, so no --color-* swap reaches them. */
+  --background-image-placeholder-asset: repeating-linear-gradient(
+    45deg,
+    #27251f,
+    #27251f 4px,
+    #1e1b16 4px,
+    #1e1b16 8px
+  );
 }
