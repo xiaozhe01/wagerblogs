@@ -34,6 +34,7 @@ import {
   Mail,
   LifeBuoy,
   Scale,
+  User,
 } from "lucide-react";
 import {
   NavigationMenu,
@@ -171,7 +172,13 @@ export default function SideNav({ activeId }: { activeId?: string }) {
       </NavigationMenu>
 
       {/* TODO(cms): swap for real auth state — this is a static Log In link */}
-      <Link href="/login" className="btn-primary w-full">
+      <Link
+        href="/login"
+        className="group w-full min-h-5 px-2.5 py-1.5 flex items-center justify-start gap-2.5 rounded-md text-sm font-semibold leading-snug no-underline transition-colors duration-300 hover:bg-bg-subtle-active hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text-primary"
+      >
+        <span className="w-6.5 h-6.5 shrink-0 flex items-center justify-center">
+          <User strokeWidth={2.5} aria-hidden="true" className="size-3" />
+        </span>
         Log In
       </Link>
     </section>
