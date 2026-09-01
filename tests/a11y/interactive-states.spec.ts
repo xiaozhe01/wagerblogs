@@ -97,6 +97,20 @@ const CASES: Case[] = [
     kind: "text",
   },
   {
+    route: "/this-route-does-not-exist",
+    name: "marker link",
+    selector: ".link-on-marker",
+    trigger: "none",
+    kind: "text",
+  },
+  {
+    route: "/this-route-does-not-exist",
+    name: "marker link hover",
+    selector: ".link-on-marker",
+    trigger: "hover",
+    kind: "text",
+  },
+  {
     route: "/responsible-gambling/help-directory",
     name: "AnchorList item hover",
     selector: "nav.card a",

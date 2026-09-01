@@ -12,14 +12,11 @@ export default function SiteFooter() {
   return (
     <footer className="mt-4">
       <section aria-label="Responsible gambling">
-        <div className="rounded-md bg-bg-safety text-text-on-safety p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <div className="rounded-md border border-border-safety bg-bg-safety text-text-on-safety p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <p className="text-md font-semibold leading-relaxed text-text-on-safety">
             Gambling problem? Call [{helplineNumber}] or visit our Responsible Gambling resources.
           </p>
-          <ArrowLink
-            href="/responsible-gambling/help-directory"
-            className="btn-on-fill gap-1 group"
-          >
+          <ArrowLink href="/responsible-gambling/help-directory" className="btn-safety gap-1 group">
             Get Help
           </ArrowLink>
         </div>

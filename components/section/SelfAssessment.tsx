@@ -66,20 +66,23 @@ export default function SelfAssessment() {
   if (result) {
     return (
       <div className="border border-border-divider rounded-md p-4 md:p-5 flex flex-col gap-2 animate-in fade-in duration-300 motion-reduce:animate-none">
-        <p className="meta-label-caps">
+        <p className="meta-label-caps font-semibold">
           Score {score} of {TOTAL}
         </p>
         <h3 className="heading text-3xl leading-snug">{result.label}</h3>
-        <p className="text-md text-text-body leading-relaxed text-pretty">{result.description}</p>
-        <p className="text-xs text-text-muted leading-copy text-pretty">
+        <p className="text-md text-text-body font-medium leading-relaxed text-pretty">
+          {result.description}
+        </p>
+        <p className="text-xs text-text-muted font-medium leading-copy text-pretty">
           This is a self-assessment, not a diagnosis. Only a qualified professional can diagnose a
           gambling disorder. If anything here worries you, talk to someone — see our{" "}
-          <Link href="/responsible-gambling/help-directory" className="underline">
+          <Link href="/responsible-gambling/help-directory" className="link-inline">
             help directory
           </Link>{" "}
           or contact{" "}
-          <a href={selfAssessmentSource.url} rel="noopener" target="_blank" className="underline">
+          <a href={selfAssessmentSource.url} rel="noopener" target="_blank" className="link-inline">
             {selfAssessmentSource.organisation}
+            <span className="sr-only"> (opens in a new tab)</span>
           </a>
           .
         </p>

@@ -3,6 +3,7 @@ import { newsFeed } from "@/lib/mock-data";
 import LatestNewsCategory from "../cards/LatestNewsCategory";
 import ArrowLink from "@/components/ui/ArrowLink";
 import EditorialSection from "./EditorialSection";
+import EmptyState from "./EmptyState";
 import { newsCategories } from "@/lib/site-data";
 import { chipHref, resolveChip } from "@/lib/utils";
 
@@ -43,9 +44,18 @@ export default function LatestNewsSection({
       {/* Keyed so only the feed replays the fade. */}
       <div key={category} className="route-transition">
         {items.length === 0 ? (
-          <p className="text-sm font-medium text-text-muted leading-relaxed">
-            No stories filed under {category} yet.
-          </p>
+          <EmptyState
+            title={`No stories filed under ${category} yet`}
+            action={{
+              href: chipHref({
+                basePath: "/",
+                param: NEWS_PARAM,
+                value: ALL_CATEGORY,
+                allValue: ALL_CATEGORY,
+              }),
+              label: "Show all stories",
+            }}
+          />
         ) : (
           <ul role="list" className="flex flex-col gap-3">
             {items.map((news) => (
@@ -67,7 +77,7 @@ export default function LatestNewsSection({
       </div>
       <ArrowLink
         href="/about"
-        className="inline-flex items-center self-center gap-1 text-md text-text-primary font-semibold group w-fit"
+        className="inline-flex items-center self-center gap-1 text-md link-cta font-semibold group w-fit"
       >
         All news &amp; interviews
       </ArrowLink>

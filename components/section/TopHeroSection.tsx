@@ -13,7 +13,7 @@ export default function TopHeroSection() {
       </p>
       <ArrowLink
         href="/reviews"
-        className="inline-flex gap-1 group items-center min-h-11 text-md text-text-primary font-semibold w-fit"
+        className="inline-flex gap-1 group items-center min-h-11 text-md link-cta font-semibold w-fit"
       >
         Compare top sites
       </ArrowLink>

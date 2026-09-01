@@ -10,7 +10,7 @@ export default function ReviewCard() {
         </h2>
         <ArrowLink
           href="/about"
-          className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group"
+          className="inline-flex items-center gap-1 text-md link-cta font-semibold group"
         >
           Full methodology
         </ArrowLink>

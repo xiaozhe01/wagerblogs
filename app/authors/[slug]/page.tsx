@@ -75,7 +75,7 @@ export default function AuthorPage() {
         </ul>
         <ArrowLink
           href="/about"
-          className="inline-flex items-center self-center gap-1 text-md text-text-primary font-semibold group"
+          className="inline-flex items-center self-center gap-1 text-md link-cta font-semibold group"
         >
           Read our full editorial standards
         </ArrowLink>
@@ -88,7 +88,7 @@ export default function AuthorPage() {
         </p>
         <ArrowLink
           href="/contact"
-          className="inline-flex items-center gap-1 text-md text-text-primary font-semibold group"
+          className="inline-flex items-center gap-1 text-md link-cta font-semibold group"
         >
           Contact the editorial desk
         </ArrowLink>

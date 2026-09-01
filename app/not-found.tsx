@@ -40,18 +40,19 @@ export default function NotFound() {
 
       <section className="flex flex-col items-center text-center gap-3 py-2 md:py-4">
         <h1 className="font-sans font-heavy text-[96px] md:text-[160px] leading-none tracking-[-0.02em] text-text-muted select-none">
-          <span aria-hidden="true">404</span>
+          <span aria-hidden="true" className="text-brand">
+            404
+          </span>
           <span className="sr-only">We couldn&apos;t find that page</span>
         </h1>
-        <p className="text-xl md:text-2xl font-medium leading-copy text-text-body text-pretty max-w-160">
-          {`The page you're looking for doesn't exist, has moved, or the URL has a typo. Try starting over at our `}
-          <Link
-            href="/"
-            className="text-text-body underline underline-offset-6 transition-colors hover:text-text-primary"
-          >
-            Homepage
-          </Link>
-          .
+        <p className="text-xl md:text-2xl font-medium leading-loose text-text-body text-pretty max-w-160">
+          <span className="marker-brand">
+            {`The page you're looking for doesn't exist, has moved, or the URL has a typo. Try starting over at our `}
+            <Link href="/" className="link-inline link-on-marker">
+              Homepage
+            </Link>
+            .
+          </span>
         </p>
       </section>
 

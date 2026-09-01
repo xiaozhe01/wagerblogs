@@ -20,7 +20,7 @@ export default function BlogSection() {
       </ul>
       <ArrowLink
         href="/blog"
-        className="inline-flex items-center self-center gap-1 text-md text-text-primary font-semibold group w-fit"
+        className="inline-flex items-center self-center gap-1 text-md link-cta font-semibold group w-fit"
       >
         All blogs
       </ArrowLink>

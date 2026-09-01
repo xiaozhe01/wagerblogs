@@ -56,7 +56,10 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
           </colgroup>
           <thead className="bg-bg-subtle">
             <tr className=" border-b border-border-divider">
-              <th scope="col" className={`${firstCellPadding} py-4 align-top text-left font-bold`}>
+              <th
+                scope="col"
+                className={`${firstCellPadding} py-4 align-top text-left font-bold text-text-primary`}
+              >
                 Feature
               </th>
               {operators.map((op) => (
@@ -115,7 +118,7 @@ export default function ComparisonCard({ id }: { id?: string } = {}) {
       </ul>
       <ArrowLink
         href="/reviews"
-        className="inline-flex items-center self-center gap-1 text-md text-text-primary font-semibold group w-fit"
+        className="inline-flex items-center self-center gap-1 text-md link-cta font-semibold group w-fit"
       >
         Full Comparison Tool
       </ArrowLink>

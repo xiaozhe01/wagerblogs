@@ -35,19 +35,22 @@
   --color-text-on-chrome: #f1eee5;
   --color-text-on-chrome-muted: #bebbb3;
   --color-text-on-fill: #fffdf7;
-  /* Separate from on-fill: the safety strip keeps a dark ground under dark,
-     so its text stays light while on-fill flips. */
-  --color-text-on-safety: #fffdf7;
+  /* Separate from on-fill: the safety strip is a light-ground notice in both
+     themes, so its text is dark in light and light in dark — the opposite of
+     on-fill, which tracks the operator button. */
+  --color-text-on-safety: #12110e;
 
-  /* Color — borders / dividers. Warm twins holding the previous ratio
-     against the page. */
-  --color-border-input: #c9c2b0;
-  --color-border-input-hover: #98917f;
-  --color-border-default: #dcd6c8;
-  --color-border-divider: #e3ddcd;
-  --color-border-hairline: #efe9da;
-  --color-border-hairline-alt: #f1ebdd;
-  --color-border-placeholder: #bab3a1;
+  /* Warm twins holding the previous ratio against the page, then chroma-
+     normalised to ~0.0125 so surfaces and ink read as one family — they had
+     drifted to a 4.8x chroma spread against dark's 1.9x. Luminance held, so
+     no contrast ratio moved. */
+  --color-border-input: #c6c2ba;
+  --color-border-input-hover: #949189;
+  --color-border-default: #dad6cd;
+  --color-border-divider: #e0ddd4;
+  --color-border-hairline: #ede9e0;
+  --color-border-hairline-alt: #efebe2;
+  --color-border-placeholder: #b6b3ab;
   /* SelfAssessment radios/keys, on the page ground. Shares a value with
      --color-border-on-inverted by coincidence; they diverge under dark. */
   --color-border-control: #36332c;
@@ -55,7 +58,7 @@
   /* bg-card tracks bg-page — cards are defined by their border, not a lift. */
   --color-bg-page: #fbf8f1;
   --color-bg-card: #fbf8f1;
-  --color-bg-subtle: #f3ede0;
+  --color-bg-subtle: #f1ede4;
 
   /* --color-bg-accent is .btn-primary's fill plus the avatar/badge chrome —
      it stays black because black means "leaves the site for an operator".
@@ -65,15 +68,28 @@
   --color-bg-accent: #13110b;
   --color-bg-accent-hover: #2d2a23;
   --color-bg-accent-active: #000000;
-  --color-bg-subtle-active: #e9e1cf;
+  --color-bg-subtle-active: #e5e1d9;
   --color-bg-inverted: #1c1a14;
   --color-border-on-inverted: #36332c;
-  --color-bg-chrome: #1c1a14;
-  --color-border-on-chrome: #36332c;
+  /* Chroma above the 0.0125 surface band on purpose: at block scale the warm/
+     cool pairing with the navy strip above reads as deliberate rather than as
+     two darks that failed to agree. Luminance held, so no ratio moved. */
+  --color-bg-chrome: #1d1a0f;
+  --color-border-on-chrome: #3a3524;
 
-  /* Footer safety strip. Separation from --color-bg-accent is enforced by
+  /* Footer safety strip — a bordered notice, not a filled slab. It is standing
+     boilerplate on every route, so it must stay quieter than the RG cards, which
+     are contextual emergency interrupts. The navy survives as the button, where
+     0.103 chroma belongs; as a full-bleed block it was 5x the chroma of anything
+     else on the page. Separation from --color-bg-accent is enforced by
      scripts/check-color-invariants.mjs. */
-  --color-bg-safety: #1d3b73;
+  --color-bg-safety: #e9e9e7;
+  --color-border-safety: #b8bfcb;
+  /* The strip's CTA needs opposite treatments per theme, because the strip
+     itself does: a navy fill on the pale light panel, a near-black fill on
+     the navy dark one. Neither .btn-brand nor .btn-on-fill fits both. */
+  --color-bg-safety-cta: #1d3b73;
+  --color-text-on-safety-cta: #fffdf7;
 
   /* Wayfinding, and affirmative actions that are not the operator CTA.
      Deliberately NOT used by .btn-primary: the outbound operator link must not
@@ -85,6 +101,15 @@
   /* Inverted panels only — 2.41:1 on the page ground, never swappable with
      --color-brand. */
   --color-brand-on-inverted: #7fa3e0;
+
+  /* Marker highlight source. The light blue, not --color-brand: navy mixed
+     into warm cream desaturates to grey rather than reading blue. */
+  --color-marker: #7fa3e0;
+  /* Deliberately NOT overridden in .dark: the marker is a light surface in
+     both themes, so anything sitting on it must not flip. */
+  --color-text-on-marker: #12110e;
+  --color-link-on-marker: #1d3b73;
+  --color-link-on-marker-hover: #16305f;
 
   /* Typography — families. Was 2 fonts (Newsreader serif for editorial
      headings, Inter sans for comparison-register headings + everything
@@ -308,6 +333,14 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Was the browser default — a cool blue against warm paper, and worse on dark.
+   At 80% the tint is near-solid brand, so the text has to flip with it;
+   --color-text-on-fill already does, so one rule covers both themes. */
+::selection {
+  background: color-mix(in srgb, var(--color-brand) 80%, transparent);
+  color: var(--color-text-on-fill);
+}
+
 @layer components {
   /* Card shell — the border+radius+padding+bg combo repeated across score
      tiles, bonus offers, rail modules, methodology strips, dark trust blocks */
@@ -420,6 +453,32 @@ body {
     background: var(--color-brand-active);
   }
 
+  .btn-safety {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(var(--spacing) * 11);
+    padding: 10px 16px;
+    background: var(--color-bg-safety-cta);
+    color: var(--color-text-on-safety-cta);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-base);
+    line-height: var(--leading-heading);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  :is(a, button).btn-safety:hover {
+    opacity: 0.88;
+  }
+  .btn-safety:focus-visible {
+    outline: 2px solid var(--color-text-on-safety);
+    outline-offset: 2px;
+  }
+
   /* .btn-brand on a dark block. The fill cannot be --color-brand: navy on
      #1a1a1a measures 1.6:1. White keeps a safety CTA at full prominence and
      the navy label ties it to .btn-brand — so it no longer borrows
@@ -454,8 +513,7 @@ body {
     outline-offset: 2px;
   }
 
-  /* TODO(theme): needs a dark branch — 10% navy on near-black is invisible.
-     Active filter chip — a state, not a button. Chips borrowed .btn-primary's
+  /* Active filter chip — a state, not a button. Chips borrowed .btn-primary's
      near-black fill and so read as loud as the operator CTA. The tint is
      derived from --color-brand rather than pinned to a second hex, so it
      follows the token. Without color-mix support the background is dropped and
@@ -469,7 +527,6 @@ body {
   /* Keyboard focus for the hand-rolled interactive classes — the shadcn
      components ship focus-visible rings; these keep parity so focus is
      visible across both families. */
-  /* TODO(theme): light-ground only — --color-brand is 1.6:1 on a dark surface. */
   .btn-primary:focus-visible,
   .btn-secondary:focus-visible,
   .btn-brand:focus-visible,
@@ -534,12 +591,75 @@ body {
     letter-spacing: -0.015em;
   }
 
+  /* Shaped like a native selection: no side padding, no radius, vertical
+     padding only — without it the background paints just the ~1em content box
+     and wrapped lines band instead of touching. */
+  .marker-brand {
+    background: color-mix(in srgb, var(--color-marker) 45%, transparent);
+    color: var(--color-text-on-marker);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding: 0.3em 0;
+  }
+  .dark .marker-brand {
+    background: var(--color-marker);
+  }
+
   /* Hairline row divider — feed items, footer link lists */
   .divider-row {
     border-bottom: 1px solid var(--color-border-hairline);
   }
 
   /* Editorial link card — category tiles, toolbox items, related-reading cards. */
+  /* Inline link inside prose. A bare `underline` inherits the paragraph's
+     colour, so links in muted copy were the same colour as the text around
+     them and only the rule distinguished them. */
+  .link-inline {
+    color: var(--color-brand);
+    text-decoration: underline;
+    text-decoration-color: var(--color-brand);
+    text-underline-offset: 0.25em;
+    transition:
+      color 200ms,
+      text-decoration-color 200ms;
+  }
+  .link-inline:hover {
+    color: var(--color-brand-hover);
+    text-decoration-color: var(--color-brand-hover);
+  }
+
+  /* Pairs with .link-inline on a marker, and MUST stay after it: both are
+     (0,1,0), so source order is what makes this win. .link-inline resolves to
+     --color-brand, which under dark is the marker's own background. */
+  .link-on-marker {
+    color: var(--color-link-on-marker);
+    text-decoration-color: var(--color-link-on-marker);
+  }
+  .link-on-marker:hover {
+    color: var(--color-link-on-marker-hover);
+    text-decoration-color: var(--color-link-on-marker-hover);
+  }
+
+  /* Standalone section CTA (ArrowLink). Colour only — min-height and alignment
+     differ per call site and stay there. Hover is gated to hover-capable
+     devices so it cannot latch on touch (mobile-touch-audit M-1). */
+  .link-cta {
+    color: var(--color-text-primary);
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .link-cta-on-inverted {
+    color: var(--color-brand-on-inverted);
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @media (hover: hover) {
+    .link-cta:hover {
+      color: var(--color-brand);
+    }
+    .link-cta-on-inverted:hover {
+      color: var(--color-text-on-inverted);
+    }
+  }
+
   .editorial-link-card {
     display: block;
     text-decoration: none;
@@ -697,12 +817,18 @@ body {
 
   /* Lightened from #4c6796: the .btn-on-fill focus ring sits on this strip and
      measured 2.92, under 1.4.11's 3.0. */
+  /* Unchanged from the original dark strip: a light-blue tint over near-black
+     cancels to grey, so dark keeps a real navy panel. */
   --color-bg-safety: #546f9f;
+  --color-border-safety: #6b83ad;
+  --color-bg-safety-cta: #17150f;
+  --color-text-on-safety-cta: #9fc5ff;
 
   --color-brand: #9fc5ff;
   --color-brand-hover: #92b8f9;
   --color-brand-active: #88acee;
   --color-brand-on-inverted: #34548e;
+  --color-marker: #9fc5ff;
 
   /* Re-declared whole, not overridden: the stripe hexes are literals inside a
      --background-image-* token, so no --color-* swap reaches them. */

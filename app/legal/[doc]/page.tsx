@@ -151,7 +151,7 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         </address>
         <ArrowLink
           href="/contact"
-          className="inline-flex items-center gap-1 min-h-11 text-md text-text-primary font-semibold group w-fit"
+          className="inline-flex items-center gap-1 min-h-11 text-md link-cta font-semibold group w-fit"
         >
           Contact us
         </ArrowLink>

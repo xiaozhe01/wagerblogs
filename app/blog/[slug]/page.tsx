@@ -115,17 +115,11 @@ export default function BlogPostPage() {
           <p className="text-article text-text-strong-secondary text-pretty">
             [Placeholder body paragraph.] Internal links go to our own explainers and comparison
             surfaces — for example{" "}
-            <Link
-              href="/blog"
-              className="text-brand underline underline-offset-2 transition-colors hover:text-brand-hover"
-            >
+            <Link href="/blog" className="link-inline">
               our guide to odds formats
             </Link>{" "}
             or the{" "}
-            <Link
-              href="/reviews"
-              className="text-brand underline underline-offset-2 transition-colors hover:text-brand-hover"
-            >
+            <Link href="/reviews" className="link-inline">
               sportsbook comparison
             </Link>
             . Tier 1 posts link inward to Tier 2/3 pages; they never link out to an operator.

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import ArrowLink from "@/components/ui/ArrowLink";
 import AnchorList from "@/components/rail/AnchorList";
 import InfoCard from "@/components/rail/InfoCard";
 import EditorialSection from "@/components/section/EditorialSection";
+import EmptyState from "@/components/section/EmptyState";
 import ChipList from "@/components/ui/ChipList";
 import { ALL_REGIONS, REGION_PARAM, regions } from "@/lib/site-data";
 import { helpDirectory } from "@/lib/mock-data";
@@ -122,14 +122,26 @@ export default async function RGDirectoryPage({
           className="route-transition flex flex-col gap-5"
         >
           {visibleGroups.length === 0 && (
-            /* Chips are a fixed taxonomy, so a region can legitimately have no listings
-             yet — say so rather than rendering an empty page. */
-            <p className="text-sm font-medium text-text-muted leading-relaxed">
-              No organizations listed for {activeRegion} yet.{" "}
-              <Link href={regionHref(ALL_REGIONS)} className="underline">
-                Show all regions
-              </Link>
-            </p>
+            <section aria-labelledby={headingId("region", activeRegion)}>
+              <div className="flex items-baseline justify-between gap-4 flex-wrap pt-3.5 mb-3">
+                <h2
+                  id={headingId("region", activeRegion)}
+                  className="heading text-h2 leading-heading"
+                >
+                  {activeRegion}
+                </h2>
+                <span className="text-xs text-text-muted font-semibold tabular-nums">
+                  0 Organizations
+                </span>
+              </div>
+              {/* min-h-80 so an empty region holds the rhythm a populated one does. */}
+              <EmptyState
+                className="min-h-80"
+                title={`No verified organizations for ${activeRegion} yet`}
+                body="Entries appear here only after their contact details are checked against the organization's own published information."
+                action={{ href: regionHref(ALL_REGIONS), label: "Show all regions" }}
+              />
+            </section>
           )}
           {visibleGroups.map((grp) => (
             <section key={grp.region} aria-labelledby={headingId("region", grp.region)}>
@@ -206,7 +218,7 @@ export default async function RGDirectoryPage({
         </p>
         <ArrowLink
           href="/contact"
-          className="inline-flex items-center gap-1 min-h-11 text-md text-text-primary font-semibold group w-fit"
+          className="inline-flex items-center gap-1 min-h-11 text-md link-cta font-semibold group w-fit"
         >
           Suggest an addition
         </ArrowLink>

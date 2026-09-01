@@ -252,7 +252,7 @@ export default function OperatorReviewPage() {
           </ul>
           <ArrowLink
             href="#reader-reviews"
-            className="inline-flex items-center self-center gap-1 min-h-11 text-md text-text-primary font-semibold group w-fit"
+            className="inline-flex items-center self-center gap-1 min-h-11 text-md link-cta font-semibold group w-fit"
           >
             All [n] reader reviews
           </ArrowLink>

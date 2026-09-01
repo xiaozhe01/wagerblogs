@@ -109,8 +109,9 @@ export default function ResponsibleGamblingPage() {
         <SelfAssessment />
         <p className="text-xs text-text-muted font-medium leading-copy text-pretty">
           Source:{" "}
-          <a href={selfAssessmentSource.url} rel="noopener" target="_blank" className="underline">
+          <a href={selfAssessmentSource.url} rel="noopener" target="_blank" className="link-inline">
             {selfAssessmentSource.organisation} — Problem Gambling Self-Assessment
+            <span className="sr-only"> (opens in a new tab)</span>
           </a>
           . Questions are reproduced verbatim; WagerBlogs is not affiliated with the{" "}
           {selfAssessmentSource.organisation} and this tool does not diagnose.
@@ -147,7 +148,7 @@ export default function ResponsibleGamblingPage() {
         </ul>
         <ArrowLink
           href="/responsible-gambling/help-directory"
-          className="inline-flex items-center self-center gap-1 min-h-11 text-md text-text-primary font-semibold group"
+          className="inline-flex items-center self-center gap-1 min-h-11 text-md link-cta font-semibold group"
         >
           Full worldwide help directory
         </ArrowLink>

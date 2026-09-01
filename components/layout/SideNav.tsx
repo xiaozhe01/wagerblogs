@@ -84,6 +84,16 @@ const subNavIcons: Record<string, LucideIcon> = {
   scale: Scale,
 };
 
+// One hover treatment for every row in this column — nav links, sub-links and
+// Log In. shadcn's hover:bg-muted is a cool grey outside the palette, and its
+// data-open/data-popup-open variants outrank a plain hover: override, so each
+// has to be named or the trigger keeps the grey while the menu is open.
+const NAV_ROW =
+  "transition-colors duration-200 hover:bg-bg-subtle-active hover:text-brand " +
+  "focus:bg-bg-subtle-active data-open:bg-bg-subtle-active data-open:hover:bg-bg-subtle-active " +
+  "data-open:focus:bg-bg-subtle-active data-popup-open:bg-bg-subtle-active " +
+  "data-popup-open:hover:bg-bg-subtle-active";
+
 function NavIconLabel({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
     <>
@@ -117,13 +127,12 @@ export default function SideNav({ activeId }: { activeId?: string }) {
           {navGroups.map((g: NavGroup) => {
             const expandable = g.subs.length > 0;
             const Icon = navIcons[g.id] ?? Ellipsis;
-            // TODO(theme): both active states below use text-brand, light-ground only
             return (
               <NavigationMenuItem key={g.id}>
                 {expandable ? (
                   <>
                     <NavigationMenuTrigger
-                      className={`w-full h-auto justify-start gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "text-brand font-semibold" : ""}`}
+                      className={`${NAV_ROW} w-full h-auto justify-start gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "text-brand font-semibold" : ""}`}
                     >
                       <NavIconLabel icon={Icon} label={g.label} />
                     </NavigationMenuTrigger>
@@ -135,11 +144,11 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                             <li key={s.label}>
                               <NavigationMenuLink
                                 href={s.href}
-                                className="group w-full gap-2 text-sm text-text-primary font-medium"
+                                className={`${NAV_ROW} group w-full gap-2 text-sm text-text-primary font-medium`}
                               >
                                 <SubIcon
                                   strokeWidth={2.5}
-                                  className="size-3 shrink-0 text-text-muted"
+                                  className="size-3 shrink-0 text-text-muted transition-colors group-hover:text-brand"
                                   aria-hidden="true"
                                 />
                                 <span className="flex-1 text-left">{s.label}</span>
@@ -161,7 +170,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
                   <NavigationMenuLink
                     href={g.href}
                     aria-current={g.id === activeId ? "page" : undefined}
-                    className={`w-full gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "text-brand font-semibold" : ""}`}
+                    className={`${NAV_ROW} w-full gap-2.5 px-2.5 py-2 text-md text-text-strong-secondary font-medium ${g.id === activeId ? "text-brand font-semibold" : ""}`}
                   >
                     <NavIconLabel icon={Icon} label={g.label} />
                   </NavigationMenuLink>
@@ -175,7 +184,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
       {/* TODO(cms): swap for real auth state — this is a static Log In link */}
       <Link
         href="/login"
-        className="group w-full min-h-5 px-2.5 py-1.5 flex items-center justify-start gap-2.5 rounded-md text-sm font-semibold leading-snug no-underline transition-colors duration-300 hover:bg-bg-subtle-active hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        className={`${NAV_ROW} group w-full min-h-5 px-2.5 py-1.5 flex items-center justify-start gap-2.5 rounded-md text-sm font-semibold leading-snug text-text-primary no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand`}
       >
         <span className="w-6.5 h-6.5 shrink-0 flex items-center justify-center">
           <User strokeWidth={2.5} aria-hidden="true" className="size-3" />

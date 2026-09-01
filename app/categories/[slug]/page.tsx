@@ -9,6 +9,7 @@ import PostRow from "@/components/cards/PostRow";
 import TeaserCardGrid from "@/components/cards/TeaserCardGrid";
 import TeaserCardBody from "@/components/cards/TeaserCardBody";
 import EditorialSection from "@/components/section/EditorialSection";
+import EmptyState from "@/components/section/EmptyState";
 import SearchInput from "@/components/rail/SearchInput";
 import {
   sampleCategoryName,
@@ -140,9 +141,18 @@ export default async function CategoryPage({
         {/* Keyed so only the feed replays the fade. */}
         <div key={activeType} className="route-transition">
           {visibleArticles.length === 0 ? (
-            <p className="text-sm font-medium text-text-muted leading-relaxed">
-              No {activeType.toLowerCase()} filed under {sampleCategoryName} yet.
-            </p>
+            <EmptyState
+              title={`No ${activeType.toLowerCase()} filed under ${sampleCategoryName} yet`}
+              action={{
+                href: chipHref({
+                  basePath: `/categories/${slug}`,
+                  param: TYPE_PARAM,
+                  value: ALL_TYPES,
+                  allValue: ALL_TYPES,
+                }),
+                label: "Show all",
+              }}
+            />
           ) : (
             <ul role="list" className="flex flex-col gap-3">
               {visibleArticles.map((a) => (
@@ -158,7 +168,7 @@ export default async function CategoryPage({
             so "2" and "Next" navigated to a different category. */}
         <ArrowLink
           href="/news"
-          className="inline-flex items-center self-center gap-1 text-md text-text-primary font-semibold group w-fit"
+          className="inline-flex items-center self-center gap-1 text-md link-cta font-semibold group w-fit"
         >
           All coverage
         </ArrowLink>
