@@ -6,9 +6,11 @@ import { assertNoViolations } from "./axe-report";
 // NavigationMenu, which toggles aria-expanded on open — this drives the menu
 // open and scans that expanded state specifically, instead of only the
 // closed/initial DOM.
-test("Home — SideNav nav-menu expand is accessible in its open state", async ({ page }, testInfo) => {
+test("Home — SideNav nav-menu expand is accessible in its open state", async ({
+  page,
+}, testInfo) => {
   test.skip(
-    testInfo.project.name !== "desktop",
+    !testInfo.project.name.startsWith("desktop"),
     "SideNav's dropdown nav only renders at the lg+ breakpoint — see components/layout/SideNav.tsx",
   );
 

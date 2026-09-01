@@ -20,17 +20,35 @@ export default defineConfig({
     // Without this, axe can scan mid-fade-in and report a false contrast failure.
     contextOptions: { reducedMotion: "reduce" },
   },
+  // Viewport x theme. SideNav (desktop, lg+) and TopHeader (mobile/tablet, below
+  // lg) are separate DOM subtrees toggled by CSS display, and axe only evaluates
+  // whichever is visible — so both viewports are needed. Theme is driven by
+  // colorScheme rather than a fixture: the provider defaults to "system", so
+  // prefers-color-scheme is the real code path a visitor hits.
   projects: [
-    // SideNav (desktop, lg+) and TopHeader (mobile/tablet, below lg) are two
-    // separate DOM subtrees toggled by CSS display — axe only evaluates whichever
-    // is actually visible, so both viewports are needed for full coverage.
     {
-      name: "desktop",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } },
+      name: "desktop-light",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1440, height: 900 },
+        colorScheme: "light",
+      },
     },
     {
-      name: "mobile",
-      use: { ...devices["iPhone 13"] },
+      name: "desktop-dark",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1440, height: 900 },
+        colorScheme: "dark",
+      },
+    },
+    {
+      name: "mobile-light",
+      use: { ...devices["iPhone 13"], colorScheme: "light" },
+    },
+    {
+      name: "mobile-dark",
+      use: { ...devices["iPhone 13"], colorScheme: "dark" },
     },
   ],
   webServer: {
