@@ -26,6 +26,10 @@ export type RouteUnderTest = {
 
 export const routes: RouteUnderTest[] = [
   { path: "/", label: "Home", register: "mixed" },
+  { path: "/about", label: "About", register: "editorial" },
+  { path: "/contact", label: "Contact", register: "editorial" },
+  { path: "/news", label: "News index", register: "editorial" },
+  { path: "/blog", label: "Blog index", register: "editorial" },
   { path: "/blog/how-odds-boosts-actually-work", label: "Blog post", register: "editorial" },
   { path: "/reviews/peakwager", label: "Operator review", register: "comparison" },
   { path: "/categories/esports-betting", label: "Category directory", register: "editorial" },
