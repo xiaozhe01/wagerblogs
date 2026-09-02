@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import BackToTop from "./BackToTop";
+import BackToTopFab from "./BackToTopFab";
 import SideNav from "./SideNav";
 import TopHeader from "./TopHeader";
 import SiteFooter from "./SiteFooter";
@@ -46,6 +47,9 @@ export default function PageShell({
           <SiteFooter />
         </div>
       </div>
+      {/* Outside the grid: it is fixed to the viewport, not a track. Rendered
+          regardless of `rail`, since it answers page length, not rail presence. */}
+      <BackToTopFab />
     </div>
   );
 }
