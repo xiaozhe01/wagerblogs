@@ -647,8 +647,11 @@ body {
     color: var(--color-text-primary);
     transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
+  /* Mirrors .link-cta on an inverted panel: ink at rest, brand on hover. It
+     was brand at rest, which made the one CTA in the rail look permanently
+     hovered next to its ink-coloured siblings. */
   .link-cta-on-inverted {
-    color: var(--color-brand-on-inverted);
+    color: var(--color-text-on-inverted);
     transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   @media (hover: hover) {
@@ -656,7 +659,7 @@ body {
       color: var(--color-brand);
     }
     .link-cta-on-inverted:hover {
-      color: var(--color-text-on-inverted);
+      color: var(--color-brand-on-inverted);
     }
   }
 
