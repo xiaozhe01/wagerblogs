@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowDown } from "lucide-react";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
@@ -59,7 +58,7 @@ export default function ResponsibleGamblingPage() {
             Helpline: [{helplineNumber} — verify before launch] · 24/7 · call or text
           </address>
         </div>
-        <Link
+        <a
           href="#get-help"
           className="btn-on-fill group gap-1.5 shrink-0 self-start md:self-auto"
         >
@@ -69,7 +68,7 @@ export default function ResponsibleGamblingPage() {
             className="size-3 shrink-0 transition-transform duration-200 group-hover:translate-y-1"
             aria-hidden="true"
           />
-        </Link>
+        </a>
       </aside>
 
       <header className="flex flex-col gap-3 max-w-none">

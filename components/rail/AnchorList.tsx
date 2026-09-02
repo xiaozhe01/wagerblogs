@@ -44,13 +44,26 @@ export default function AnchorList({
     const key = item.key ?? i;
     return (
       <li key={key} className={rowBleedClassName}>
-        <Link
-          href={item.href}
-          aria-current={item.current ? "page" : undefined}
-          className={`${rowClassName} ${state} ${extra}`.trim()}
-        >
-          {item.label}
-        </Link>
+        {/* TOC rows are #fragments, region/filter rows are ?query links. Only
+            the latter is a route change; a fragment needs a native <a> or a
+            repeat click after scrolling away does nothing. */}
+        {item.href.startsWith("#") ? (
+          <a
+            href={item.href}
+            aria-current={item.current ? "page" : undefined}
+            className={`${rowClassName} ${state} ${extra}`.trim()}
+          >
+            {item.label}
+          </a>
+        ) : (
+          <Link
+            href={item.href}
+            aria-current={item.current ? "page" : undefined}
+            className={`${rowClassName} ${state} ${extra}`.trim()}
+          >
+            {item.label}
+          </Link>
+        )}
       </li>
     );
   });

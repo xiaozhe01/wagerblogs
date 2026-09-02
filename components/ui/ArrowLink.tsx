@@ -8,14 +8,24 @@ type ArrowLinkProps = {
 };
 
 export default function ArrowLink({ href, className, children }: ArrowLinkProps) {
-  return (
-    <Link href={href} className={className}>
+  const inner = (
+    <>
       {children}
       <ArrowRight
         strokeWidth={2}
         className="size-3 shrink-0 transition duration-300 group-hover:translate-x-1"
         aria-hidden="true"
       />
+    </>
+  );
+
+  return href.startsWith("#") ? (
+    <a href={href} className={className}>
+      {inner}
+    </a>
+  ) : (
+    <Link href={href} className={className}>
+      {inner}
     </Link>
   );
 }
