@@ -287,7 +287,7 @@ export default function OperatorReviewPage() {
             </div>
           </div>
           <ArrowLink
-            href="#"
+            href="/reviews"
             className="btn-secondary group min-h-0 py-1.5 px-3 gap-1 text-xs leading-heading"
           >
             Read Reviews
