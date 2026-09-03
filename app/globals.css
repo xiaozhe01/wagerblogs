@@ -213,6 +213,11 @@
      inside it, so "65 characters" measured as 77. */
   --container-article: 655px;
 
+  /* Page-header measure — h1 and standfirst share one edge. Wider than
+     --container-article on purpose: display type earns more width than running
+     prose, and capping the deck alone leaves the header with two ragged edges. */
+  --container-header: 820px;
+
   /* Border radius — separated by component class (see inconsistency #3).
      --radius-pill and --radius-full were removed: Tailwind v4 already
      ships a built-in "rounded-full" utility (border-radius: 9999px, which
@@ -246,8 +251,10 @@
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  /* Pointed at the project palette, not shadcn's chroma-0 defaults: pure white
+     on a #fbf8f1 page read as a foreign surface in the SideNav submenu. */
+  --popover: var(--color-bg-card);
+  --popover-foreground: var(--color-text-primary);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
@@ -730,8 +737,11 @@ body {
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  /* bg-subtle, not bg-card: in dark the page is the darkest surface, so a
+     floating panel needs a lift. In light nothing is lighter than the page,
+     so the shadow does that job instead. */
+  --popover: var(--color-bg-subtle);
+  --popover-foreground: var(--color-text-primary);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
