@@ -88,7 +88,7 @@ export default async function RGDirectoryPage({
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Worldwide Gambling-help organizations
         </h1>
-        <p className="text-lg font-medium leading-copy text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder standfirst — every organization listed here offers free, confidential
           support. Entries are checked against the organization&apos;s own published contact details
           before they appear, and re-checked on a schedule.]

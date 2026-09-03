@@ -75,7 +75,7 @@ export default function ResponsibleGamblingPage() {
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Responsible gambling
         </h1>
-        <p className="text-lg font-medium leading-copy text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder standfirst — why this page exists, what readers will find on it, and a plain
           statement that WagerBlogs earns commission from operators and still wants readers to bet
           less, not more, when it stops being entertainment.]

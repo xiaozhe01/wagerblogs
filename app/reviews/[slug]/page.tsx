@@ -60,10 +60,10 @@ export default function OperatorReviewPage() {
       />
 
       <header className="flex flex-col gap-2.5 max-w-header">
-        <h1 className="heading text-3xl leading-snug text-pretty">
+        <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           {operatorName} Review — July 2026
         </h1>
-        <p className="text-md leading-copy text-text-body text-pretty">
+        <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder summary — the verdict in two sentences, what changed since last verification,
           and who this book suits.]
         </p>
