@@ -9,7 +9,7 @@
 /*
   WagerBlogs / RG.org design language — extracted from wireframe library (Home, Blog-Post, Category, Review-Post, Operator-Review, RG-Directory, Responsible-Gambling, Disclaimer, Author, Not-Found, Comments, Component-Reference-Filled-States).
 
-  Every token below is namespaced so Tailwind v4 actually generates a utility class from it — this file assumes NO var()/inline-style fallback; implementation should always reach for a generated class. Namespace verification pass (v4 rules): --color-* → bg-/text-/border-/etc. OK as-is --font- → font-sans/font-serif/font-mono OK as-is --font-weight-* → font-regular/font-medium/etc. OK as-is (note: Tailwind's own default key is "normal", not "regular" — kept "regular" to match how it's described everywhere else in this file; both are valid custom keys, just flagging the naming choice) --text-* → text-2xs/text-xl/etc. OK as-is --leading-* → leading-tight/leading-loose/etc. OK as-is --radius-* → rounded-sm/rounded-md/etc. OK for sm/md; --radius-pill and --radius-full were WRONG — see fix #2 below, both removed. --spacing-* → p-/m-/gap-/px-/etc. was --space-, which generates NOTHING in Tailwind v4 — renamed throughout (fix #1 below). --shadow- → shadow-frame moved here from :root (was inert) — now generates a real utility. --background-image-* → bg-placeholder-asset moved here from :root for the same reason. Values with no Tailwind namespace at all (grid track widths, container gutters used only inside a grid-template-columns declaration) stay in :root and are consumed via Tailwind's arbitrary-value syntax, e.g. grid-cols-[var(--grid-nav-width)_1fr_var(--grid-rail-width)] — that is still a generated utility class, not an inline style, since the value just happens to be a var() reference.
+  Every token below is namespaced so Tailwind v4 actually generates a utility class from it — this file assumes NO var()/inline-style fallback; implementation should always reach for a generated class. Namespace verification pass (v4 rules): --color-* → bg-/text-/border-/etc. OK as-is --font- → font-sans/font-serif/font-mono OK as-is --font-weight-* → font-regular/font-medium/etc. OK as-is (note: Tailwind's own default key is "normal", not "regular" — kept "regular" to match how it's described everywhere else in this file; both are valid custom keys, just flagging the naming choice) --text-* → text-2xs/text-xl/etc. OK as-is --leading-* → leading-tight/leading-loose/etc. OK as-is --radius-* → rounded-sm/rounded-md/etc. OK for sm/md; --radius-pill and --radius-full were WRONG — see fix #2 below, both removed. --spacing-* → p-/m-/gap-/px-/etc. was --space-, which generates NOTHING in Tailwind v4 — renamed throughout (fix #1 below). --shadow- → shadow-frame moved here from :root (was inert) — now generates a real utility. Values with no Tailwind namespace at all (grid track widths, container gutters used only inside a grid-template-columns declaration) stay in :root and are consumed via Tailwind's arbitrary-value syntax, e.g. grid-cols-[var(--grid-nav-width)_1fr_var(--grid-rail-width)] — that is still a generated utility class, not an inline style, since the value just happens to be a var() reference.
 
   FLAGGED INCONSISTENCIES — decided ad hoc per-component, not from a defined system. Resolved below; most are settled by design intent (a genuine split between component classes, e.g. compact vs. standard), not by picking whichever value appeared most often — verify against intent before treating this file as final:
 
@@ -59,6 +59,10 @@
   --color-bg-page: #fbf8f1;
   --color-bg-card: #fbf8f1;
   --color-bg-subtle: #f1ede4;
+  /* Asset-pending fill. Deliberately a step past bg-subtle: measured against
+     bg-page, bg-subtle is ΔE 0.033 and vanishes entirely (ΔE 0.000) on the
+     bg-subtle ground the ranked-list logos sit on. This is 0.069. */
+  --color-bg-placeholder: #e5e1d9;
 
   /* --color-bg-accent is .btn-primary's fill plus the avatar/badge chrome —
      it stays black because black means "leaves the site for an operator".
@@ -225,16 +229,6 @@
      have been var()-only. */
   --shadow-frame: 0 8px 24px rgba(0, 0, 0, 0.08);
 
-  /* Background image — moved into @theme from :root for the same reason:
-     --background-image-* generates a bg-{name} utility. */
-  /* Stripe hexes are literal, not var()s — warm them with the page. */
-  --background-image-placeholder-asset: repeating-linear-gradient(
-    45deg,
-    #ece5d5,
-    #ece5d5 4px,
-    #f6f1e5 4px,
-    #f6f1e5 8px
-  );
 }
 
 /* :root — values with no matching Tailwind v4 theme namespace, so they
@@ -549,10 +543,11 @@ body {
   }
 
   /* Placeholder / asset-pending block — logos, hero images, avatars not yet
-     supplied. Prefer the generated "bg-placeholder-asset" utility directly
-     over this class where only the fill (not the dashed border) is needed. */
+     supplied. Flat, not the former 45deg stripe: a 4px repeating gradient is a
+     high-frequency pattern that pulled far more attention than its area, and
+     the dashed border already carries the pending signal. */
   .placeholder-asset {
-    background: var(--background-image-placeholder-asset);
+    background-color: var(--color-bg-placeholder);
     border: 1px dashed var(--color-border-placeholder);
     display: flex;
     align-items: center;
@@ -807,6 +802,7 @@ body {
   --color-bg-page: #17150f;
   --color-bg-card: #17150f;
   --color-bg-subtle: #211e18;
+  --color-bg-placeholder: #2a2720;
   --color-bg-subtle-active: #2a2720;
 
   --color-bg-accent: #bab5ac;
@@ -833,13 +829,4 @@ body {
   --color-brand-on-inverted: #34548e;
   --color-marker: #9fc5ff;
 
-  /* Re-declared whole, not overridden: the stripe hexes are literals inside a
-     --background-image-* token, so no --color-* swap reaches them. */
-  --background-image-placeholder-asset: repeating-linear-gradient(
-    45deg,
-    #27251f,
-    #27251f 4px,
-    #1e1b16 4px,
-    #1e1b16 8px
-  );
 }
