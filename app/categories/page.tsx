@@ -35,7 +35,7 @@ export default function CategoriesIndexPage() {
       {/* Register: Editorial · Tier 1 — category navigation, no outbound operator links */}
       <Breadcrumbs items={[{ label: "Categories" }]} />
 
-      <header className="flex flex-col gap-3">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Betting categories
         </h1>

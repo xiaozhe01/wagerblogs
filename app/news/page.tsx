@@ -70,7 +70,7 @@ export default async function NewsIndexPage({
       {/* Register: Editorial · Tier 1 — reporting, no outbound operator links */}
       <Breadcrumbs items={[{ label: "News" }]} />
 
-      <header className="flex flex-col gap-3">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           News
         </h1>
@@ -120,7 +120,7 @@ export default async function NewsIndexPage({
       </section>
 
       <EditorialSection title="How we report" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — sourcing policy: what we verify before publishing, how corrections are
           handled, and why commercial partnerships never affect coverage.]
         </p>

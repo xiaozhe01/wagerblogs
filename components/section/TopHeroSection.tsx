@@ -2,7 +2,7 @@ import ArrowLink from "@/components/ui/ArrowLink";
 
 export default function TopHeroSection() {
   return (
-    <header className="flex flex-col gap-3">
+    <header className="flex flex-col gap-3 max-w-header">
       <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
         Compare legal sports betting and online casino sites in the US
       </h1>

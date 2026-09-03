@@ -35,7 +35,7 @@ export default function ReviewsIndexPage() {
       {/* Register: Comparison · Tier 2/3 — CTA-bearing, one primary-domain entry per list */}
       <Breadcrumbs items={[{ label: "Reviews" }]} />
 
-      <header className="flex flex-col gap-3">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Sportsbook & casino reviews
         </h1>

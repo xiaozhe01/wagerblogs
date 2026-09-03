@@ -59,7 +59,7 @@ export default function OperatorReviewPage() {
         ]}
       />
 
-      <header className="flex flex-col gap-2.5">
+      <header className="flex flex-col gap-2.5 max-w-header">
         <h1 className="heading text-3xl leading-snug text-pretty">
           {operatorName} Review — July 2026
         </h1>
@@ -302,7 +302,7 @@ export default function OperatorReviewPage() {
           {reviewFaqs.map((f) => (
             <li key={f.q} className="card">
               <h3 className="text-md font-semibold text-text-primary mb-1.5">{f.q}</h3>
-              <p className="text-sm text-text-muted leading-relaxed">{f.a}</p>
+              <p className="text-sm text-text-muted leading-relaxed max-w-article">{f.a}</p>
             </li>
           ))}
         </ul>

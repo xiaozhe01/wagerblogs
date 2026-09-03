@@ -84,7 +84,7 @@ export default async function RGDirectoryPage({
         ]}
       />
 
-      <header className="flex flex-col gap-3 max-w-none">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Worldwide Gambling-help organizations
         </h1>
@@ -212,7 +212,7 @@ export default async function RGDirectoryPage({
       </section>
 
       <EditorialSection title="Missing an organization?" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — inclusion criteria: free to use, confidential, and operated by a non-profit
           or public-health body. Commercial treatment providers are out of scope.]
         </p>

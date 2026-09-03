@@ -53,7 +53,7 @@ export default function ContactPage() {
       {/* Register: Editorial · Tier 1 — trust page, no monetization, no operator links */}
       <Breadcrumbs items={[{ label: "Contact" }]} />
 
-      <header className="flex flex-col gap-3">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Contact
         </h1>
@@ -86,14 +86,14 @@ export default function ContactPage() {
           handling before it ships. A form that silently drops a correction is
           worse than an address the reader can copy. */}
       <EditorialSection title="Before you write" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — what to include in a correction: the page, the claim, and a source we can
           check. Corrections are recorded on the page they affect.]
         </p>
       </EditorialSection>
 
       <EditorialSection title="What we can't help with" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — WagerBlogs is a publisher, not an operator. We cannot access accounts,
           resolve deposits or withdrawals, or intervene in a dispute with a sportsbook. For
           gambling-harm support, use the helpline resources instead.]

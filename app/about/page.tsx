@@ -47,7 +47,7 @@ export default function AboutPage() {
       {/* Register: Editorial · Tier 1 — trust page, no monetization, no operator links */}
       <Breadcrumbs items={[{ label: "About" }]} />
 
-      <header className="flex flex-col gap-3">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           About WagerBlogs
         </h1>
@@ -58,7 +58,7 @@ export default function AboutPage() {
       </header>
 
       <EditorialSection id="who-we-are" title="Who we are" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — the publisher, when it started, and the editorial remit. Named staff and
           credentials appear here only once real people are attached to real records.]
         </p>
@@ -81,7 +81,7 @@ export default function AboutPage() {
       </EditorialSection>
 
       <EditorialSection id="how-we-make-money" title="How we make money" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — affiliate commission explained plainly: which links pay us, that
           commission never affects a score or a ranking position, and how that is enforced
           editorially.]
@@ -95,7 +95,7 @@ export default function AboutPage() {
       </EditorialSection>
 
       <EditorialSection id="corrections" title="Corrections" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — how to report an error, what we do with it, and how corrections are
           recorded on the page they affect.]
         </p>

@@ -71,7 +71,7 @@ export default function ResponsibleGamblingPage() {
         </a>
       </aside>
 
-      <header className="flex flex-col gap-3 max-w-none">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           Responsible gambling
         </h1>
@@ -100,7 +100,7 @@ export default function ResponsibleGamblingPage() {
       </EditorialSection>
 
       <EditorialSection id="self-check" title="A quick self-check" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           These ten questions are the {selfAssessmentSource.instrument}, reproduced from the{" "}
           {selfAssessmentSource.organisation}. Answering &ldquo;yes&rdquo; to any of them is a
           reason to talk to someone.
@@ -160,14 +160,14 @@ export default function ResponsibleGamblingPage() {
         title="Self-exclusion in your state"
         register="editorial"
       >
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — most legal states run their own self-exclusion registers; enrolling bars
           every licensed operator in that state at once.]
         </p>
       </EditorialSection>
 
       <EditorialSection title="If you're worried about someone else" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-none text-pretty">
+        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
           [Placeholder — guidance for friends and family: what tends to help, what tends to
           backfire, and where support exists for you as well as for them.]
         </p>
