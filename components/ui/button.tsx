@@ -6,8 +6,7 @@ import { cn } from "@/lib/utils";
 // NOTE: this theme overrides the spacing scale (--spacing-5:32px, -6:40px,
 // -7:48px, -8:60px — see globals.css), so these shadcn size variants render
 // LARGER than the registry's intent: default h-7=48px, xs h-5=32px,
-// sm h-6=40px, lg/icon-lg h-8=60px. Current consumers (TopicsCard xs=32px,
-// pagination icon=48px) were reviewed at these rendered sizes — do not
+// sm h-6=40px, lg/icon-lg h-8=60px. Sizes below sm (xs=32px, icon=48px) were reviewed at these rendered sizes — do not
 // "fix" the suffixes back to registry values without re-reviewing them.
 
 const buttonVariants = cva(

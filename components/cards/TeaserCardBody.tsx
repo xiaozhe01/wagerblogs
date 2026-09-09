@@ -6,7 +6,7 @@ type TeaserCardBodyProps = {
 export default function TeaserCardBody({ title, desc }: TeaserCardBodyProps) {
   return (
     <>
-      <h3 className="font-semibold text-md text-text-primary mb-1.5">{title}</h3>
+      <h3 className="font-semibold text-lg text-text-primary mb-1.5">{title}</h3>
       <p className="text-xs text-text-muted font-medium leading-relaxed">{desc}</p>
     </>
   );

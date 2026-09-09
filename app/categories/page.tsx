@@ -1,18 +1,17 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import HelpLineCard from "@/components/rail/HelpLineCard";
 import InfoCard from "@/components/rail/InfoCard";
 import SearchInput from "@/components/rail/SearchInput";
-import TeaserCardBody from "@/components/cards/TeaserCardBody";
+import LinkTileGrid from "@/components/cards/LinkTileGrid";
 import EditorialSection from "@/components/section/EditorialSection";
 import RecentPublishedSection from "@/components/section/RecentPublishedSection";
-import { categories } from "@/lib/site-data";
+import { categories } from "@/lib/categories";
 
 export const metadata: Metadata = {
   title: "Betting Categories — WagerBlogs",
   description: "Browse every betting and casino vertical WagerBlogs covers.",
+  alternates: { canonical: "/categories" },
 };
 
 // Minimal categories index — every category from lib/site-data.ts as a card.
@@ -26,7 +25,6 @@ export default function CategoriesIndexPage() {
         body="How we research, source, and correct our category coverage."
         cta={{ href: "/about", label: "Read our methodology" }}
       />
-      <HelpLineCard />
     </>
   );
 
@@ -46,18 +44,14 @@ export default function CategoriesIndexPage() {
       </header>
 
       <EditorialSection title="All categories" register="editorial">
-        <ul
-          role="list"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3"
-        >
-          {categories.map((c) => (
-            <li key={c.name}>
-              <Link href="/categories/sample" className="editorial-link-card min-h-11 lg:min-h-0">
-                <TeaserCardBody title={c.name} desc={c.desc} />
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <LinkTileGrid
+          items={categories.map((category) => ({
+            href: category.href,
+            title: category.name,
+            desc: category.desc,
+            key: category.slug,
+          }))}
+        />
       </EditorialSection>
 
       <RecentPublishedSection register="editorial" />

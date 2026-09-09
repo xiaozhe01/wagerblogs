@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import ArrowLink from "@/components/ui/ArrowLink";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import AnchorList from "@/components/rail/AnchorList";
 import InfoCard from "@/components/rail/InfoCard";
 import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
-import ChipList from "@/components/ui/ChipList";
+import FilterChips from "@/components/controls/FilterChips";
+import Prose from "@/components/section/Prose";
 import { ALL_REGIONS, REGION_PARAM, regions } from "@/lib/site-data";
 import { helpDirectory } from "@/lib/mock-data";
 import { HELP_CONTACT_KINDS } from "@/lib/types";
@@ -14,6 +15,9 @@ import { chipHref, headingId, resolveChip } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Gambling-Help Directory — WagerBlogs",
+  description:
+    "Free, confidential gambling-help organisations worldwide, listed by region with the contact routes each one offers.",
+  alternates: { canonical: "/responsible-gambling/help-directory" },
 };
 
 const DIRECTORY_ANCHOR = "directory";
@@ -39,15 +43,6 @@ export default async function RGDirectoryPage({
       : helpDirectory.filter((g) => g.region === activeRegion);
   const rail = (
     <>
-      <section className="card-inverted" aria-labelledby="rail-immediate-danger">
-        <h2 id="rail-immediate-danger" className="heading text-sm text-text-on-inverted mb-2.5">
-          In immediate danger?
-        </h2>
-        <p className="text-xs font-semibold text-text-on-inverted-muted leading-loose">
-          Contact your local emergency services. The organizations on this page support gambling
-          harm; they are not crisis lines unless marked.
-        </p>
-      </section>
       <nav aria-label="Regions" className="card">
         <AnchorList
           items={regions.map((r) => ({
@@ -95,25 +90,33 @@ export default async function RGDirectoryPage({
         </p>
       </header>
 
+      {/* A caveat about the list below it, so it sits with the list rather than
+          in a rail a phone never renders. No CTA: the action it names is local
+          emergency services, which has no single number to link. */}
+      <section className="card-inverted" aria-labelledby="immediate-danger">
+        <h2
+          id="immediate-danger"
+          className="heading text-2xl leading-heading text-text-on-inverted mb-2.5"
+        >
+          In immediate danger?
+        </h2>
+        <p className="text-xs font-semibold text-text-on-inverted-muted leading-loose">
+          Contact your local emergency services. The organizations on this page support gambling
+          harm; they are not crisis lines unless marked.
+        </p>
+      </section>
+
       {/* Chips and the list they filter are one unit. */}
       <section aria-label="Gambling-help organizations" className="flex flex-col gap-3">
-        <nav aria-label="Filter by region">
-          <ul role="list" className="flex gap-2 flex-wrap">
-            <ChipList
-              as="Link"
-              inList
-              filter
-              items={regions.map((r) => ({
-                label: r,
-                key: r,
-                href: regionHref(r),
-                active: r === activeRegion,
-              }))}
-              activeClassName="btn-secondary chip-active"
-              inactiveClassName="btn-secondary"
-            />
-          </ul>
-        </nav>
+        <FilterChips
+          label="Filter by region"
+          items={regions.map((r) => ({
+            label: r,
+            key: r,
+            href: regionHref(r),
+            active: r === activeRegion,
+          }))}
+        />
 
         {/* Keyed so only the directory replays the fade. */}
         <div
@@ -139,7 +142,10 @@ export default async function RGDirectoryPage({
                 className="min-h-80"
                 title={`No verified organizations for ${activeRegion} yet`}
                 body="Entries appear here only after their contact details are checked against the organization's own published information."
-                action={{ href: regionHref(ALL_REGIONS), label: "Show all regions" }}
+                action={{
+                  href: regionHref(ALL_REGIONS),
+                  label: "Show all regions",
+                }}
               />
             </section>
           )}
@@ -173,9 +179,16 @@ export default async function RGDirectoryPage({
                         >
                           {e.name}
                         </h3>
-                        <span className="shrink-0 text-2xs text-text-muted font-semibold tabular-nums border border-border-divider rounded-sm px-1.5 py-1 whitespace-nowrap">
-                          {e.country}
-                        </span>
+                        <div className="shrink-0 flex items-center gap-1.5">
+                          {e.isCrisisLine && (
+                            <span className="text-2xs font-semibold uppercase tracking-wide bg-bg-accent text-text-on-fill rounded-sm px-1.5 py-1 whitespace-nowrap">
+                              Crisis line
+                            </span>
+                          )}
+                          <span className="text-2xs text-text-muted font-semibold tabular-nums border border-border-divider rounded-sm px-1.5 py-1 whitespace-nowrap">
+                            {e.country}
+                          </span>
+                        </div>
                       </div>
                       <p className="text-xs text-text-muted leading-relaxed mb-3">{e.desc}</p>
                       <dl className="flex flex-col gap-1.5 mb-3.5">
@@ -212,14 +225,11 @@ export default async function RGDirectoryPage({
       </section>
 
       <EditorialSection title="Missing an organization?" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
+        <Prose>
           [Placeholder — inclusion criteria: free to use, confidential, and operated by a non-profit
           or public-health body. Commercial treatment providers are out of scope.]
-        </p>
-        <ArrowLink
-          href="/contact"
-          className="inline-flex items-center gap-1 min-h-11 text-md link-cta font-semibold group w-fit"
-        >
+        </Prose>
+        <ArrowLink href="/contact" className={`${sectionCtaClassName} min-h-11 w-fit`}>
           Suggest an addition
         </ArrowLink>
       </EditorialSection>

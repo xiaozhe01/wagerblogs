@@ -2,11 +2,13 @@ import SearchInput from "./SearchInput";
 import TrendingCard from "./TrendingCard";
 import EditorsCard from "./EditorsCard";
 
-export default function HomeRail() {
+// categoryParam is threaded through so "More headlines" can exclude whatever
+// the teaser feed is currently showing — see homeNewsSplit in lib/news.ts.
+export default function HomeRail({ categoryParam }: { categoryParam?: string | string[] }) {
   return (
     <>
       <SearchInput />
-      <TrendingCard />
+      <TrendingCard categoryParam={categoryParam} />
       <EditorsCard />
     </>
   );

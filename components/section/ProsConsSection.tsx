@@ -18,7 +18,7 @@ function ProsConsList({
 }) {
   return (
     <div className="card flex flex-col gap-3">
-      <h3 className="text-sm font-bold text-text-primary">{title}</h3>
+      <h3 className="text-lg font-bold text-text-primary">{title}</h3>
       <ul role="list" className="flex flex-col gap-2.5">
         {items.map((item) => (
           <li

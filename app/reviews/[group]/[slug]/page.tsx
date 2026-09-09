@@ -1,65 +1,92 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import Comments from "@/components/Comments";
+import Comments from "@/components/section/Comments";
 import ReviewCard from "@/components/section/ReviewCard";
 import ComparisonCard from "@/components/section/ComparisonCard";
-import PrimaryDomainLink from "@/components/PrimaryDomainLink";
+import PrimaryDomainLink from "@/components/controls/PrimaryDomainLink";
 import ReviewSection from "@/components/section/ReviewSection";
 import TeaserCardGrid from "@/components/cards/TeaserCardGrid";
 import AtAGlanceCard from "@/components/rail/AtAGlanceCard";
 import OtherBooksCard from "@/components/rail/OtherBooksCard";
 import ProsConsSection from "@/components/section/ProsConsSection";
-import ArrowLink from "@/components/ui/ArrowLink";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import { ReviewJsonLd } from "@/lib/schema";
 import {
   mockAuthor,
-  mockPeakWagerReview,
-  otherBooksCompared,
   reviewReaderReviews,
   reviewRelated,
   reviewAtAGlance,
   reviewBonusTerms,
-  reviewFaqs,
 } from "@/lib/mock-data";
+import { findReview, reviewParams } from "@/lib/reviews";
 
-// TODO(cms): replace with generateStaticParams() from the CMS operator list.
-const operatorName = mockPeakWagerReview.name;
+type ReviewParams = { group: string; slug: string };
 
 // TODO(cms): reviewer comes from the Person record. Shared by the byline below and
 // the Review schema so the two can never drift apart.
 const reviewerName = mockAuthor.name;
 const reviewerHref = `/authors/${mockAuthor.slug}`;
 
-export const metadata: Metadata = {
-  title: `${operatorName} Review — WagerBlogs`,
-};
+export function generateStaticParams() {
+  return reviewParams;
+}
 
-const scoreBreakdown = mockPeakWagerReview.categoryScores;
-const pros = mockPeakWagerReview.pros ?? [];
-const cons = mockPeakWagerReview.cons ?? [];
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<ReviewParams>;
+}): Promise<Metadata> {
+  const { group, slug } = await params;
+  const found = findReview(group, slug);
+  if (!found) return { title: "Reviews — WagerBlogs" };
+  return {
+    title: `${found.operator.name} Review — WagerBlogs`,
+    description: `Our tested ${found.group.noun} review of ${found.operator.name}: editorial score, strengths, trade-offs, and how it compares.`,
+    alternates: { canonical: `${found.group.href}/${found.operator.slug}` },
+  };
+}
 
-export default function OperatorReviewPage() {
+export default async function OperatorReviewPage({ params }: { params: Promise<ReviewParams> }) {
+  const { group: groupSlug, slug } = await params;
+  const found = findReview(groupSlug, slug);
+  // An operator we haven't reviewed — or one filed under another group — is a
+  // genuine 404, not a template on empty data.
+  if (!found) notFound();
+  const { operator, group } = found;
+  const operatorName = operator.name;
+  const currentPath = `${group.href}/${operator.slug}`;
+  const scoreBreakdown = operator.categoryScores;
+  const pros = operator.pros ?? [];
+  const cons = operator.cons ?? [];
+  const siblings = group.operators.filter((entry) => entry.slug !== operator.slug);
+  const atAGlance = [
+    { label: "Editorial score", value: `${operator.score.toFixed(1)} / 10` },
+    ...reviewAtAGlance,
+  ];
   const rail = (
     <>
-      <AtAGlanceCard items={reviewAtAGlance} />
-      <OtherBooksCard books={otherBooksCompared} />
+      <AtAGlanceCard items={atAGlance} />
+      <OtherBooksCard title={`Other ${group.noun}s compared`} operators={siblings} />
     </>
   );
 
   return (
     <PageShell activeNavId="reviews" rail={rail}>
       {/* Register: Comparison · Tier 3 — direct reference */}
+      {/* The trail mirrors the route: /reviews/<group>/<slug>. */}
       <Breadcrumbs
+        currentPath={currentPath}
         items={[
           { label: "Reviews", href: "/reviews" },
-          { label: "Sportsbooks", href: "/categories/sample" },
+          { label: group.crumb, href: group.href },
           { label: operatorName },
         ]}
       />
 
-      <header className="flex flex-col gap-2.5 max-w-header">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           {operatorName} Review — July 2026
         </h1>
@@ -69,12 +96,7 @@ export default function OperatorReviewPage() {
         </p>
       </header>
 
-      {/* TRUST BLOCK 1/3 — editorial score */}
-      <ReviewSection
-        badge="TRUST BLOCK 1 / 3"
-        title="WagerBlogs editorial score"
-        note="our tested verdict — produced by a named reviewer, methodology public"
-      >
+      <ReviewSection title="WagerBlogs editorial score">
         <article
           aria-label={`WagerBlogs editorial score for ${operatorName}`}
           className="flex flex-col gap-4 bg-bg-subtle border border-border-divider rounded-md p-3 md:p-5"
@@ -84,12 +106,13 @@ export default function OperatorReviewPage() {
           <ReviewJsonLd
             linkTier="tier3"
             itemName={operatorName}
-            itemUrl={mockPeakWagerReview.primaryDomainLink?.url ?? ""}
-            ratingValue={mockPeakWagerReview.score}
+            itemUrl={operator.primaryDomainLink?.url ?? ""}
+            pagePath={currentPath}
+            ratingValue={operator.score}
             bestRating={10}
             reviewerName={reviewerName}
             reviewerUrl={reviewerHref}
-            datePublished={mockPeakWagerReview.lastVerified}
+            datePublished={operator.lastVerified}
           />
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5 min-w-0">
@@ -100,10 +123,10 @@ export default function OperatorReviewPage() {
                 [logo]
               </div>
               <div className="min-w-0">
-                <h3 className="text-md font-bold text-text-primary mb-1">{operatorName}</h3>
+                <h3 className="text-lg font-bold text-text-primary mb-1">{operatorName}</h3>
                 <p className="flex items-baseline gap-2">
                   <span className="text-4xl font-bold text-text-primary leading-none">
-                    <data value={mockPeakWagerReview.score}>{mockPeakWagerReview.score}</data>
+                    <data value={operator.score}>{operator.score.toFixed(1)}</data>
                   </span>
                   <span className="text-sm text-text-muted">/ 10 editorial</span>
                 </p>
@@ -116,13 +139,10 @@ export default function OperatorReviewPage() {
               </div>
             </div>
             <div className="grid grid-cols-2 md:flex md:flex-col gap-2.5 md:w-37.5 shrink-0">
-              <PrimaryDomainLink
-                linkTier="tier3"
-                primaryDomainLink={mockPeakWagerReview.primaryDomainLink}
-              />
+              <PrimaryDomainLink linkTier="tier3" primaryDomainLink={operator.primaryDomainLink} />
               <Link
                 href="/about"
-                className="btn-secondary min-h-5 py-1.5 px-3 text-xs leading-heading"
+                className="btn-secondary min-h-11 wide:min-h-5 py-1.5 px-3 text-xs leading-heading"
               >
                 How we score
               </Link>
@@ -136,7 +156,7 @@ export default function OperatorReviewPage() {
               >
                 <dt className="text-2xs text-text-muted tabular-nums mb-1 uppercase">{s.label}</dt>
                 <dd className="text-lg font-bold text-text-primary">
-                  <data value={s.score}>{s.score}</data>
+                  <data value={s.score}>{s.score.toFixed(1)}</data>
                 </dd>
               </div>
             ))}
@@ -165,23 +185,23 @@ export default function OperatorReviewPage() {
 
       <ProsConsSection pros={pros} cons={cons} />
 
-      <ComparisonCard />
+      <ComparisonCard linkTier="tier3" />
 
       <ReviewSection title="Bonus detail">
         <div className="card">
           <div className="flex justify-between gap-4 flex-wrap items-start mb-3">
             <div className="min-w-0">
-              <h3 className="text-md font-semibold text-text-primary mb-1.5">
-                Bet $5 Get $200 in Bonus Bets
+              {/* TODO(cms): the offer is per-operator — headline, code, and the date
+                  it was checked. Bracketed until a real one is attached; a shared
+                  fixture here would read as this operator's actual bonus. */}
+              <h3 className="text-lg font-semibold text-text-primary mb-1.5">
+                [Placeholder bonus headline — {operatorName}]
               </h3>
               <p className="text-xs text-text-muted tabular-nums">
-                code: <code>PEAK200</code> · verified [Jun 30, 2026]
+                code: <code>[CODE]</code> · verified [date required]
               </p>
             </div>
-            <PrimaryDomainLink
-              linkTier="tier3"
-              primaryDomainLink={mockPeakWagerReview.primaryDomainLink}
-            />
+            <PrimaryDomainLink linkTier="tier3" primaryDomainLink={operator.primaryDomainLink} />
           </div>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
             {reviewBonusTerms.map((bt) => (
@@ -203,27 +223,25 @@ export default function OperatorReviewPage() {
 
       {/* TRUST BLOCK 2/3 — reader reviews. Default rendered here is the signed-out
           invitation state; TODO: swap for real auth state in the app build. */}
-      <ReviewSection
-        id="reader-reviews"
-        badge="TRUST BLOCK 2 / 3"
-        title="Reader reviews"
-        note="first-party · submitted on wagerblogs.com · never blended into the editorial score"
-      >
+      <ReviewSection id="reader-reviews" title="Reader reviews">
         <div className="card flex flex-col gap-4">
           {/* pb-4 matches the parent gap so the rule sits centred between the
               summary and the block below it. */}
           <p className="flex items-baseline gap-2 pb-4 border-b border-border-hairline">
             <span className="text-2xl font-bold text-text-primary leading-none">[x.x]</span>
-            <span className="text-sm text-text-muted">/ 5 reader average · [n] reviews</span>
+            <span className="text-sm text-text-muted">
+              / 5 reader average · {reviewReaderReviews.length} reviews
+            </span>
           </p>
           <div className="bg-bg-subtle border border-border-divider rounded-md p-3 flex flex-col items-start gap-2.5">
-            <h3 className="text-md font-semibold text-text-primary">
-              Used this sportsbook? Add your review.
+            <h3 className="text-lg font-semibold text-text-primary">
+              Used this {group.noun}? Add your review.
             </h3>
             <p className="text-sm text-text-body leading-relaxed">
               Reviews are tied to an account — one per member per operator, held for moderation
               before they appear.
             </p>
+            {/* TODO(clerk): /login lands when Clerk is wired. */}
             <Link href="/login" className="btn-brand">
               Sign in to review
             </Link>
@@ -240,7 +258,7 @@ export default function OperatorReviewPage() {
                     <div className="flex gap-2 items-center flex-wrap">
                       <span className="text-sm font-semibold text-text-primary">{r.username}</span>
                       {/* TODO(cms): real review records carry an ISO timestamp — render as <time dateTime>. */}
-                      <span className="meta-label ">{r.meta}</span>
+                      <span className="meta-label">{r.meta}</span>
                     </div>
                     <p className="text-sm text-text-muted leading-relaxed wrap-break-word">
                       {r.text}
@@ -250,11 +268,8 @@ export default function OperatorReviewPage() {
               </li>
             ))}
           </ul>
-          <ArrowLink
-            href="#reader-reviews"
-            className="inline-flex items-center self-center gap-1 min-h-11 text-md link-cta font-semibold group w-fit"
-          >
-            All [n] reader reviews
+          <ArrowLink href="#reader-reviews" className={`${sectionCtaClassName} min-h-11 w-fit`}>
+            All {reviewReaderReviews.length} reader reviews
           </ArrowLink>
         </div>
       </ReviewSection>
@@ -262,11 +277,7 @@ export default function OperatorReviewPage() {
       {/* TRUST BLOCK 3/3 — Trustpilot. TODO(cms): TrustpilotWidget requires a real
           score, reviewCount > 0, profileUrl, fetchedAt, or it renders nothing (no
           skeleton, no "coming soon"). Sample fixture shown for layout reference only. */}
-      <ReviewSection
-        badge="TRUST BLOCK 3 / 3"
-        title="Trustpilot"
-        note="third-party · conditional — renders only with real Trustpilot data"
-      >
+      <ReviewSection title="Trustpilot">
         <div className="card flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3.5">
             <div
@@ -288,7 +299,7 @@ export default function OperatorReviewPage() {
           </div>
           <ArrowLink
             href="/reviews"
-            className="btn-secondary group min-h-0 py-1.5 px-3 gap-1 text-xs leading-heading"
+            className="btn-secondary group min-h-11 wide:min-h-5 py-1.5 px-3 gap-1 text-xs leading-heading"
           >
             Read Reviews
           </ArrowLink>
@@ -297,21 +308,10 @@ export default function OperatorReviewPage() {
 
       <ReviewCard />
 
-      <ReviewSection title="Questions readers ask">
-        <ul role="list" className="flex flex-col gap-2.5">
-          {reviewFaqs.map((f) => (
-            <li key={f.q} className="card">
-              <h3 className="text-md font-semibold text-text-primary mb-1.5">{f.q}</h3>
-              <p className="text-sm text-text-muted leading-relaxed max-w-article">{f.a}</p>
-            </li>
-          ))}
-        </ul>
-      </ReviewSection>
-
       <ReviewSection title="Compare further">
         <TeaserCardGrid
           items={reviewRelated}
-          titleClassName="text-md font-semibold text-text-primary mb-1.5 leading-snug"
+          titleClassName="text-lg font-semibold text-text-primary mb-1.5 leading-snug"
         />
       </ReviewSection>
 

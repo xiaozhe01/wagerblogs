@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnchorList from "@/components/rail/AnchorList";
@@ -7,37 +8,53 @@ import ArticleByline from "@/components/section/ArticleByline";
 import BlogPostCard from "@/components/cards/BlogPostCard";
 import EditorialSection from "@/components/section/EditorialSection";
 import SearchInput from "@/components/rail/SearchInput";
-import {
-  mockBlogPost,
-  blogToc,
-  blogBodyList,
-  blogTakeaways,
-  blogRelated,
-  blogMoreInGuides,
-} from "@/lib/mock-data";
+import KeyTakeaways from "@/components/section/KeyTakeaways";
+import { blogToc, blogBodyList, blogTakeaways, blogRelated } from "@/lib/mock-data";
+import { blogAuthor, blogParams, blogPosts, findBlogPost } from "@/lib/blog";
 
-// TODO(cms): replace with generateStaticParams() driven by the CMS post list, and
-// fetch this specific post's fields by slug. All content below is static placeholder;
-// title/kicker/dates/author flow from the single mockBlogPost record into metadata,
-// breadcrumbs, H1, and the byline — same pattern as the reviews templates.
-export const metadata: Metadata = {
-  title: `${mockBlogPost.title} — WagerBlogs`,
-};
+export function generateStaticParams() {
+  return blogParams;
+}
 
-export default function BlogPostPage() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = findBlogPost(slug);
+  if (!post) return { title: "Blog — WagerBlogs" };
+  return {
+    title: `${post.title} — WagerBlogs`,
+    description: post.excerpt,
+    alternates: { canonical: post.href },
+  };
+}
+
+// TODO(cms): the body below is static placeholder; only the record fields
+// (title, kicker, dates, byline) resolve per post today.
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = findBlogPost(slug);
+  // A slug we haven't published is a genuine 404, not this template on someone
+  // else's post.
+  if (!post) notFound();
+  const siblings = blogPosts.filter((entry) => entry.slug !== post.slug);
   const rail = (
     <>
       <SearchInput />
       <AnchorList title="On this page" cardClassName="card hidden wide:block" items={blogToc} />
-      <AnchorList
-        title="More in Guides"
-        cardClassName="card"
-        items={blogMoreInGuides.map((m) => ({
-          href: "/blog",
-          label: m,
-          key: m,
-        }))}
-      />
+      {siblings.length > 0 && (
+        <AnchorList
+          title={`More in ${post.kicker}`}
+          cardClassName="card"
+          items={siblings.map((p) => ({
+            href: p.href,
+            label: p.title,
+            key: p.slug,
+          }))}
+        />
+      )}
     </>
   );
 
@@ -46,25 +63,18 @@ export default function BlogPostPage() {
       {/* Register: Editorial · Tier 1 — pure authority, no outbound operator links */}
       {/* Page chrome — tracks the column, not the article's measure. */}
       <Breadcrumbs
-        items={[
-          { label: "Blog", href: "/blog" },
-          { label: mockBlogPost.kicker, href: "/blog" },
-          { label: mockBlogPost.title },
-        ]}
+        currentPath={post.href}
+        items={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
       />
 
-      {/* max-w-prose sits here only, so everything below shares its edges. */}
-      <article
-        aria-labelledby="post-title"
-        className="w-full self-center max-w-article flex flex-col gap-5"
-      >
-        <header className="flex flex-col gap-3">
-          <p className="meta-label-caps self-center">{mockBlogPost.kicker}</p>
+      <article aria-labelledby="post-title" className="w-full flex flex-col gap-5">
+        <header className="flex flex-col gap-3 max-w-header">
+          <p className="meta-label-caps">{post.kicker}</p>
           <h1
             id="post-title"
             className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty"
           >
-            {mockBlogPost.title}
+            {post.title}
           </h1>
           <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
             [Placeholder standfirst — one or two sentences that state the article&apos;s argument
@@ -73,11 +83,11 @@ export default function BlogPostPage() {
         </header>
 
         <ArticleByline
-          name={mockBlogPost.author.name}
-          credential={mockBlogPost.author.credential}
-          profileHref={mockBlogPost.author.profileHref}
-          publishedAt={mockBlogPost.publishedAt}
-          readTime={mockBlogPost.readTime}
+          name={blogAuthor.name}
+          credential={blogAuthor.credential}
+          profileHref={blogAuthor.profileHref}
+          publishedAt={post.publishedAt}
+          readTime={post.readTime}
         />
 
         <figure className="w-full">
@@ -176,47 +186,18 @@ export default function BlogPostPage() {
           </p>
         </div>
 
-        <section
-          className="flex flex-col gap-3 border-l-2 border-text-primary pl-4 md:pl-5"
-          aria-labelledby="key-takeaways"
-        >
-          <h2 id="key-takeaways" className="meta-label-caps">
-            Key takeaways
-          </h2>
-          <ol role="list" className="flex flex-col gap-2.5">
-            {blogTakeaways.map((k, i) => (
-              <li key={k} className="flex gap-2.5 items-start">
-                <span
-                  aria-hidden="true"
-                  className="w-legacy-6 h-legacy-6 shrink-0 rounded-full bg-bg-accent text-text-on-fill flex items-center justify-center text-2xs font-bold"
-                >
-                  {i + 1}
-                </span>
-                <span className="text-lg leading-relaxed text-text-strong-secondary">{k}</span>
-              </li>
-            ))}
-          </ol>
-        </section>
+        <KeyTakeaways items={blogTakeaways} />
 
         {/* TODO(cms): Sources[] — every claim with a number needs a citation (publisher,
           title, url, retrievedAt) or it is cut from the body copy. Omitted here. */}
       </article>
 
       {/* Shares the article's measure so the two keep one right edge. */}
-      <EditorialSection
-        title="Related reading"
-        register="editorial"
-        className="max-w-prose self-center"
-      >
+      <EditorialSection title="Related reading" register="editorial">
         <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
           {blogRelated.map((r) => (
             <li key={r.title}>
-              <BlogPostCard
-                href={r.href ?? "#"}
-                kicker={r.kicker}
-                title={r.title}
-                byline={r.meta}
-              />
+              <BlogPostCard href={r.href} kicker={r.kicker} title={r.title} byline={r.meta} />
             </li>
           ))}
         </ul>

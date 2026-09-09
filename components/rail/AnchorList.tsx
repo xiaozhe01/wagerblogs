@@ -1,10 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { headingId } from "@/lib/utils";
 
 // min-h-5 is 32px: --spacing-1..8 are named 4/8/16/24/32/40/48/60.
 const rowClassName =
-  "px-2 py-1.5 min-h-11 wide:min-h-5 flex items-center justify-between gap-2.5 rounded-sm text-sm font-medium leading-snug no-underline transition-colors hover:bg-bg-subtle";
+  "px-2 py-1.5 min-h-11 wide:min-h-5 flex items-center justify-between gap-2.5 rounded-sm text-sm font-medium leading-snug no-underline transition-colors hover:bg-bg-subtle active:bg-bg-subtle-active";
 const rowRestClassName = "text-text-body";
 const rowCurrentClassName = "text-brand font-bold";
 const rowBleedClassName = "-mx-2";
@@ -78,13 +77,10 @@ export default function AnchorList({
     return list;
   }
 
-  const titleId = headingId("rail", title);
-
+  // Unnamed on purpose — see InfoCard: rail cards are not region landmarks.
   return (
-    <section className={`${cardClassName}`} aria-labelledby={titleId}>
-      <h2 id={titleId} className="heading text-sm mb-2.5">
-        {title}
-      </h2>
+    <section className={`${cardClassName}`}>
+      <h2 className="heading text-sm mb-2.5">{title}</h2>
       {list}
     </section>
   );

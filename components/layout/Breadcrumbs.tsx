@@ -19,12 +19,16 @@ type BreadcrumbItemData = {
 type BreadcrumbsProps = {
   /** Crumbs after "Home" — "Home" (href="/") is prepended automatically. */
   items: BreadcrumbItemData[];
+  /** This page's own path, so the trailing crumb carries a URL in the
+   * BreadcrumbList JSON-LD. Pass it on dynamic routes, where the last crumb is
+   * the only thing identifying which record the page is. */
+  currentPath?: string;
 };
 
 // Breadcrumb nav duplicated verbatim across 7 route files (DRY-10), rebuilt
 // on components/ui/breadcrumb.tsx and paired with BreadcrumbList JSON-LD
 // per docs/00-six-layer-map.md Layer 4 ("standard on every route").
-export default function Breadcrumbs({ items }: BreadcrumbsProps) {
+export default function Breadcrumbs({ items, currentPath }: BreadcrumbsProps) {
   const allItems: BreadcrumbItemData[] = [{ label: "Home", href: "/" }, ...items];
 
   return (
@@ -45,7 +49,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           ))}
         </BreadcrumbList>
       </Breadcrumb>
-      <JsonLd data={breadcrumbJsonLd(allItems)} />
+      <JsonLd data={breadcrumbJsonLd(allItems, currentPath)} />
     </>
   );
 }

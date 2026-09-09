@@ -7,18 +7,14 @@ import { ArrowUp } from "lucide-react";
 // control is clutter rather than help.
 const SHOW_AFTER_PX = 700;
 
-// The rail's BackToTop is a labelled row and desktop-only; below wide: there is
-// no rail, so this is the mobile/tablet counterpart. Fixed rather than sticky —
-// sticky needs a scroll container to stick within, and this belongs to the
-// viewport. It is the only fixed element on the site.
+// Mobile/tablet counterpart to the rail's BackToTop, which is desktop-only.
+// Fixed, not sticky: it belongs to the viewport, not a scroll container.
 export default function BackToTopFab() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Only while scrolling up. Parked at the corner it sat over an interactive
-    // element at 26% of scroll positions — including "Claim Offer" on / and a
-    // self-assessment radio on /responsible-gambling. Scrolling up is also the
-    // direction that precedes wanting the top, so it appears when it is wanted.
+    // Only while scrolling up: parked at the corner it covered an interactive
+    // element at a quarter of all scroll positions.
     let last = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;

@@ -4,86 +4,13 @@
 // Structure/taxonomy only — content (operator data, post lists, stats, etc.)
 // lives in lib/mock-data.ts (see the DRY-4 split rule there).
 
-export type NavGroup = {
-  id: string;
-  label: string;
-  href: string;
-  /** `icon` is a key, not a component — SideNav maps it to the lucide icon.
-   * Required so a new sub-item cannot ship without one. */
-  subs: { label: string; href: string; icon: string; trailingIcon?: boolean }[];
-};
-
-export const navGroups: NavGroup[] = [
-  { id: "home", label: "Home", href: "/", subs: [] },
-  {
-    id: "news",
-    label: "News",
-    href: "/news",
-    subs: [
-      { label: "Football", href: "/news", icon: "shield" },
-      { label: "Basketball", href: "/news", icon: "circle-dot" },
-      { label: "Soccer", href: "/news", icon: "volleyball" },
-      { label: "Esports", href: "/news", icon: "gamepad" },
-      { label: "Industry", href: "/news", icon: "building" },
-      { label: "All News", href: "/news", icon: "newspaper", trailingIcon: true },
-    ],
-  },
-  {
-    id: "reviews",
-    label: "Reviews",
-    href: "/reviews",
-    subs: [
-      { label: "Sportsbooks", href: "/reviews", icon: "trophy" },
-      { label: "Online Casinos", href: "/reviews", icon: "dice" },
-      { label: "Sweepstakes", href: "/reviews", icon: "ticket" },
-      { label: "Bonuses & Offers", href: "/reviews", icon: "gift" },
-      { label: "All Reviews", href: "/reviews", icon: "star", trailingIcon: true },
-    ],
-  },
-  {
-    id: "categories",
-    label: "Categories",
-    href: "/categories",
-    subs: [
-      { label: "By Sport", href: "/categories", icon: "medal" },
-      { label: "By State", href: "/categories", icon: "map-pin" },
-      { label: "By Vertical", href: "/categories", icon: "layers" },
-      { label: "Market Search", href: "/categories", icon: "search", trailingIcon: true },
-    ],
-  },
-  {
-    id: "blog",
-    label: "Blog",
-    href: "/blog",
-    subs: [
-      { label: "Guides", href: "/blog", icon: "book" },
-      { label: "Strategy", href: "/blog", icon: "target" },
-      { label: "Research", href: "/blog", icon: "flask" },
-      { label: "All Posts", href: "/blog", icon: "scroll", trailingIcon: true },
-    ],
-  },
-  {
-    id: "more",
-    label: "More",
-    href: "/about",
-    subs: [
-      { label: "About Us", href: "/about", icon: "users" },
-      { label: "How We Review", href: "/about", icon: "badge-check" },
-      { label: "FAQ", href: "/about", icon: "info" },
-      { label: "Contact", href: "/contact", icon: "mail" },
-      { label: "Responsible Gambling", href: "/responsible-gambling", icon: "life-buoy" },
-      { label: "Disclaimer", href: "/legal/terms-of-service", icon: "scale" },
-    ],
-  },
-];
-
 export const footerCols = [
   {
     heading: "Company",
     links: [
       { label: "About Us", href: "/about" },
       { label: "How We Review", href: "/about" },
-      { label: "FAQ", href: "/about" },
+      { label: "FAQ", href: "/faq" },
       { label: "Contact", href: "/contact" },
     ],
   },
@@ -152,4 +79,4 @@ export const REGION_PARAM = "region";
 export const ALL_REGIONS = regions[0];
 
 // Sport filter chips on the latest-news rail — structural taxonomy.
-export const newsCategories = ["All", "Football", "Basketball", "Soccer", "Esports"];
+export const newsCategories = ["All", "Football", "Basketball", "Soccer", "Esports", "Industry"];

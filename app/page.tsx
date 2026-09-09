@@ -4,7 +4,6 @@ import HomeRail from "@/components/rail/HomeRail";
 import RankedListSection from "@/components/section/RankedListSection";
 import { mockRankedSportsbooks, mockRankedCasinos } from "@/lib/mock-data";
 import ReviewCard from "@/components/section/ReviewCard";
-import WriterQuoteCard from "@/components/section/WriterQuoteCard";
 import FeaturedBonusesCard from "@/components/section/FeaturedBonusesCard";
 import ComparisonCard from "@/components/section/ComparisonCard";
 import MarketCard from "@/components/section/MarketCard";
@@ -22,8 +21,12 @@ export const metadata: Metadata = {
 // ---------------------------------------------------------------------------
 // Sample content only. TODO(cms) markers below call out where CMS/data wiring
 // replaces this. Tier-based gating, link-policy (rel/anchor text), and auth
-// state are NOT implemented here — see offpage-seo-six-layer-map.md for the
-// rules this scaffold intentionally leaves out.
+// state are NOT implemented here — see offpage-seo-six-layer-map.md.
+//
+// Four groups, one role each: the newsroom, the rankings, what those rankings
+// are selling, then the context around them. Groups are plain layout wrappers
+// — <main>'s gap is the break between roles, the group's own gap the rhythm
+// within one.
 // ---------------------------------------------------------------------------
 
 export default async function Home({
@@ -34,41 +37,51 @@ export default async function Home({
   const params = await searchParams;
 
   return (
-    <PageShell activeNavId="home" rail={<HomeRail />}>
+    <PageShell activeNavId="home" rail={<HomeRail categoryParam={params[NEWS_PARAM]} />}>
       {/* Register: Editorial · Tier 1 — no outbound operator links */}
       <TopHeroSection />
 
-      {/* No wrapper section here: it grouped both registers under one tag, so no
-          honest aria-label covered it, and its own gap set the page rhythm that
-          <main> owns everywhere else. Each block is a direct child instead. */}
+      {/* Editorial · Tier 1 — the newsroom, directly beneath the h1 */}
+      <div className="flex flex-col gap-5">
+        <LatestNewsSection categoryParam={params[NEWS_PARAM]} />
+        <BlogSection />
+      </div>
 
-      {/* Register: Comparison · Tier 2/3 — CTA-bearing, one primary-domain entry per list */}
-      <RankedListSection
-        title="Top-Rated Sportsbooks — July 2026"
-        operators={mockRankedSportsbooks}
-      />
-      <ReviewCard />
-      {/* TODO(cms): EditorialByline — requires a real Person record (photo, fullName,
-          credential, authorUrl, quote). Sample fixture shown for layout reference only;
-          omit this section entirely until a real author is connected. */}
-      <WriterQuoteCard />
-      <RankedListSection
-        title="Top-Rated Online Casinos — July 2026"
-        operators={mockRankedCasinos}
-      />
-      <FeaturedBonusesCard />
-      <ComparisonCard />
+      {/* Comparison · Tier 2/3 — CTA-bearing, one primary-domain entry per list.
+          The methodology closes the group instead of splitting the two lists. */}
+      <div className="flex flex-col gap-5">
+        <RankedListSection
+          title="Top-Rated Sportsbooks — July 2026"
+          operators={mockRankedSportsbooks}
+          action={{
+            href: "/reviews/sportsbooks",
+            label: "All sportsbook reviews",
+          }}
+        />
+        <RankedListSection
+          title="Top-Rated Online Casinos — July 2026"
+          operators={mockRankedCasinos}
+          action={{ href: "/reviews/casinos", label: "All casino reviews" }}
+        />
+        {/* TODO(cms): EditorialByline — the reviewer quote that sat here ran on a
+            sample fixture; it needs a real Person record (photo, fullName,
+            credential, quote) before it can go back on a live route. */}
+        <ReviewCard />
+      </div>
 
-      {/* TODO(cms): SourcedStat[] — sample fixture from Component-Reference-Filled-States;
-          each figure needs a real named source + reporting period, or the strip collapses. */}
-      <MarketCard />
+      <div className="flex flex-col gap-5">
+        <FeaturedBonusesCard />
+        <ComparisonCard />
+      </div>
 
-      {/* Register: Comparison · Tier 1 — carded like the blocks above, but
-          internal links only; docs/02 §5 has the homepage mixing both. */}
-      <ExploreSection />
-      <LatestNewsSection categoryParam={params[NEWS_PARAM]} />
-      <BlogSection />
-      <BettingToolboxSection />
+      {/* Context and navigation · Tier 1 — internal links only */}
+      <div className="flex flex-col gap-5">
+        {/* TODO(cms): SourcedStat[] — each figure needs a real named source and
+            reporting period, or the strip collapses. */}
+        <MarketCard />
+        <ExploreSection />
+        <BettingToolboxSection />
+      </div>
 
       {/* TODO(cms): "As Featured In" media placements — omitted entirely; no logo
           placeholders and no "as seen in" strip until a real placement exists. */}

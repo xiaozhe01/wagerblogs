@@ -1,24 +1,27 @@
 import AnchorList from "./AnchorList";
+import type { Operator } from "@/lib/types";
+import { reviewPath } from "@/lib/reviews";
 
-type OtherBook = { name: string; score: string };
-
-type OtherBooksCardProps = {
-  books: OtherBook[];
-};
-
-export default function OtherBooksCard({ books }: OtherBooksCardProps) {
+/** The rest of the group, each row linking to its own review. */
+export default function OtherBooksCard({
+  title,
+  operators,
+}: {
+  title: string;
+  operators: Operator[];
+}) {
   return (
     <AnchorList
-      title="Other books compared"
+      title={title}
       cardClassName="card"
-      items={books.map((o) => ({
-        href: "/reviews",
-        key: o.name,
+      items={operators.map((operator) => ({
+        href: reviewPath(operator),
+        key: operator.slug,
         label: (
           <>
-            <span className="font-semibold">{o.name}</span>
+            <span className="font-semibold">{operator.name}</span>
             <span className="text-text-primary font-bold">
-              <data value={o.score}>{o.score}</data>
+              <data value={operator.score}>{operator.score.toFixed(1)}</data>
             </span>
           </>
         ),

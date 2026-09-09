@@ -4,14 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-// Filter chips keep a real href so crawlers and no-JS visitors get a normal,
-// indexable link. With JS the click is handled by the router, which keeps the
-// navigation client-side and uses replace() so a run of filter clicks doesn't
-// pile up history entries — Back returns to wherever the reader came from
-// rather than stepping through every chip they tried.
-//
-// Still next/link so the RSC payload is prefetched: Link runs this onClick
-// first and bails when the event is defaulted, leaving replace() in control.
+// Filter chips keep a real href so crawlers and no-JS visitors get an indexable
+// link; with JS the router takes over and replace() keeps a run of filter clicks
+// out of history. Still next/link, so the RSC payload is prefetched.
 export default function ChipLink({
   href,
   className,

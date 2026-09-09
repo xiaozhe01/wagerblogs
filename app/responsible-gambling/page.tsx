@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { ArrowDown } from "lucide-react";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import HelpLineCard from "@/components/rail/HelpLineCard";
 import InfoCard from "@/components/rail/InfoCard";
 import AnchorList from "@/components/rail/AnchorList";
-import ArrowLink from "@/components/ui/ArrowLink";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import EditorialSection from "@/components/section/EditorialSection";
 import SelfAssessment from "@/components/section/SelfAssessment";
+import Prose from "@/components/section/Prose";
 import { selfAssessmentSource } from "@/lib/self-assessment";
 import {
   rgWarningSigns,
@@ -20,12 +20,14 @@ import {
 
 export const metadata: Metadata = {
   title: "Responsible Gambling — WagerBlogs",
+  description:
+    "How to keep betting in proportion: warning signs, a self-check, deposit and time limits, and where to get help.",
+  alternates: { canonical: "/responsible-gambling" },
 };
 
 export default function ResponsibleGamblingPage() {
   const rail = (
     <>
-      <HelpLineCard />
       <AnchorList title="On this page" cardClassName="card" items={rgToc} />
       <InfoCard
         title="Our commitments"
@@ -48,19 +50,19 @@ export default function ResponsibleGamblingPage() {
       <aside
         role="note"
         aria-label="Immediate help"
-        className="card-inverted md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4"
+        className="card-inverted lg:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-3 lg:gap-4"
       >
         <div className="min-w-0 flex flex-col gap-2">
           <p className="text-sm font-semibold leading-snug text-pretty">
             If gambling has stopped being fun, help is free and confidential.
           </p>
           <address className="not-italic text-xs font-medium text-text-on-inverted-muted leading-snug">
-            Helpline: [{helplineNumber} — verify before launch] · 24/7 · call or text
+            Helpline: {helplineNumber} · 24/7 · call or text
           </address>
         </div>
         <a
           href="#get-help"
-          className="btn-on-fill group gap-1.5 shrink-0 self-start md:self-auto"
+          className="btn-on-fill group gap-1.5 shrink-0 w-full justify-center lg:w-auto"
         >
           Find help
           <ArrowDown
@@ -100,11 +102,11 @@ export default function ResponsibleGamblingPage() {
       </EditorialSection>
 
       <EditorialSection id="self-check" title="A quick self-check" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
+        <Prose>
           These ten questions are the {selfAssessmentSource.instrument}, reproduced from the{" "}
           {selfAssessmentSource.organisation}. Answering &ldquo;yes&rdquo; to any of them is a
           reason to talk to someone.
-        </p>
+        </Prose>
         <SelfAssessment />
         <p className="text-xs text-text-muted font-medium leading-copy text-pretty">
           Source:{" "}
@@ -121,7 +123,7 @@ export default function ResponsibleGamblingPage() {
         <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
           {rgTools.map((t) => (
             <li key={t.title} className="border border-border-divider rounded-md p-4">
-              <h3 className="text-md font-semibold text-text-primary mb-1.5">{t.title}</h3>
+              <h3 className="text-lg font-semibold text-text-primary mb-1.5">{t.title}</h3>
               <p className="text-sm text-text-muted font-medium leading-loose">{t.body}</p>
             </li>
           ))}
@@ -136,7 +138,7 @@ export default function ResponsibleGamblingPage() {
               className="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between py-4 border-b border-border-hairline"
             >
               <div className="min-w-0">
-                <h3 className="text-md font-semibold text-text-primary mb-1.5">{r.name}</h3>
+                <h3 className="text-lg font-semibold text-text-primary mb-1.5">{r.name}</h3>
                 <p className="text-xs text-text-muted leading-relaxed">{r.desc}</p>
               </div>
               <address className="text-sm not-italic text-text-muted tabular-nums border border-dashed border-border-placeholder rounded-sm px-3 py-2 whitespace-nowrap shrink-0">
@@ -147,7 +149,7 @@ export default function ResponsibleGamblingPage() {
         </ul>
         <ArrowLink
           href="/responsible-gambling/help-directory"
-          className="inline-flex items-center self-center gap-1 min-h-11 text-md link-cta font-semibold group"
+          className={`${sectionCtaClassName} min-h-11`}
         >
           Full worldwide help directory
         </ArrowLink>
@@ -160,17 +162,17 @@ export default function ResponsibleGamblingPage() {
         title="Self-exclusion in your state"
         register="editorial"
       >
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
+        <Prose>
           [Placeholder — most legal states run their own self-exclusion registers; enrolling bars
           every licensed operator in that state at once.]
-        </p>
+        </Prose>
       </EditorialSection>
 
       <EditorialSection title="If you're worried about someone else" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
+        <Prose>
           [Placeholder — guidance for friends and family: what tends to help, what tends to
           backfire, and where support exists for you as well as for them.]
-        </p>
+        </Prose>
       </EditorialSection>
 
       <EditorialSection title="What we do on our side" register="editorial">

@@ -1,10 +1,11 @@
 import { bonusOffers } from "@/lib/mock-data";
 import BonusOfferCard from "@/components/cards/BonusOfferCard";
+import { TIER_CLASSNAME } from "./heading-tiers";
 
 export default function FeaturedBonusesCard() {
   return (
-    <section className="flex flex-col gap-3 card" aria-labelledby="featured-bonuses">
-      <h2 id="featured-bonuses" className="heading text-2xl">
+    <section className="flex flex-col gap-3" aria-labelledby="featured-bonuses">
+      <h2 id="featured-bonuses" className={TIER_CLASSNAME.section}>
         Featured Bonuses This Week
       </h2>
       <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">

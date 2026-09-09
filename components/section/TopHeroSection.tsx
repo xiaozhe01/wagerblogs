@@ -1,8 +1,8 @@
-import ArrowLink from "@/components/ui/ArrowLink";
-
 export default function TopHeroSection() {
   return (
-    <header className="flex flex-col gap-3 max-w-header">
+    <header className="flex flex-col gap-3 border-b border-border-divider pb-4">
+      {/* TODO(cms): render from the page's real lastReviewed date, as <time dateTime>. */}
+      <p className="meta-label-caps">Updated [date from CMS]</p>
       <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
         Compare legal sports betting and online casino sites in the US
       </h1>
@@ -11,12 +11,6 @@ export default function TopHeroSection() {
         legal betting guides. Written to stand on its own as editorial, with no operator link in
         this section.]
       </p>
-      <ArrowLink
-        href="/reviews"
-        className="inline-flex gap-1 group items-center min-h-11 text-md link-cta font-semibold w-fit"
-      >
-        Compare top sites
-      </ArrowLink>
     </header>
   );
 }

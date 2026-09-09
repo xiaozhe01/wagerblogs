@@ -69,7 +69,7 @@ export default function SelfAssessment() {
         <p className="meta-label-caps font-semibold">
           Score {score} of {TOTAL}
         </p>
-        <h3 className="heading text-3xl leading-snug">{result.label}</h3>
+        <h3 className="heading text-2xl leading-snug">{result.label}</h3>
         <p className="text-md text-text-body font-medium leading-relaxed text-pretty">
           {result.description}
         </p>

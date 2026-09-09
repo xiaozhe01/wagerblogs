@@ -4,10 +4,10 @@ export default function Comments() {
   return (
     <section aria-labelledby="comments-heading">
       <div className="border-t border-border-divider pt-4 flex items-baseline gap-3 flex-wrap mb-1">
-        <h2 id="comments-heading" className="text-md font-bold text-text-primary">
+        <h2 id="comments-heading" className="heading text-2xl leading-heading">
           Comments
         </h2>
-        <span className="meta-label ">[n] published</span>
+        <span className="meta-label">{sampleComments.length} published</span>
       </div>
 
       {/* TODO(cms): wire to auth + the moderation queue, then drop the `disabled` flags.
@@ -36,7 +36,7 @@ export default function Comments() {
             >
               Post comment
             </button>
-            <p id="comment-moderation-note" className="meta-label ">
+            <p id="comment-moderation-note" className="meta-label">
               held for moderation before it appears
             </p>
           </div>
@@ -52,7 +52,7 @@ export default function Comments() {
                 <div className="flex gap-2 items-center flex-wrap">
                   <span className="text-sm font-semibold text-text-primary">{c.username}</span>
                   {/* TODO(cms): real comment records carry an ISO timestamp — render as <time dateTime>. */}
-                  <span className="meta-label ">{c.date}</span>
+                  <span className="meta-label">{c.date}</span>
                 </div>
                 <p className="text-sm text-text-body leading-relaxed wrap-break-word">{c.text}</p>
               </div>

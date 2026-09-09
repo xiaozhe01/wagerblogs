@@ -2,29 +2,32 @@ import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import BlogPostCard from "@/components/cards/BlogPostCard";
-import AnchorList from "@/components/rail/AnchorList";
 import InfoCard from "@/components/rail/InfoCard";
 import SearchInput from "@/components/rail/SearchInput";
 import EditorialSection from "@/components/section/EditorialSection";
 import RecentPublishedSection from "@/components/section/RecentPublishedSection";
-import { blogPosts, blogMoreInGuides } from "@/lib/mock-data";
+import { blogPosts } from "@/lib/blog";
+import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
+import { headingId } from "@/lib/utils";
+import PageNav from "@/components/controls/PageNav";
 
 export const metadata: Metadata = {
   title: "Blog — WagerBlogs",
   description: "Guides, strategy, and research on sports betting and casino play.",
+  alternates: { canonical: "/blog" },
 };
 
-// TODO(cms): replace blogPosts with the CMS post list, paginated. Individual
-// posts live at /blog/[slug]; every card here links at the same placeholder.
-export default function BlogIndexPage() {
+// TODO(cms): replace lib/blog.ts with the CMS post list, paginated.
+export default async function BlogIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const query = await searchParams;
+  const postPage = paginate(blogPosts, query[PAGE_PARAM]);
   const rail = (
     <>
       <SearchInput placeholder="Search the blog..." />
-      <AnchorList
-        title="Browse by topic"
-        cardClassName="card"
-        items={blogMoreInGuides.map((m) => ({ href: "/blog", label: m, key: m }))}
-      />
       <InfoCard
         title="Editorial standards"
         body="How we research, source, and correct what we publish."
@@ -50,17 +53,30 @@ export default function BlogIndexPage() {
 
       <EditorialSection title="All posts" register="editorial">
         <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
-          {blogPosts.map((p) => (
-            <li key={p.title}>
+          {postPage.items.map((post) => (
+            <li key={post.slug}>
               <BlogPostCard
-                href="/blog/sample-post"
-                title={p.title}
-                excerpt={p.excerpt}
-                byline={p.byline}
+                href={post.href}
+                kicker={post.kicker}
+                title={post.title}
+                excerpt={post.excerpt}
+                byline={post.byline}
               />
             </li>
           ))}
         </ul>
+        <PageNav
+          page={postPage.page}
+          totalPages={postPage.totalPages}
+          label="All posts"
+          hrefFor={(n) =>
+            pageHref({
+              basePath: "/blog",
+              page: n,
+              anchor: headingId("section", "All posts"),
+            })
+          }
+        />
       </EditorialSection>
 
       <RecentPublishedSection register="editorial" />

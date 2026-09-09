@@ -3,29 +3,42 @@ import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnchorList from "@/components/rail/AnchorList";
-import ArrowLink from "@/components/ui/ArrowLink";
-import ChipList from "@/components/ui/ChipList";
+import FilterChips from "@/components/controls/FilterChips";
 import PostRow from "@/components/cards/PostRow";
 import TeaserCardGrid from "@/components/cards/TeaserCardGrid";
-import TeaserCardBody from "@/components/cards/TeaserCardBody";
 import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import SearchInput from "@/components/rail/SearchInput";
-import {
-  sampleCategoryName,
-  categoryArticles,
-  categorySubCategories,
-  categoryCompareLinks,
-} from "@/lib/mock-data";
-import { ALL_TYPES, TYPE_PARAM, categories, categoryFilters } from "@/lib/site-data";
-import { chipHref, chipMatches, resolveChip } from "@/lib/utils";
+import InfoCard from "@/components/rail/InfoCard";
+import { notFound } from "next/navigation";
+import { categoryArticles, categoryCompareLinks } from "@/lib/mock-data";
+import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
+import { categories, categoryParams, findCategory } from "@/lib/categories";
+import { chipHref, chipMatches, chipSlug, headingId, resolveChip } from "@/lib/utils";
+import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
+import PageNav from "@/components/controls/PageNav";
 
-// TODO(cms): replace with generateStaticParams() from the CMS taxonomy; sampleCategoryName
-// and all counts/lists below are static placeholders for one sample category.
-export const metadata: Metadata = {
-  title: `${sampleCategoryName} — WagerBlogs`,
-};
+export function generateStaticParams() {
+  return categoryParams;
+}
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const category = findCategory(slug);
+  if (!category) return { title: "Categories — WagerBlogs" };
+  return {
+    title: `${category.name} — WagerBlogs`,
+    description: category.desc,
+    alternates: { canonical: category.href },
+  };
+}
+
+// TODO(cms): the article lists, sub-categories and counts below are shared
+// placeholders; only the category record itself resolves per slug today.
 export default async function CategoryPage({
   params,
   searchParams,
@@ -34,28 +47,50 @@ export default async function CategoryPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { slug } = await params;
+  const category = findCategory(slug);
+  // A vertical we don't cover is a genuine 404, not another category's page.
+  if (!category) notFound();
   const query = await searchParams;
   const activeType = resolveChip(categoryFilters, query[TYPE_PARAM], ALL_TYPES);
-  const visibleArticles =
+  const typeHref = (value: string) =>
+    chipHref({
+      basePath: `/categories/${slug}`,
+      param: TYPE_PARAM,
+      value,
+      allValue: ALL_TYPES,
+    });
+  const matchingArticles =
     activeType === ALL_TYPES
       ? categoryArticles
-      : categoryArticles.filter((a) => chipMatches(a.kicker, activeType));
+      : categoryArticles.filter((a) => chipMatches(a.kicker ?? "", activeType));
+  // Changing the chip drops the page param, so a filter always opens on page 1.
+  const articlePage = paginate(matchingArticles, query[PAGE_PARAM]);
+  const visibleArticles = articlePage.items;
+  // Counted off what this page actually lists; the review tally has no data
+  // behind it yet, so it stays bracketed.
+  const guideCount = categoryArticles.filter((a) => chipMatches(a.kicker ?? "", "Guides")).length;
+
   const rail = (
     <>
-      <SearchInput placeholder={`Search within ${sampleCategoryName}...`} />
+      <SearchInput placeholder={`Search within ${category.name}...`} />
       <section className="card" aria-labelledby="rail-all-categories">
         <h2 id="rail-all-categories" className="heading text-sm mb-2.5">
           All categories
         </h2>
         <AnchorList
           items={categories.map((c) => ({
-            href: "/categories/sample",
+            href: c.href,
             label: c.name,
-            key: c.name,
-            current: c.name.toLowerCase() === sampleCategoryName.toLowerCase(),
+            key: c.slug,
+            current: c.slug === category.slug,
           }))}
         />
       </section>
+      <InfoCard
+        title="Editorial standards"
+        body="How we research, source, and correct our category coverage."
+        cta={{ href: "/about", label: "Read our methodology" }}
+      />
     </>
   );
 
@@ -63,12 +98,13 @@ export default async function CategoryPage({
     <PageShell activeNavId="categories" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — category navigation, no outbound operator links */}
       <Breadcrumbs
-        items={[{ label: "Categories", href: "/categories" }, { label: sampleCategoryName }]}
+        currentPath={category.href}
+        items={[{ label: "Categories", href: "/categories" }, { label: category.name }]}
       />
 
       <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
-          {sampleCategoryName}
+          {category.name}
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder category standfirst — what this vertical covers, who it&apos;s for, and how
@@ -76,7 +112,9 @@ export default async function CategoryPage({
           sells.]
         </p>
         <p className="flex gap-4 flex-wrap text-xs text-text-muted tabular-nums">
-          <span>[n] guides</span>
+          <span>
+            {guideCount} {guideCount === 1 ? "guide" : "guides"}
+          </span>
           <span>[n] reviews</span>
           <span>Updated [Jul 24, 2026]</span>
         </p>
@@ -84,7 +122,7 @@ export default async function CategoryPage({
 
       <article aria-labelledby="editors-lead">
         <Link
-          href="/blog/sample-post"
+          href="/blog/how-odds-boosts-actually-work"
           className="flex flex-col md:flex-row gap-3.5 md:gap-4 items-stretch md:items-center no-underline border-t border-b border-border-divider py-4 md:py-5"
         >
           <div
@@ -96,7 +134,7 @@ export default async function CategoryPage({
           <div className="min-w-0 flex flex-col gap-2">
             <p className="meta-label-caps">Editor&apos;s lead</p>
             <h2 id="editors-lead" className="heading text-4xl leading-heading text-pretty">
-              [Placeholder] The state of esports betting going into the autumn season
+              {`[Placeholder] The state of ${category.name} going into the autumn season`}
             </h2>
             <p className="text-lg leading-copy text-text-muted text-pretty">
               [Placeholder excerpt — two lines summarising the piece, written to work as a
@@ -111,47 +149,26 @@ export default async function CategoryPage({
       </article>
 
       <EditorialSection
-        title={`Latest in ${sampleCategoryName}`}
+        title={`Latest in ${category.name}`}
         register="editorial"
         toolbar={
-          <nav aria-label="Filter by article type">
-            <ul role="list" className="flex gap-2 flex-wrap">
-              <ChipList
-                as="Link"
-                inList
-                filter
-                items={categoryFilters.map((f) => ({
-                  label: f,
-                  key: f,
-                  href: chipHref({
-                    basePath: `/categories/${slug}`,
-                    param: TYPE_PARAM,
-                    value: f,
-                    allValue: ALL_TYPES,
-                  }),
-                  active: f === activeType,
-                }))}
-                activeClassName="btn-secondary chip-active"
-                inactiveClassName="btn-secondary"
-              />
-            </ul>
-          </nav>
+          <FilterChips
+            label="Filter by article type"
+            items={categoryFilters.map((f) => ({
+              label: f,
+              key: f,
+              href: typeHref(f),
+              active: f === activeType,
+            }))}
+          />
         }
       >
         {/* Keyed so only the feed replays the fade. */}
         <div key={activeType} className="route-transition">
           {visibleArticles.length === 0 ? (
             <EmptyState
-              title={`No ${activeType.toLowerCase()} filed under ${sampleCategoryName} yet`}
-              action={{
-                href: chipHref({
-                  basePath: `/categories/${slug}`,
-                  param: TYPE_PARAM,
-                  value: ALL_TYPES,
-                  allValue: ALL_TYPES,
-                }),
-                label: "Show all",
-              }}
+              title={`No ${activeType.toLowerCase()} filed under ${category.name} yet`}
+              action={{ href: typeHref(ALL_TYPES), label: "Show all" }}
             />
           ) : (
             <ul role="list" className="flex flex-col gap-3">
@@ -163,38 +180,30 @@ export default async function CategoryPage({
             </ul>
           )}
         </div>
-        {/* TODO(cms): pagination returns when a category has real volume and
-            per-page routing. The placeholder pointed every page at one href,
-            so "2" and "Next" navigated to a different category. */}
-        <ArrowLink
-          href="/news"
-          className="inline-flex items-center self-center gap-1 text-md link-cta font-semibold group w-fit"
-        >
-          All coverage
-        </ArrowLink>
+        <PageNav
+          page={articlePage.page}
+          totalPages={articlePage.totalPages}
+          label={`Latest in ${category.name}`}
+          hrefFor={(n) =>
+            pageHref({
+              basePath: `/categories/${slug}`,
+              page: n,
+              params: {
+                [TYPE_PARAM]: activeType === ALL_TYPES ? undefined : chipSlug(activeType),
+              },
+              anchor: headingId("section", `Latest in ${category.name}`),
+            })
+          }
+        />
       </EditorialSection>
 
-      <EditorialSection title={`Browse ${sampleCategoryName} by Title`} register="editorial">
-        <ul
-          role="list"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3"
-        >
-          {/* TODO(cms): href is a placeholder until sub-category routes exist —
-              same stand-in the "All categories" grid uses. */}
-          {categorySubCategories.map((s) => (
-            <li key={s.name}>
-              <Link href="/categories/sample" className="editorial-link-card min-h-11 lg:min-h-0">
-                <TeaserCardBody title={s.name} desc={s.count} />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </EditorialSection>
-
+      {/* TODO(cms): a "browse by title" grid returns when sub-categories carry
+          their own collections and routes — six tiles that navigate nowhere and
+          count nothing are worse than no section. */}
       <EditorialSection title="Compare operators in this category" register="editorial">
         <TeaserCardGrid
           items={categoryCompareLinks}
-          titleClassName="text-md font-semibold text-text-primary mb-1.5 leading-snug"
+          titleClassName="text-lg font-semibold text-text-primary mb-1.5 leading-snug"
         />
       </EditorialSection>
 

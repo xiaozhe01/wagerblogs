@@ -4,7 +4,8 @@ import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnchorList from "@/components/rail/AnchorList";
 import ExploreSection from "@/components/section/ExploreSection";
-import { popular } from "@/lib/mock-data";
+import LatestStoriesSection from "@/components/section/LatestStoriesSection";
+import { blogPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "We couldn't find that page — WagerBlogs",
@@ -20,18 +21,15 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   const rail = (
-    <>
-      {/* TODO(cms): hrefs must come from the same dynamic popular-posts data as the labels */}
-      <AnchorList
-        title="Popular right now"
-        cardClassName="card"
-        items={popular.map((p, i) => ({
-          href: "/blog/sample-post",
-          label: p,
-          key: i,
-        }))}
-      />
-    </>
+    <AnchorList
+      title="Recent posts"
+      cardClassName="card"
+      items={blogPosts.map((post) => ({
+        href: post.href,
+        label: post.title,
+        key: post.slug,
+      }))}
+    />
   );
 
   return (
@@ -55,6 +53,8 @@ export default function NotFound() {
           </span>
         </p>
       </section>
+
+      <LatestStoriesSection title="Latest news" limit={4} />
 
       <ExploreSection />
     </PageShell>

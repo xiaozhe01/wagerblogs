@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import ArrowLink from "@/components/ui/ArrowLink";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import AnchorList from "@/components/rail/AnchorList";
-import ChipList from "@/components/ui/ChipList";
+import FilterChips from "@/components/controls/FilterChips";
 import { legalDocs, type DocSlug } from "@/lib/mock-data";
 
 // TODO(cms): swap for generateStaticParams() returning the real set of legal docs.
@@ -19,7 +19,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { doc: docSlug } = await params;
   const doc = legalDocs[docSlug as DocSlug];
-  return { title: doc ? `${doc.title} — WagerBlogs` : "WagerBlogs" };
+  if (!doc) return { title: "WagerBlogs" };
+  return {
+    title: `${doc.title} — WagerBlogs`,
+    description: `${doc.title} for WagerBlogs — what it covers, in plain language before it is legal.`,
+    alternates: { canonical: `/legal/${docSlug}` },
+  };
 }
 
 export default async function LegalPage({ params }: { params: Promise<{ doc: string }> }) {
@@ -68,11 +73,10 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
   return (
     <PageShell activeNavId="more" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — legal document, no monetization, no operator links */}
-      <Breadcrumbs
-        items={[{ label: "Legal", href: "/legal/terms-of-service" }, { label: doc.title }]}
-      />
+      {/* No /legal index exists, so the trail is Home › <document>. */}
+      <Breadcrumbs currentPath={`/legal/${docSlug}`} items={[{ label: doc.title }]} />
 
-      <header className="flex flex-col gap-3">
+      <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
           {doc.title}
         </h1>
@@ -88,9 +92,10 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         className="bg-bg-subtle border border-border-divider rounded-md p-3 md:p-5"
         aria-labelledby="plain-language-summary"
       >
-        <h2 id="plain-language-summary" className="meta-label-caps mb-1.5">
+        {/* A <p>, not a heading — see KeyTakeaways. */}
+        <p id="plain-language-summary" className="meta-label-caps mb-1.5">
           Plain-language summary
-        </h2>
+        </p>
         <p className="text-lg leading-copy text-text-strong-secondary text-pretty">{doc.summary}</p>
         <p className="text-xs font-medium text-text-muted leading-relaxed mt-2.5">
           This summary is a courtesy; the numbered sections below are the binding text.
@@ -98,23 +103,15 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
       </section>
 
       <section aria-label="Numbered sections" className="flex flex-col gap-3">
-        <nav aria-label="Legal documents">
-          <ul role="list" className="flex gap-2 flex-wrap">
-            <ChipList
-              as="Link"
-              inList
-              filter
-              items={Object.entries(legalDocs).map(([slug, d]) => ({
-                href: `/legal/${slug}`,
-                label: d.title,
-                active: slug === docSlug,
-                key: slug,
-              }))}
-              activeClassName="btn-secondary chip-active"
-              inactiveClassName="btn-secondary"
-            />
-          </ul>
-        </nav>
+        <FilterChips
+          label="Legal documents"
+          items={Object.entries(legalDocs).map(([slug, d]) => ({
+            href: `/legal/${slug}`,
+            label: d.title,
+            active: slug === docSlug,
+            key: slug,
+          }))}
+        />
         {/* Keyed so only the clauses replay the fade. Depends on the shared
             /legal key in app/template.tsx; without it this node is torn down. */}
         <div key={docSlug} className="flex flex-col route-transition">
@@ -143,16 +140,14 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
           firmOrBar, reviewedAt, documentVersion. Document must stay in draft until then. */}
 
       <section className="flex flex-col gap-3" aria-labelledby="legal-questions">
-        <h2 id="legal-questions" className="text-md font-semibold text-text-primary">
+        <h2 id="legal-questions" className="heading text-2xl leading-heading">
           Questions about this document
         </h2>
         <address className="not-italic text-sm text-text-body leading-relaxed">
-          WagerBlogs Media Ltd · Company No. [00000000] · [Registered address placeholder]
+          WagerBlogs Media Ltd · Company No. [company number — verify] · [Registered address
+          placeholder]
         </address>
-        <ArrowLink
-          href="/contact"
-          className="inline-flex items-center gap-1 min-h-11 text-md link-cta font-semibold group w-fit"
-        >
+        <ArrowLink href="/contact" className={`${sectionCtaClassName} min-h-11 w-fit`}>
           Contact us
         </ArrowLink>
       </section>

@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import type { BonusOffer } from "@/lib/types";
-import PrimaryDomainLink from "../PrimaryDomainLink";
-import CopyCodeChip from "@/components/ui/CopyCodeChip";
+import PrimaryDomainLink from "@/components/controls/PrimaryDomainLink";
+import CopyCodeChip from "@/components/controls/CopyCodeChip";
 
 type BonusOfferCardProps = {
   /* Carries the editorial benefit bullets (`offer.benefits`, CMS-sourced).

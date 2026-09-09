@@ -1,41 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { navGroups, type NavGroup } from "@/lib/site-data";
-import {
-  Home,
-  Newspaper,
-  Star,
-  LayoutGrid,
-  PenLine,
-  Ellipsis,
-  type LucideIcon,
-  ChevronRight,
-  Shield,
-  CircleDot,
-  Volleyball,
-  Gamepad2,
-  Building2,
-  Trophy,
-  Dices,
-  Ticket,
-  Gift,
-  Medal,
-  MapPin,
-  Layers,
-  Search,
-  BookOpen,
-  Target,
-  FlaskConical,
-  ScrollText,
-  Users,
-  BadgeCheck,
-  Info,
-  Mail,
-  LifeBuoy,
-  Scale,
-  User,
-} from "lucide-react";
+import { navGroups, type NavGroup } from "@/lib/nav";
+import { Ellipsis, ChevronRight, CircleDot, User, type LucideIcon } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -44,55 +11,8 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-
-const navIcons: Record<string, LucideIcon> = {
-  home: Home,
-  news: Newspaper,
-  reviews: Star,
-  categories: LayoutGrid,
-  blog: PenLine,
-  more: Ellipsis,
-};
-
-// Keyed by NavGroup.subs[].icon so the taxonomy in site-data stays free of
-// component imports.
-const subNavIcons: Record<string, LucideIcon> = {
-  shield: Shield,
-  "circle-dot": CircleDot,
-  volleyball: Volleyball,
-  gamepad: Gamepad2,
-  building: Building2,
-  newspaper: Newspaper,
-  trophy: Trophy,
-  dice: Dices,
-  ticket: Ticket,
-  gift: Gift,
-  star: Star,
-  medal: Medal,
-  "map-pin": MapPin,
-  layers: Layers,
-  search: Search,
-  book: BookOpen,
-  target: Target,
-  flask: FlaskConical,
-  scroll: ScrollText,
-  users: Users,
-  "badge-check": BadgeCheck,
-  info: Info,
-  mail: Mail,
-  "life-buoy": LifeBuoy,
-  scale: Scale,
-};
-
-// One hover treatment for every row in this column — nav links, sub-links and
-// Log In. shadcn's hover:bg-muted is a cool grey outside the palette, and its
-// data-open/data-popup-open variants outrank a plain hover: override, so each
-// has to be named or the trigger keeps the grey while the menu is open.
-const NAV_ROW =
-  "transition-colors duration-200 hover:bg-bg-subtle-active hover:text-brand " +
-  "focus:bg-bg-subtle-active data-open:bg-bg-subtle-active data-open:hover:bg-bg-subtle-active " +
-  "data-open:focus:bg-bg-subtle-active data-popup-open:bg-bg-subtle-active " +
-  "data-popup-open:hover:bg-bg-subtle-active";
+import { navIcons, subNavIcons } from "./nav-icons";
+import { NAV_INTERACTION as NAV_ROW } from "./nav-styles";
 
 function NavIconLabel({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
@@ -122,7 +42,11 @@ export default function SideNav({ activeId }: { activeId?: string }) {
         </Link>
       </div>
 
-      <NavigationMenu side="right" className="max-w-none flex-1 items-stretch justify-start">
+      <NavigationMenu
+        side="right"
+        aria-label="Main"
+        className="max-w-none flex-1 items-stretch justify-start"
+      >
         <NavigationMenuList className="flex-col items-stretch justify-start gap-2">
           {navGroups.map((g: NavGroup) => {
             const expandable = g.subs.length > 0;
@@ -181,9 +105,10 @@ export default function SideNav({ activeId }: { activeId?: string }) {
         </NavigationMenuList>
       </NavigationMenu>
 
-      {/* TODO(cms): swap for real auth state — this is a static Log In link */}
+      {/* TODO(clerk): /login lands when Clerk is wired; swap this for real auth state. */}
       <Link
         href="/login"
+        prefetch={false}
         className={`${NAV_ROW} group w-full min-h-5 px-2.5 py-1.5 flex items-center justify-start gap-2.5 rounded-md text-sm font-semibold leading-snug text-text-primary no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand`}
       >
         <span className="w-6.5 h-6.5 shrink-0 flex items-center justify-center">

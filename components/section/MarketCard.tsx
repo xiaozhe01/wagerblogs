@@ -2,7 +2,7 @@ import { marketStats } from "@/lib/mock-data";
 
 export default function MarketCard() {
   return (
-    <section className="flex flex-col gap-3 card" aria-labelledby="market-at-a-glance">
+    <section className="flex flex-col gap-3" aria-labelledby="market-at-a-glance">
       <h2 id="market-at-a-glance" className="heading text-2xl">
         Market at a Glance
       </h2>

@@ -25,6 +25,8 @@ export type ReviewJsonLdInput = {
   linkTier: LinkTier;
   itemName: string;
   itemUrl: string;
+  /** Site-relative path of the page carrying the review, e.g. "/reviews/examplebet". */
+  pagePath?: string;
   ratingValue: number;
   bestRating: number;
   reviewerName?: string;
@@ -47,6 +49,8 @@ export function reviewJsonLd(input: ReviewJsonLdInput) {
   return {
     "@context": "https://schema.org",
     "@type": "Review",
+    // The review's own canonical page, not the operator's site.
+    url: input.pagePath ? `${siteUrl}${input.pagePath}` : undefined,
     itemReviewed: {
       "@type": "Organization",
       name: input.itemName,
@@ -72,15 +76,52 @@ export function ReviewJsonLd(input: ReviewJsonLdInput) {
   return data ? <JsonLd data={data} /> : null;
 }
 
-export function breadcrumbJsonLd(items: BreadcrumbJsonLdItem[]) {
+/** No SearchAction: the search box is not wired to anything (rule 3).
+ * TODO(cms): Organization stays absent until the publisher record is real —
+ * company number and address are still bracketed in the footer. */
+export function webSiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "WagerBlogs",
+    url: siteUrl,
+  };
+}
+
+export type FaqJsonLdEntry = { q: string; a: string };
+
+/** Only entries with a real question and answer: a bracketed placeholder
+ * surfaced as a rich result is a fabricated signal (rule 3). Gates the schema
+ * only — the page still renders every question. */
+export function faqPageJsonLd(entries: FaqJsonLdEntry[]) {
+  const publishable = entries.filter((e) => !isPlaceholder(e.q) && !isPlaceholder(e.a));
+  if (publishable.length === 0) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: publishable.map((e) => ({
+      "@type": "Question",
+      name: e.q,
+      acceptedAnswer: { "@type": "Answer", text: e.a },
+    })),
+  };
+}
+
+/** `currentPath` gives the trailing crumb — the page itself — its own URL; it
+ * is the one crumb with no href to render as a link. */
+export function breadcrumbJsonLd(items: BreadcrumbJsonLdItem[], currentPath?: string) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: items.map((item, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: item.label,
-      item: item.href ? `${siteUrl}${item.href}` : undefined,
-    })),
+    itemListElement: items.map((item, i) => {
+      const href = item.href ?? (i === items.length - 1 ? currentPath : undefined);
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        name: item.label,
+        item: href ? `${siteUrl}${href}` : undefined,
+      };
+    }),
   };
 }

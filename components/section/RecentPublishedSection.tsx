@@ -10,8 +10,8 @@ export default function RecentPublishedSection({
   return (
     <EditorialSection title="Recently published" register={register}>
       <ul role="list" className="flex flex-col gap-3">
-        {recentPosts.map((p, i) => (
-          <li key={i}>
+        {recentPosts.map((p) => (
+          <li key={p.title}>
             <PostRow post={p} />
           </li>
         ))}

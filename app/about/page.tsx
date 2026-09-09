@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import ArrowLink from "@/components/ui/ArrowLink";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import AnchorList from "@/components/rail/AnchorList";
-import HelpLineCard from "@/components/rail/HelpLineCard";
 import InfoCard from "@/components/rail/InfoCard";
 import EditorialSection from "@/components/section/EditorialSection";
+import Prose from "@/components/section/Prose";
 import ReviewCard from "@/components/section/ReviewCard";
 import { authorStandards } from "@/lib/mock-data";
 
 export const metadata: Metadata = {
   title: "About — WagerBlogs",
   description: "Who publishes WagerBlogs, how we review, and how we make money.",
+  alternates: { canonical: "/about" },
 };
 
 const aboutToc = [
@@ -38,7 +39,6 @@ export default function AboutPage() {
         body="Something here out of date or wrong? Tell us and we'll fix it."
         cta={{ href: "/contact", label: "Report an issue" }}
       />
-      <HelpLineCard />
     </>
   );
 
@@ -58,13 +58,14 @@ export default function AboutPage() {
       </header>
 
       <EditorialSection id="who-we-are" title="Who we are" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
+        <Prose>
           [Placeholder — the publisher, when it started, and the editorial remit. Named staff and
           credentials appear here only once real people are attached to real records.]
-        </p>
+        </Prose>
       </EditorialSection>
 
-      <ReviewCard />
+      {/* No CTA: this page is the full methodology, so the link led back here. */}
+      <ReviewCard showCta={false} />
 
       <EditorialSection id="how-we-review" title="What we hold ourselves to" register="editorial">
         <ul
@@ -73,7 +74,7 @@ export default function AboutPage() {
         >
           {authorStandards.map((s) => (
             <li key={s.title} className="border-t border-border-hairline pt-3">
-              <h3 className="text-md font-semibold text-text-primary mb-1.5">{s.title}</h3>
+              <h3 className="text-lg font-semibold text-text-primary mb-1.5">{s.title}</h3>
               <p className="text-sm text-text-muted leading-loose">{s.body}</p>
             </li>
           ))}
@@ -81,28 +82,24 @@ export default function AboutPage() {
       </EditorialSection>
 
       <EditorialSection id="how-we-make-money" title="How we make money" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
-          [Placeholder — affiliate commission explained plainly: which links pay us, that
-          commission never affects a score or a ranking position, and how that is enforced
-          editorially.]
-        </p>
+        <Prose>
+          [Placeholder — affiliate commission explained plainly: which links pay us, that commission
+          never affects a score or a ranking position, and how that is enforced editorially.]
+        </Prose>
         <ArrowLink
           href="/legal/affiliate-disclosure"
-          className="inline-flex items-center self-center gap-1 min-h-11 text-md link-cta font-semibold group w-fit"
+          className={`${sectionCtaClassName} min-h-11 w-fit`}
         >
           Full affiliate disclosure
         </ArrowLink>
       </EditorialSection>
 
       <EditorialSection id="corrections" title="Corrections" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
+        <Prose>
           [Placeholder — how to report an error, what we do with it, and how corrections are
           recorded on the page they affect.]
-        </p>
-        <ArrowLink
-          href="/contact"
-          className="inline-flex items-center self-center gap-1 min-h-11 text-md link-cta font-semibold group w-fit"
-        >
+        </Prose>
+        <ArrowLink href="/contact" className={`${sectionCtaClassName} min-h-11 w-fit`}>
           Report an issue
         </ArrowLink>
       </EditorialSection>

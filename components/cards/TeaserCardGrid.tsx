@@ -20,8 +20,8 @@ export default function TeaserCardGrid({
         <li key={item.title} className="flex">
           <article className="flex grow">
             <Link
-              href={item.href ?? "#"}
-              className="card block grow transition-colors hover:bg-bg-subtle"
+              href={item.href}
+              className="card block grow transition-colors hover:bg-bg-subtle active:bg-bg-subtle-active"
             >
               <p className="meta-label-caps mb-1.5">{item.kicker}</p>
               <h3 className={titleClassName}>{item.title}</h3>

@@ -2,71 +2,26 @@ import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PostRow from "@/components/cards/PostRow";
-import AnchorList from "@/components/rail/AnchorList";
-import HelpLineCard from "@/components/rail/HelpLineCard";
-import InfoCard from "@/components/rail/InfoCard";
-import SearchInput from "@/components/rail/SearchInput";
-import ChipList from "@/components/ui/ChipList";
+import NewsRail from "@/components/rail/NewsRail";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
-import { newsCategories } from "@/lib/site-data";
-import { newsFeed } from "@/lib/mock-data";
-import { chipHref, chipMatches, resolveChip } from "@/lib/utils";
+import Prose from "@/components/section/Prose";
+import { newsSections, storyRow } from "@/lib/news";
 
 export const metadata: Metadata = {
   title: "News — WagerBlogs",
   description: "Betting and casino industry news, regulation, and market coverage.",
+  alternates: { canonical: "/news" },
 };
 
-const CATEGORY_PARAM = "category";
-const ALL_CATEGORIES = newsCategories[0];
-
-const categoryHref = (category: string) =>
-  chipHref({
-    basePath: "/news",
-    param: CATEGORY_PARAM,
-    value: category,
-    allValue: ALL_CATEGORIES,
-  });
-
-// TODO(cms): replace newsFeed with the CMS news collection, paginated, and give
-// each story a real href. Filters read from the same taxonomy the chips render.
-export default async function NewsIndexPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const query = await searchParams;
-  const activeCategory = resolveChip(newsCategories, query[CATEGORY_PARAM], ALL_CATEGORIES);
-  const visibleStories =
-    activeCategory === ALL_CATEGORIES
-      ? newsFeed
-      : newsFeed.filter((n) => chipMatches(n.category, activeCategory));
-
-  const rail = (
-    <>
-      <SearchInput placeholder="Search news..." />
-      <AnchorList
-        title="Sections"
-        cardClassName="card"
-        items={newsCategories.map((c) => ({
-          href: categoryHref(c),
-          label: c,
-          key: c,
-          current: c === activeCategory,
-        }))}
-      />
-      <InfoCard
-        title="Corrections"
-        body="Spotted something wrong? Tell us and we'll fix it."
-        cta={{ href: "/contact", label: "Report an issue" }}
-      />
-      <HelpLineCard />
-    </>
-  );
+// TODO(cms): cap each section at the newest few stories once the feed is
+// paginated, and give each story a real href.
+export default function NewsIndexPage() {
+  const sections = newsSections.filter((section) => section.stories.length > 0);
 
   return (
-    <PageShell activeNavId="news" register="editorial" rail={rail}>
+    <PageShell activeNavId="news" register="editorial" rail={<NewsRail />}>
       {/* Register: Editorial · Tier 1 — reporting, no outbound operator links */}
       <Breadcrumbs items={[{ label: "News" }]} />
 
@@ -80,50 +35,37 @@ export default async function NewsIndexPage({
         </p>
       </header>
 
-      {/* Chips and the feed they filter are one unit. */}
-      <section aria-label="News stories" className="flex flex-col gap-3">
-        <nav aria-label="Filter by section">
-          <ul role="list" className="flex gap-2 flex-wrap">
-            <ChipList
-              as="Link"
-              inList
-              filter
-              items={newsCategories.map((c) => ({
-                label: c,
-                key: c,
-                href: categoryHref(c),
-                active: c === activeCategory,
-              }))}
-              activeClassName="btn-secondary chip-active"
-              inactiveClassName="btn-secondary"
-            />
-          </ul>
-        </nav>
-
-        {/* Keyed so only the feed replays the fade. */}
-        <div key={activeCategory} className="route-transition">
-          {visibleStories.length === 0 ? (
-            <EmptyState
-              title={`No stories filed under ${activeCategory} yet`}
-              action={{ href: categoryHref(ALL_CATEGORIES), label: "Show all news" }}
-            />
-          ) : (
+      {sections.length === 0 ? (
+        <EmptyState title="No stories filed yet" />
+      ) : (
+        sections.map(({ category, slug, href, stories }) => (
+          <EditorialSection
+            key={slug}
+            id={slug}
+            title={category}
+            titleHref={href}
+            register="editorial"
+            className="card"
+          >
             <ul role="list" className="flex flex-col gap-3">
-              {visibleStories.map((n) => (
-                <li key={n.title}>
-                  <PostRow post={{ kicker: n.category, title: n.title, meta: n.meta }} />
+              {stories.map((story) => (
+                <li key={story.slug}>
+                  <PostRow post={storyRow(story)} bleed="card" />
                 </li>
               ))}
             </ul>
-          )}
-        </div>
-      </section>
+            <ArrowLink href={href} className={`${sectionCtaClassName} self-center min-h-4`}>
+              More {category} news
+            </ArrowLink>
+          </EditorialSection>
+        ))
+      )}
 
       <EditorialSection title="How we report" register="editorial">
-        <p className="text-lg font-medium leading-copy text-text-strong-secondary max-w-article text-pretty">
+        <Prose>
           [Placeholder — sourcing policy: what we verify before publishing, how corrections are
           handled, and why commercial partnerships never affect coverage.]
-        </p>
+        </Prose>
       </EditorialSection>
     </PageShell>
   );

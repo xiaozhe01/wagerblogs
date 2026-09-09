@@ -7,7 +7,7 @@ export default function BackToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0 })}
-      className="group px-2 py-1.5 min-h-5 w-full flex items-center justify-between self-center gap-2.5 rounded-sm bg-bg-subtle text-sm font-semibold leading-snug text-text-body cursor-pointer transition-colors duration-300 hover:bg-bg-subtle-active hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+      className="group px-2 py-1.5 min-h-5 w-full flex items-center justify-between self-center gap-2.5 rounded-sm bg-bg-subtle text-sm font-semibold leading-snug text-text-body cursor-pointer transition-colors duration-300 hover:bg-bg-subtle-active hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text-primary"
     >
       Back to Top
       <ArrowUp

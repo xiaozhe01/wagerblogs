@@ -1,38 +1,24 @@
 import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import HelpLineCard from "@/components/rail/HelpLineCard";
-import InfoCard from "@/components/rail/InfoCard";
-import SearchInput from "@/components/rail/SearchInput";
-import RankedListSection from "@/components/section/RankedListSection";
-import ComparisonCard from "@/components/section/ComparisonCard";
+import ReviewsRail from "@/components/rail/ReviewsRail";
+import ReviewDirectorySection from "@/components/section/ReviewDirectorySection";
 import ReviewCard from "@/components/section/ReviewCard";
-import WriterQuoteCard from "@/components/section/WriterQuoteCard";
-import { mockRankedSportsbooks, mockRankedCasinos } from "@/lib/mock-data";
+import { reviewGroups } from "@/lib/reviews";
 
 export const metadata: Metadata = {
   title: "Sportsbook & Casino Reviews — WagerBlogs",
   description: "Independent, tested reviews of legal sportsbooks and online casinos.",
+  alternates: { canonical: "/reviews" },
 };
 
-// Reviews hub: rankings → side-by-side comparison → methodology + editorial
-// trust. Individual operator pages live at /reviews/[slug].
+// Reviews hub: a directory of the reviews we've published, then the method that
+// produced the scores. Ranked lists, the comparison table and bonus offers are
+// the home page's job — the hub links inward and carries no operator CTAs.
 export default function ReviewsIndexPage() {
-  const rail = (
-    <>
-      <SearchInput placeholder="Search reviews..." />
-      <InfoCard
-        title="Editorial standards"
-        body="How we research, test with real deposits, and correct our reviews."
-        cta={{ href: "/about", label: "Read our methodology" }}
-      />
-      <HelpLineCard />
-    </>
-  );
-
   return (
-    <PageShell activeNavId="reviews" rail={rail}>
-      {/* Register: Comparison · Tier 2/3 — CTA-bearing, one primary-domain entry per list */}
+    <PageShell activeNavId="reviews" rail={<ReviewsRail />}>
+      {/* Register: Comparison · Tier 2/3 — internal links only, no operator CTAs */}
       <Breadcrumbs items={[{ label: "Reviews" }]} />
 
       <header className="flex flex-col gap-3 max-w-header">
@@ -40,26 +26,23 @@ export default function ReviewsIndexPage() {
           Sportsbook & casino reviews
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — how these operators are tested, scored, and re-verified.]
+          [Placeholder standfirst — every operator we&apos;ve reviewed, what each was scored on, and
+          when the review was last re-verified.]
         </p>
       </header>
 
-      <section aria-label="Operator rankings" className="flex flex-col gap-5">
-        <RankedListSection
-          title="Top-Rated Sportsbooks — July 2026"
-          operators={mockRankedSportsbooks}
+      {reviewGroups.map((group) => (
+        <ReviewDirectorySection
+          key={group.slug}
+          title={group.title}
+          operators={group.operators}
+          limit={4}
+          allHref={group.href}
+          allLabel={`All ${group.noun} reviews`}
         />
-        <RankedListSection
-          title="Top-Rated Online Casinos — July 2026"
-          operators={mockRankedCasinos}
-        />
-      </section>
-
-      <ComparisonCard />
+      ))}
 
       <ReviewCard />
-
-      <WriterQuoteCard />
     </PageShell>
   );
 }

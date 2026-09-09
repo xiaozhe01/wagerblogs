@@ -6,7 +6,6 @@ import type {
   HelpDirectoryRegion,
   NewsItem,
   Operator,
-  Post,
   PostTeaser,
   PrimaryDomainLinkData,
 } from "./types";
@@ -54,67 +53,34 @@ export const authorArticles: PostTeaser[] = [
   {
     kicker: "Guide",
     title: "[Placeholder] How moneylines actually work",
+    excerpt: "[Placeholder dek — the piece's argument in two lines, readable on its own.]",
     meta: "Blog · 07/18/2026 · 9 min",
-    href: "/blog/sample-1",
+    metaItems: ["9 min read", "07/18/2026", "Blog"],
+    href: "/blog/how-odds-boosts-actually-work",
   },
   {
     kicker: "Analysis",
     title: "[Placeholder] What changed in state betting law this quarter",
+    excerpt: "[Placeholder dek — which states moved, and what it changes for a bettor.]",
     meta: "News · 07/16/2026 · 6 min",
-    href: "/news",
+    metaItems: ["6 min read", "07/16/2026", "News"],
+    href: "/news/esports/placeholder-headline-esports",
   },
   {
     kicker: "Review",
     title: "[Placeholder] PeakWager Sportsbook review",
+    excerpt: "[Placeholder dek — the verdict, the score, and what was tested to get there.]",
     meta: "Reviews · 07/12/2026 · 12 min",
-    href: "/reviews/peakwager",
+    metaItems: ["12 min read", "07/12/2026", "Reviews"],
+    href: "/reviews/sportsbooks/peakwager",
   },
   {
     kicker: "Guide",
     title: "[Placeholder] Bankroll management 101",
+    excerpt: "[Placeholder dek — the staking basics this guide covers, in two lines.]",
     meta: "Blog · 07/05/2026 · 7 min",
-    href: "/blog/sample-2",
-  },
-];
-
-export const mockPosts: Post[] = [
-  {
-    id: "post-1",
-    slug: "how-odds-boosts-actually-work",
-    title: "How Odds Boosts Actually Work (And When They're Worth It)",
-    excerpt:
-      "A plain-language breakdown of boosted-odds promos and the math behind them — placeholder Tier 1 content, no outbound link.",
-    linkTier: "tier1",
-    author: mockAuthor,
-    publishedAt: "2026-06-01",
-    updatedAt: "2026-07-15",
-  },
-  {
-    id: "post-2",
-    slug: "reading-a-sportsbook-terms-page",
-    title: "What to Actually Read on a Sportsbook's Terms Page",
-    excerpt:
-      "Placeholder Tier 1 explainer — pure editorial, deliberately has no primary-domain link.",
-    linkTier: "tier1",
-    author: mockAuthor,
-    publishedAt: "2026-05-20",
-    updatedAt: "2026-05-20",
-  },
-  {
-    id: "post-3",
-    slug: "examplebet-welcome-offer-breakdown",
-    title: "ExampleBet's Welcome Offer, Broken Down",
-    excerpt:
-      "Placeholder Tier 2 comparison post — this is the shape a real embedded-link article would take.",
-    linkTier: "tier2",
-    primaryDomainLink: {
-      anchorText: "ExampleBet welcome offer",
-      url: "https://example.com",
-      relAttribute: "sponsored",
-    },
-    author: mockAuthor,
-    publishedAt: "2026-07-01",
-    updatedAt: "2026-07-01",
+    metaItems: ["7 min read", "07/05/2026", "Blog"],
+    href: "/blog/bankroll-management-101",
   },
 ];
 
@@ -125,6 +91,7 @@ export const mockPosts: Post[] = [
 export const mockRankedSportsbooks: Operator[] = [
   {
     id: "op-examplebet",
+    slug: "examplebet",
     name: "ExampleBet",
     score: 9.1,
     categoryScores: [
@@ -147,6 +114,7 @@ export const mockRankedSportsbooks: Operator[] = [
   },
   {
     id: "op-northline",
+    slug: "northline-sports",
     name: "Northline Sports (placeholder competitor)",
     score: 8.7,
     categoryScores: [
@@ -164,6 +132,7 @@ export const mockRankedSportsbooks: Operator[] = [
   },
   {
     id: "op-harborbet",
+    slug: "harbor-bet",
     name: "Harbor Bet (placeholder competitor)",
     score: 8.4,
     categoryScores: [
@@ -181,6 +150,7 @@ export const mockRankedSportsbooks: Operator[] = [
   },
   {
     id: "op-fieldhouse",
+    slug: "fieldhouse-wager",
     name: "Fieldhouse Wager (placeholder competitor)",
     score: 8.1,
     categoryScores: [
@@ -198,6 +168,7 @@ export const mockRankedSportsbooks: Operator[] = [
   },
   {
     id: "op-summitplay",
+    slug: "summit-play",
     name: "Summit Play (placeholder competitor)",
     score: 7.8,
     categoryScores: [
@@ -216,12 +187,11 @@ export const mockRankedSportsbooks: Operator[] = [
 ];
 
 // Ranked Casinos — same placeholder-domain convention as above, "Crownline
-// Coins" as the placeholder primary-domain entry. Added to give the
-// homepage's casino ranked list typed data of its own instead of an ad hoc
-// local shape (see .claude/dry-audit.md DRY-7).
+// Coins" as the placeholder primary-domain entry.
 export const mockRankedCasinos: Operator[] = [
   {
     id: "op-crownline",
+    slug: "crownline-coins",
     name: "Crownline Coins",
     score: 9.6,
     categoryScores: [
@@ -246,6 +216,7 @@ export const mockRankedCasinos: Operator[] = [
   },
   {
     id: "op-spinfrontier",
+    slug: "spinfrontier",
     name: "SpinFrontier (placeholder competitor)",
     score: 9.2,
     categoryScores: [
@@ -264,6 +235,7 @@ export const mockRankedCasinos: Operator[] = [
   },
   {
     id: "op-stakeharbor",
+    slug: "stakeharbor",
     name: "StakeHarbor (placeholder competitor)",
     score: 9.0,
     categoryScores: [
@@ -282,11 +254,12 @@ export const mockRankedCasinos: Operator[] = [
   },
 ];
 
-// Shared operator record for both app/reviews/[slug] templates (the quick
-// review and the full-review/comparison variant) — single source for the
-// score breakdown, pros/cons, and outbound-link data both pages render.
+// Single source for the score breakdown, pros/cons and outbound-link data the
+// operator review renders. Reachable at /reviews/sportsbooks/peakwager but kept
+// out of the ranked list, which already has its one primary-domain entry.
 export const mockPeakWagerReview: Operator = {
   id: "op-peakwager",
+  slug: "peakwager",
   name: "PeakWager Sportsbook",
   score: 9.4,
   categoryScores: [
@@ -320,15 +293,8 @@ export const mockPeakWagerReview: Operator = {
   ],
 };
 
-// "Other books compared" rail list — identical in both reviews templates.
-export const otherBooksCompared: { name: string; score: string }[] = [
-  { name: "BlueHorizon Bet", score: "9.1" },
-  { name: "IronStake Sports", score: "8.9" },
-  { name: "Vantage Play", score: "8.7" },
-  { name: "Northline Bet", score: "8.5" },
-];
-
-// app/reviews/[slug]/page.tsx (quick review template) content.
+// "Other books compared" rail list on the operator review.
+// app/reviews/[group]/[slug]/page.tsx content.
 export const reviewReaderReviews = [
   {
     username: "[@somename]",
@@ -345,34 +311,33 @@ export const reviewReaderReviews = [
 export const reviewRelated: PostTeaser[] = [
   {
     kicker: "Comparison",
-    title: "BlueHorizon Bet review",
-    meta: "Reviews · 9.1 / 10 editorial",
-    href: "/reviews/bluehorizon",
+    title: "Northline Sports review",
+    meta: "Reviews · 8.7 / 10 editorial",
+    href: "/reviews/sportsbooks/northline-sports",
   },
   {
     kicker: "Comparison",
-    title: "IronStake Sports review",
-    meta: "Reviews · 8.9 / 10 editorial",
-    href: "/reviews/ironstake",
+    title: "Harbor Bet review",
+    meta: "Reviews · 8.4 / 10 editorial",
+    href: "/reviews/sportsbooks/harbor-bet",
   },
   {
     kicker: "Guide",
     title: "[Placeholder] How we score payout speed",
     meta: "Blog · Tier 1 surface",
-    href: "/blog/sample",
+    href: "/blog/parlays-vs-straight-bets",
   },
 ];
 
+// The editorial score row is prepended from the operator record itself.
 export const reviewAtAGlance: AtAGlanceItem[] = [
-  { label: "Editorial score", value: "9.4 / 10" },
   { label: "Reader average", value: "[x.x] / 5" },
   { label: "States live", value: "[26]" },
   { label: "Payout speed", value: "[1–3 days]" },
   { label: "Last verified", value: "[Jun 30, 2026]" },
 ];
 
-// app/reviews/[slug]/page.tsx "Bonus detail" + FAQ content (merged in from
-// the retired full-review template).
+// app/reviews/[group]/[slug]/page.tsx "Bonus detail".
 export const reviewBonusTerms = [
   { label: "Minimum deposit", value: "[$10]" },
   { label: "Wagering requirement", value: "[1x]" },
@@ -380,39 +345,10 @@ export const reviewBonusTerms = [
   { label: "Eligible states", value: "[list required]" },
 ];
 
-export const reviewFaqs = [
-  {
-    q: "[Placeholder] Is it legal in my state?",
-    a: "[Placeholder answer — points at our state-by-state category page rather than making a blanket claim.]",
-  },
-  {
-    q: "[Placeholder] How fast are withdrawals?",
-    a: "[Placeholder answer — cites our own tested figures and the date they were verified.]",
-  },
-  {
-    q: "[Placeholder] Does the bonus apply to every market?",
-    a: "[Placeholder answer — defers to the operator terms, linked in full above.]",
-  },
-];
-
 // app/blog/[slug]/page.tsx (sample blog post) content.
 // TODO(cms): becomes the post record fetched by slug — title/kicker/dates/author
 // all flow from this one object into metadata, breadcrumbs, H1, and the byline
 // (mirroring how the reviews templates consume mockPeakWagerReview).
-export const mockBlogPost = {
-  slug: "sample-post",
-  kicker: "Guides",
-  title: "[Placeholder] How moneylines actually work — and what the numbers are telling you",
-  publishedAt: "[Jul 18, 2026]",
-  updatedAt: "[Jul 24, 2026]",
-  readTime: "9 min read",
-  author: {
-    name: "Jane Placeholder",
-    credential: "Example Analyst, Example Credential Body",
-    profileHref: "/authors/jane-placeholder",
-  },
-};
-
 export const blogToc = [
   { label: "Reading the number", href: "#reading-the-number" },
   { label: "The worked example", href: "#the-worked-example" },
@@ -438,7 +374,7 @@ export const blogRelated: PostTeaser[] = [
     kicker: "Guide",
     title: "[Placeholder] Reading odds formats",
     meta: "Blog · 8 min read",
-    href: "/blog/sample-2",
+    href: "/blog/bankroll-management-101",
   },
   {
     kicker: "Comparison",
@@ -454,65 +390,59 @@ export const blogRelated: PostTeaser[] = [
   },
 ];
 
-export const blogMoreInGuides = [
-  "[Placeholder] Bankroll management 101",
-  "[Placeholder] Parlays vs straight bets",
-  "[Placeholder] Understanding closing line value",
-  "[Placeholder] How books set their prices",
-];
-
 // app/categories/[slug]/page.tsx (sample category) content.
-export const sampleCategoryName = "Esports Betting";
-
 export const categoryArticles: PostTeaser[] = [
   {
     kicker: "Guide",
-    title: "[Placeholder] Reading esports odds before a major",
+    title: "[Placeholder] Reading odds before a major event",
+    excerpt: "[Placeholder dek — what the guide teaches and who it's for, in two lines.]",
     meta: "07/20/2026 · 8 min · byline required",
+    href: "/blog/how-odds-boosts-actually-work",
+    metaItems: ["8 min read", "07/20/2026", "byline required"],
   },
   {
     kicker: "Analysis",
-    title: "[Placeholder] Why map handicaps price differently",
+    title: "[Placeholder] Why handicaps price differently",
+    excerpt: "[Placeholder dek — the pricing quirk this piece explains, summarised.]",
     meta: "07/18/2026 · 6 min · byline required",
+    href: "/blog/parlays-vs-straight-bets",
+    metaItems: ["6 min read", "07/18/2026", "byline required"],
   },
   {
     kicker: "Research",
-    title: "[Placeholder] Which titles hold liquidity out of season",
+    title: "[Placeholder] Which markets hold liquidity out of season",
+    excerpt: "[Placeholder dek — the dataset, the period it covers, and the finding.]",
     meta: "07/15/2026 · 12 min · byline required",
+    href: "/blog/bankroll-management-101",
+    metaItems: ["12 min read", "07/15/2026", "byline required"],
   },
   {
     kicker: "News",
-    title: "[Placeholder] A regulator opens consultation on esports markets",
+    title: "[Placeholder] A regulator opens consultation on betting markets",
+    excerpt: "[Placeholder dek — who opened it, what it covers, and when it closes.]",
     meta: "07/12/2026 · 4 min · byline required",
+    href: "/news/esports/placeholder-headline-esports",
+    metaItems: ["4 min read", "07/12/2026", "byline required"],
   },
-];
-
-export const categorySubCategories = [
-  { name: "CS2", count: "[n] pieces" },
-  { name: "League of Legends", count: "[n] pieces" },
-  { name: "Valorant", count: "[n] pieces" },
-  { name: "Dota 2", count: "[n] pieces" },
-  { name: "Rocket League", count: "[n] pieces" },
-  { name: "Call of Duty", count: "[n] pieces" },
 ];
 
 // Tier 1 → Tier 2/3 internal link surface — no operator links, scores, or CTAs on this route.
 export const categoryCompareLinks: PostTeaser[] = [
   {
     kicker: "Tier 2 surface",
-    title: "Esports sportsbook comparison",
+    title: "Side-by-side operator comparison",
     meta: "Side-by-side scores, payouts, and market depth.",
-    href: "/reviews",
+    href: "/reviews/sportsbooks",
   },
   {
     kicker: "Tier 2 surface",
     title: "Operator reviews in this category",
     meta: "Individual reviews with tested figures and verified dates.",
-    href: "/reviews/sample-operator",
+    href: "/reviews",
   },
   {
     kicker: "Tier 1 surface",
-    title: "How we score esports books",
+    title: "How we score operators",
     meta: "The criteria behind every number we publish.",
     href: "/about",
   },
@@ -624,7 +554,10 @@ export const legalDocs = {
     summary:
       "[Placeholder plain-language summary — a short list of cookies, what each does, and a one-click way to refuse the optional ones.]",
     sections: [
-      { title: "What cookies are", body: "[Placeholder section text — brief, plain definition.]" },
+      {
+        title: "What cookies are",
+        body: "[Placeholder section text — brief, plain definition.]",
+      },
       {
         title: "Cookies we set",
         body: "[Placeholder section text — table of first-party cookies: name, purpose, lifetime.]",
@@ -724,13 +657,21 @@ export const helpDirectory: HelpDirectoryRegion[] = [
         name: "[National problem gambling helpline — US]",
         country: "US",
         desc: "[Placeholder — 24/7 phone and text support; routes callers to state-level resources.]",
-        contacts: { phone: "[number — verify]", site: "[URL — verify]", chat: "" },
+        contacts: {
+          phone: "[number — verify]",
+          site: "[URL — verify]",
+          chat: "",
+        },
       },
       {
         name: "[Provincial helpline network — Canada]",
         country: "CA",
         desc: "[Placeholder — per-province helplines and self-exclusion programs.]",
-        contacts: { phone: "[number — verify]", site: "[URL — verify]", chat: "" },
+        contacts: {
+          phone: "[number — verify]",
+          site: "[URL — verify]",
+          chat: "",
+        },
       },
     ],
   },
@@ -741,7 +682,11 @@ export const helpDirectory: HelpDirectoryRegion[] = [
         name: "[National gambling helpline — UK]",
         country: "UK",
         desc: "[Placeholder — free 24/7 helpline and live chat, plus structured treatment referral.]",
-        contacts: { phone: "[number — verify]", site: "", chat: "[URL — verify]" },
+        contacts: {
+          phone: "[number — verify]",
+          site: "",
+          chat: "[URL — verify]",
+        },
       },
       {
         name: "[Problem gambling service — Ireland]",
@@ -764,7 +709,11 @@ export const helpDirectory: HelpDirectoryRegion[] = [
         name: "[Support line — Nordics]",
         country: "SE / NO / DK",
         desc: "[Placeholder — shared Nordic helpline network with online programs.]",
-        contacts: { phone: "[number — verify]", site: "", chat: "[URL — verify]" },
+        contacts: {
+          phone: "[number — verify]",
+          site: "",
+          chat: "[URL — verify]",
+        },
       },
     ],
   },
@@ -865,8 +814,22 @@ export const operators: ComparisonOperator[] = [
       relAttribute: "sponsored",
     } as PrimaryDomainLinkData,
   },
-  { name: "BlueHorizon Bet", isPrimaryDomain: false },
-  { name: "IronStake Sports", isPrimaryDomain: false },
+  {
+    name: "Northline Sports",
+    isPrimaryDomain: false,
+    operatorLink: {
+      anchorText: "Visit Northline Sports",
+      url: "https://example.com",
+    },
+  },
+  {
+    name: "Harbor Bet",
+    isPrimaryDomain: false,
+    operatorLink: {
+      anchorText: "Visit Harbor Bet",
+      url: "https://example.com",
+    },
+  },
 ];
 
 export const compareRows = [
@@ -874,48 +837,120 @@ export const compareRows = [
   { label: "Same-Game Parlay", values: ["Yes", "Yes", "Yes"] },
   { label: "Casino Cross-Sell", values: ["Yes", "No", "Yes"] },
   { label: "Payout Speed", values: ["1-3 days", "2-5 days", "1-3 days"] },
-  { label: "Welcome Bonus", values: ["Bet $5/$200", "10x $100", "Bet $5/$150"] },
+  {
+    label: "Welcome Bonus",
+    values: ["Bet $5/$200", "10x $100", "Bet $5/$150"],
+  },
 ];
 
 export const newsFeed: NewsItem[] = [
   {
     title: "[Placeholder headline — Football]",
+    excerpt:
+      "[Placeholder dek — two lines summarising the story, written to work on its own in a feed row, in search, and in a social preview.]",
     meta: "Football · 07/20/2026 · by [author] · 5 min",
     category: "Football",
+    publishedAt: "[Jul 20, 2026]",
+    readTime: "5 min read",
   },
   {
     title: "[Placeholder headline — Basketball]",
+    excerpt:
+      "[Placeholder dek — what happened and why a bettor should care, in two lines that stand without the headline.]",
     meta: "Basketball · 07/19/2026 · by [author] · 3 min",
     category: "Basketball",
+    publishedAt: "[Jul 19, 2026]",
+    readTime: "3 min read",
   },
   {
     title: "[Placeholder headline — Soccer interview]",
+    excerpt:
+      "[Placeholder dek — who was interviewed, on what, and the line worth reading the piece for.]",
     meta: "Soccer · 07/18/2026 · by [author] · 4 min",
     category: "Soccer",
+    publishedAt: "[Jul 18, 2026]",
+    readTime: "4 min read",
   },
   {
     title: "[Placeholder headline — Esports]",
+    excerpt:
+      "[Placeholder dek — the roster, patch, or market move behind the story, summarised in two lines.]",
     meta: "Esports · 07/17/2026 · by [author] · 3 min",
     category: "Esports",
+    publishedAt: "[Jul 17, 2026]",
+    readTime: "3 min read",
+  },
+  {
+    title: "[Placeholder headline — Football injury report]",
+    excerpt:
+      "[Placeholder dek — who is out, who is questionable, and how the lines have moved since the report landed.]",
+    meta: "Football · 07/14/2026 · by [author] · 4 min",
+    category: "Football",
+    publishedAt: "[Jul 14, 2026]",
+    readTime: "4 min read",
+  },
+  {
+    title: "[Placeholder headline — Basketball trade deadline]",
+    excerpt:
+      "[Placeholder dek — the move, the roster it reshapes, and what the futures market did next.]",
+    meta: "Basketball · 07/13/2026 · by [author] · 6 min",
+    category: "Basketball",
+    publishedAt: "[Jul 13, 2026]",
+    readTime: "6 min read",
+  },
+  {
+    title: "[Placeholder headline — Soccer transfer window]",
+    excerpt: "[Placeholder dek — the signing, the fee, and the title-odds shift that followed it.]",
+    meta: "Soccer · 07/12/2026 · by [author] · 5 min",
+    category: "Soccer",
+    publishedAt: "[Jul 12, 2026]",
+    readTime: "5 min read",
+  },
+  {
+    title: "[Placeholder headline — Esports patch notes]",
+    excerpt:
+      "[Placeholder dek — the balance change, the teams it favours, and where the map handicaps repriced.]",
+    meta: "Esports · 07/11/2026 · by [author] · 4 min",
+    category: "Esports",
+    publishedAt: "[Jul 11, 2026]",
+    readTime: "4 min read",
+  },
+  {
+    title: "[Placeholder headline — Industry regulation]",
+    excerpt:
+      "[Placeholder dek — the ruling, which operators it binds, and what changes for bettors in the affected states.]",
+    meta: "Industry · 07/16/2026 · by [author] · 6 min",
+    category: "Industry",
+    publishedAt: "[Jul 16, 2026]",
+    readTime: "6 min read",
+  },
+  {
+    title: "[Placeholder headline — Industry market entry]",
+    excerpt:
+      "[Placeholder dek — who launched where, under whose licence, and how the competitive field shifts.]",
+    meta: "Industry · 07/10/2026 · by [author] · 4 min",
+    category: "Industry",
+    publishedAt: "[Jul 10, 2026]",
+    readTime: "4 min read",
   },
 ];
 
-export const blogPosts = [
-  {
-    title: "[Placeholder] How moneylines actually work",
-    excerpt: "A beginner walkthrough of reading odds before your first bet.",
-    byline: "by [author] · 07/18/2026",
-  },
-  {
-    title: "[Placeholder] Bankroll management 101",
-    excerpt: "Simple rules for staking that keep betting sustainable.",
-    byline: "by [author] · 07/12/2026",
-  },
-  {
-    title: "[Placeholder] Parlays vs straight bets",
-    excerpt: "When each bet type makes sense and what the math says.",
-    byline: "by [author] · 07/05/2026",
-  },
+// TODO(cms): a per-story Person record (photo, fullName, credential, authorUrl);
+// Article schema needs author.name + author.url before a story can publish.
+export const newsStoryAuthor = {
+  name: "Jane Placeholder",
+  credential: "Example Reporter, Example Credential Body",
+  // Derived: the author route 404s on an unknown slug, so a literal path here
+  // would break on a rename.
+  profileHref: `/authors/${mockAuthor.slug}`,
+};
+
+// app/news/[slug]/[story]/page.tsx — one story's takeaways.
+// TODO(cms): a per-story field; a story publishes without them if the desk has none.
+export const newsStoryTakeaways = [
+  "[Placeholder takeaway — the single fact a reader should leave with.]",
+  "[Placeholder takeaway — what it changes for a bettor, if anything.]",
+  "[Placeholder takeaway — what is still unconfirmed, and what we are waiting on.]",
 ];
 
 export const toolboxItems = [
@@ -924,7 +959,11 @@ export const toolboxItems = [
     desc: "Bet types, strategy, and state rules explained.",
     href: "/blog",
   },
-  { title: "Market research", desc: "Team form, injuries, and matchup trend data.", href: "/blog" },
+  {
+    title: "Market research",
+    desc: "Team form, injuries, and matchup trend data.",
+    href: "/blog",
+  },
   {
     title: "State statistics",
     desc: "Handle, revenue, and tax data by market.",
@@ -974,40 +1013,32 @@ export const recentPosts: PostTeaser[] = [
   {
     kicker: "Guide",
     title: "[Dynamic — latest Tier 1 post 1]",
+    excerpt: "[Dynamic — the post's own dek, two lines, from the CMS excerpt field.]",
     meta: "[date] · [n] min · byline required",
-    href: "/blog/sample-post-1",
+    metaItems: ["[n] min read", "[date]", "byline required"],
+    href: "/blog/how-odds-boosts-actually-work",
   },
   {
     kicker: "Analysis",
     title: "[Dynamic — latest Tier 1 post 2]",
+    excerpt: "[Dynamic — the post's own dek, two lines, from the CMS excerpt field.]",
     meta: "[date] · [n] min · byline required",
-    href: "/blog/sample-post-2",
+    metaItems: ["[n] min read", "[date]", "byline required"],
+    href: "/blog/bankroll-management-101",
   },
   {
     kicker: "Research",
     title: "[Dynamic — latest Tier 1 post 3]",
+    excerpt: "[Dynamic — the post's own dek, two lines, from the CMS excerpt field.]",
     meta: "[date] · [n] min · byline required",
-    href: "/blog/sample-post-3",
+    metaItems: ["[n] min read", "[date]", "byline required"],
+    href: "/blog/parlays-vs-straight-bets",
   },
 ];
 
-// TODO(cms): analytics-driven, Tier 1 only.
-// TODO(cms): trending list must come from real editorial/analytics data —
-// never ship unmarked realistic headlines.
-export const trendingHeadlines = [
-  "[Placeholder headline — NFL week 1 lines]",
-  "[Placeholder headline — new sweepstakes casino launch]",
-  "[Placeholder headline — same-game parlay boosts]",
-  "[Placeholder headline — Editor's Pick update]",
-];
-
-export const popular = [
-  "[Dynamic — popular Tier 1 post 1]",
-  "[Dynamic — popular Tier 1 post 2]",
-  "[Dynamic — popular Tier 1 post 3]",
-  "[Dynamic — popular Tier 1 post 4]",
-];
-
 // TODO(cms): verify against a real, current helpline number before launch.
-export const helplineNumber = "1-800-XXX-XXXX";
-export const helplineText = `Helpline: [${helplineNumber}]`;
+// TODO(cms): a verified helpline number, rendered as an explicit tel: link —
+// which also stops iOS Safari's data detectors from linkifying it themselves.
+// Deliberately not digit-shaped until then: anything phone-like here is rewritten
+// before hydration, which fails hydration and regenerates the tree on the client.
+export const helplineNumber = "[helpline number — verify before launch]";

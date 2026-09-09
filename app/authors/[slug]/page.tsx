@@ -1,9 +1,11 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PostRow from "@/components/cards/PostRow";
-import ArrowLink from "@/components/ui/ArrowLink";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
+import InfoCard from "@/components/rail/InfoCard";
+import SearchInput from "@/components/rail/SearchInput";
 import EditorialSection from "@/components/section/EditorialSection";
 import { mockAuthor, authorBeats, authorArticles, authorStandards } from "@/lib/mock-data";
 
@@ -11,44 +13,73 @@ import { mockAuthor, authorBeats, authorArticles, authorStandards } from "@/lib/
 // route must 404 when no Person record exists — never render with a placeholder
 // name, stock headshot, or invented credential.
 // Required fields: photo, fullName, credential, bio, slug. Optional: sameAs, beats.
-export const metadata: Metadata = { title: `${mockAuthor.name} — WagerBlogs` };
+export const metadata: Metadata = {
+  title: `${mockAuthor.name} — WagerBlogs`,
+  description: `${mockAuthor.name}, ${mockAuthor.credentialLine} — coverage areas, recent work, and the standards this desk holds itself to.`,
+  alternates: { canonical: `/authors/${mockAuthor.slug}` },
+};
 
-export default function AuthorPage() {
+export function generateStaticParams() {
+  return [{ slug: mockAuthor.slug }];
+}
+
+export default async function AuthorPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  // Enforces the rule above: any slug used to render the placeholder record,
+  // making /authors/<anything> an unbounded soft-404.
+  if (slug !== mockAuthor.slug) notFound();
+
+  const rail = (
+    <>
+      <SearchInput placeholder={`Search ${mockAuthor.name}'s work...`} />
+      <section className="card" aria-labelledby="rail-coverage-areas">
+        <h2 id="rail-coverage-areas" className="heading text-sm mb-2.5">
+          Coverage areas
+        </h2>
+        {/* TODO(cms): these become links once an author-filtered archive exists.
+            Static until then — five rows pointing at one sample category is not
+            navigation. */}
+        <ul role="list" className="flex gap-2 flex-wrap">
+          {authorBeats.map((beat) => (
+            <li
+              key={beat}
+              className="btn-secondary min-h-0 py-2 px-3 text-xs leading-heading cursor-default"
+            >
+              {beat}
+            </li>
+          ))}
+        </ul>
+      </section>
+      <InfoCard
+        title="Editorial standards"
+        body="How we research, source, and correct what we publish."
+        cta={{ href: "/about", label: "Read our methodology" }}
+      />
+    </>
+  );
+
   return (
-    <PageShell activeNavId="more" register="editorial">
+    <PageShell activeNavId="more" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — author identity surface, no outbound operator links */}
       <Breadcrumbs items={[{ label: "About", href: "/about" }, { label: mockAuthor.name }]} />
 
-      <header className="flex flex-col gap-4 md:gap-5 border-t border-border-divider border-b py-4 md:py-5">
+      <header className="flex flex-col gap-4 md:gap-5 max-w-header border-t border-border-divider border-b py-4 md:py-5">
         <div className="flex flex-col md:flex-row items-start gap-4 md:gap-5">
           <div className="w-24 h-24 md:w-30 md:h-30 rounded-full placeholder-asset shrink-0" />
-          <div className="min-w-0 flex flex-col gap-2">
+          <div className="min-w-0 flex flex-col gap-3">
             <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
               {mockAuthor.name}
             </h1>
             <p className="text-sm font-medium text-text-muted">{mockAuthor.credentialLine}</p>
-            <p className="text-sm text-text-body leading-relaxed">{mockAuthor.bio}</p>
+            <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
+              {mockAuthor.bio}
+            </p>
           </div>
         </div>
         {/* TODO(cms): Person record — required: photo, fullName, credential, bio, slug.
             Optional: sameAs, beats. Person schema requires name + url; no "WagerBlogs
             Staff" fallback, no stock headshot, no invented credential. */}
       </header>
-
-      <EditorialSection title="Coverage areas" register="editorial">
-        <ul role="list" className="flex gap-2 flex-wrap">
-          {authorBeats.map((b) => (
-            <li key={b} className="flex">
-              <Link
-                href="/categories/sample"
-                className="btn-secondary min-h-0 py-1.5 px-3 text-xs leading-heading"
-              >
-                {b}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </EditorialSection>
 
       <EditorialSection title="Recent work" register="editorial">
         {/* TODO(cms): article list renders from posts where author === this record. */}
@@ -68,15 +99,12 @@ export default function AuthorPage() {
         >
           {authorStandards.map((s) => (
             <li key={s.title} className="border-t border-border-hairline pt-3">
-              <h3 className="text-md font-semibold text-text-primary mb-1.5">{s.title}</h3>
+              <h3 className="text-lg font-semibold text-text-primary mb-1.5">{s.title}</h3>
               <p className="text-sm text-text-muted leading-loose">{s.body}</p>
             </li>
           ))}
         </ul>
-        <ArrowLink
-          href="/about"
-          className="inline-flex items-center self-center gap-1 text-md link-cta font-semibold group"
-        >
+        <ArrowLink href="/about" className={sectionCtaClassName}>
           Read our full editorial standards
         </ArrowLink>
       </EditorialSection>
@@ -86,10 +114,7 @@ export default function AuthorPage() {
         <p className="text-sm text-text-body font-medium leading-relaxed">
           Questions about this author&apos;s work?
         </p>
-        <ArrowLink
-          href="/contact"
-          className="inline-flex items-center gap-1 text-md link-cta font-semibold group"
-        >
+        <ArrowLink href="/contact" className={sectionCtaClassName}>
           Contact the editorial desk
         </ArrowLink>
       </section>

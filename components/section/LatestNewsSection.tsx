@@ -1,32 +1,38 @@
 import PostRow from "../cards/PostRow";
-import { newsFeed } from "@/lib/mock-data";
-import LatestNewsCategory from "../cards/LatestNewsCategory";
-import ArrowLink from "@/components/ui/ArrowLink";
+import { homeNewsSplit, storyRow } from "@/lib/news";
+import FilterChips from "@/components/controls/FilterChips";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import EditorialSection from "./EditorialSection";
 import EmptyState from "./EmptyState";
 import { newsCategories } from "@/lib/site-data";
-import { chipHref, resolveChip } from "@/lib/utils";
+import { chipHref } from "@/lib/utils";
 
 export const NEWS_PARAM = "news";
 const ALL_CATEGORY = "All";
-/** The id EditorialSection derives from the title, so choosing a category lands
- * on the feed rather than the top of the page. */
 
 export default function LatestNewsSection({
   categoryParam,
 }: {
   categoryParam?: string | string[];
 }) {
-  const category = resolveChip(newsCategories, categoryParam, ALL_CATEGORY);
-  const items =
-    category === ALL_CATEGORY ? newsFeed : newsFeed.filter((item) => item.category === category);
+  // Same records the /news sections render, so a row here links to the story
+  // itself rather than back to the index. The split is shared with the rail's
+  // "More headlines" so the two cannot show the same story twice.
+  // TODO(cms): the newest few, once the feed is ordered and paginated server-side.
+  const { category, shown: items } = homeNewsSplit(categoryParam);
 
   return (
     <EditorialSection
       title="Latest news"
-      register="comparison"
+      register="editorial"
+      action={
+        <ArrowLink href="/news" className={`${sectionCtaClassName} w-fit shrink-0`}>
+          All news &amp; interviews
+        </ArrowLink>
+      }
       toolbar={
-        <LatestNewsCategory
+        <FilterChips
+          label="News categories"
           items={newsCategories.map((name) => ({
             label: name,
             key: name,
@@ -59,28 +65,15 @@ export default function LatestNewsSection({
         ) : (
           <ul role="list" className="flex flex-col gap-3">
             {items.map((news) => (
-              <li key={news.title}>
-                {/* NewsItem maps onto PostTeaser — the news category becomes the
-                    kicker, which is what the filter chips above filter on. */}
-                <PostRow
-                  post={{
-                    kicker: news.category,
-                    title: news.title,
-                    meta: news.meta,
-                    href: "/news",
-                  }}
-                />
+              <li key={news.slug}>
+                {/* The category becomes the kicker, which is what the filter
+                    chips above filter on. */}
+                <PostRow post={storyRow(news, { kicker: news.category })} />
               </li>
             ))}
           </ul>
         )}
       </div>
-      <ArrowLink
-        href="/about"
-        className="inline-flex items-center self-center gap-1 text-md link-cta font-semibold group w-fit"
-      >
-        All news &amp; interviews
-      </ArrowLink>
     </EditorialSection>
   );
 }

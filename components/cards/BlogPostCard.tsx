@@ -10,16 +10,15 @@ type BlogPostCardProps = {
 
 export default function BlogPostCard({ href, title, kicker, excerpt, byline }: BlogPostCardProps) {
   return (
-    // flex/h-full/grow are load-bearing: <article> is the grid item now, so without
-    // them the card collapses to content height and stops matching its row.
+    // flex/h-full/grow keep the card matching its grid row's height.
     <article className="flex h-full">
       <Link
         href={href}
-        className="card block grow no-underline transition-colors hover:bg-bg-subtle"
+        className="block grow no-underline px-2 py-2 border rounded-sm transition-colors hover:bg-bg-subtle active:bg-bg-subtle-active"
       >
         <div
           aria-hidden="true"
-          className="h-42 rounded-md placeholder-asset text-2xs text-text-muted tabular-nums mb-3"
+          className="aspect-video w-full rounded-md placeholder-asset text-2xs text-text-muted tabular-nums flex items-center justify-center mb-3"
         >
           [image]
         </div>

@@ -1,19 +1,25 @@
-import ArrowLink from "@/components/ui/ArrowLink";
+import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import { methodSteps } from "@/lib/mock-data";
+import { headingId } from "@/lib/utils";
 
-export default function ReviewCard() {
+const TITLE = "How We Review";
+
+/** showCta is off on /about, which *is* the full methodology — the CTA pointed
+ * at the current page. */
+export default function ReviewCard({ showCta = true }: { showCta?: boolean } = {}) {
+  const titleId = headingId("section", TITLE);
+
   return (
-    <section className="card" aria-labelledby="how-we-review">
+    <section className="card" aria-labelledby={titleId}>
       <div className="flex items-baseline justify-between flex-wrap mb-3">
-        <h2 id="how-we-review" className="font-bold text-md text-text-primary">
-          How We Review
+        <h2 id={titleId} className="heading text-2xl leading-heading">
+          {TITLE}
         </h2>
-        <ArrowLink
-          href="/about"
-          className="inline-flex items-center gap-1 text-md link-cta font-semibold group"
-        >
-          Full methodology
-        </ArrowLink>
+        {showCta && (
+          <ArrowLink href="/about#how-we-review" className={`${sectionCtaClassName}`}>
+            Full methodology
+          </ArrowLink>
+        )}
       </div>
       <ol role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
         {methodSteps.map((m, i) => (

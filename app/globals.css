@@ -233,7 +233,6 @@
      namespace generates a real utility (shadow-frame), so this shouldn't
      have been var()-only. */
   --shadow-frame: 0 8px 24px rgba(0, 0, 0, 0.08);
-
 }
 
 /* :root — values with no matching Tailwind v4 theme namespace, so they
@@ -325,6 +324,18 @@ html {
   [data-slot="skeleton"] {
     animation: none;
   }
+
+  /* The rules above covered only the route fade and skeleton; ~49 other
+     transitions kept running at 200-300ms. Near-zero, not `none`, so
+     transitionend still fires. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 body {
@@ -388,7 +399,7 @@ body {
        cards all settle identically. */
     transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
-  /* Hover/active shifts scoped to real controls — ChipList's static
+  /* Hover/active shifts scoped to real controls — a static
      as="div" chips share the .btn-* chrome but must not signal
      clickability (same fake-affordance class as VC-37). */
   :is(a, button).btn-primary:hover {
@@ -474,6 +485,9 @@ body {
   }
   :is(a, button).btn-safety:hover {
     opacity: 0.88;
+  }
+  :is(a, button).btn-safety:active {
+    opacity: 0.76;
   }
   .btn-safety:focus-visible {
     outline: 2px solid var(--color-text-on-safety);
@@ -664,6 +678,14 @@ body {
       color: var(--color-brand-on-inverted);
     }
   }
+  /* Press feedback, ungated: a touch reader gets no hover, so this is the only
+     signal that the tap landed. */
+  .link-cta:active {
+    color: var(--color-brand-active);
+  }
+  .link-cta-on-inverted:active {
+    color: var(--color-brand-on-inverted);
+  }
 
   .editorial-link-card {
     display: block;
@@ -674,6 +696,10 @@ body {
   }
   .editorial-link-card:hover {
     border-top-color: var(--color-text-primary);
+  }
+  .editorial-link-card:active {
+    border-color: var(--color-text-primary);
+    background: var(--color-bg-subtle);
   }
 }
 
@@ -838,5 +864,4 @@ body {
   --color-brand-active: #88acee;
   --color-brand-on-inverted: #34548e;
   --color-marker: #9fc5ff;
-
 }
