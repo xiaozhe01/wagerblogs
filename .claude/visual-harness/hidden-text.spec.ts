@@ -2,13 +2,12 @@ import { test } from "@playwright/test";
 import { appendFileSync, mkdirSync } from "node:fs";
 
 mkdirSync(new URL("_out/", import.meta.url).pathname, { recursive: true });
-const OUT =
-  new URL("_out/hidden-text.jsonl", import.meta.url).pathname;
+const OUT = new URL("_out/hidden-text.jsonl", import.meta.url).pathname;
 
 const ROUTES: Array<[string, string]> = [
   ["home", "/"],
   ["blog-post", "/blog/how-odds-boosts-actually-work"],
-  ["review", "/reviews/peakwager"],
+  ["review", "/reviews/sportsbooks/peakwager"],
   ["reviews-hub", "/reviews"],
   ["category", "/categories/esports-betting"],
   ["categories-hub", "/categories"],
@@ -86,8 +85,9 @@ for (const [vpName, width, height] of VIEWPORTS) {
         const rows = await page.evaluate(walk);
         appendFileSync(
           OUT,
-          rows.map((r) => JSON.stringify({ route: name, vp: vpName, state: "load", ...r })).join("\n") +
-            "\n",
+          rows
+            .map((r) => JSON.stringify({ route: name, vp: vpName, state: "load", ...r }))
+            .join("\n") + "\n",
         );
       });
     }
@@ -118,7 +118,8 @@ test.describe("disclosure-states", () => {
 
     appendFileSync(
       OUT,
-      collected.map((r) => JSON.stringify({ route: "home", vp: "desktop", ...r })).join("\n") + "\n",
+      collected.map((r) => JSON.stringify({ route: "home", vp: "desktop", ...r })).join("\n") +
+        "\n",
     );
   });
 });

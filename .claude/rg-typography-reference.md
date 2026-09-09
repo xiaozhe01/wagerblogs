@@ -30,12 +30,12 @@ role, but each role renders identically on every template.
 
 Run `.claude/visual-harness/type-state.mjs` to refresh.
 
-| | 2026-08-21 | now | |
-| --- | --- | --- | --- |
-| h1 sizes | 5 | **3** | 44px on 9 routes; `/reviews/[slug]` 22px; 404's 160px numeral deliberate |
-| h2 sizes | 4 | **5** | 28×29, 19×22, 15×5, 14×1, 12×2 |
-| `<h3>` sitewide | 1 | **109** | the retag landed; card titles are real h3s now |
-| h4–h6 | unused | unused | still no ladder below h3 |
+|                 | 2026-08-21 | now     |                                                                          |
+| --------------- | ---------- | ------- | ------------------------------------------------------------------------ |
+| h1 sizes        | 5          | **3**   | 44px on 9 routes; `/reviews/[slug]` 22px; 404's 160px numeral deliberate |
+| h2 sizes        | 4          | **5**   | 28×29, 19×22, 15×5, 14×1, 12×2                                           |
+| `<h3>` sitewide | 1          | **109** | the retag landed; card titles are real h3s now                           |
+| h4–h6           | unused     | unused  | still no ladder below h3                                                 |
 
 **Resolved since the original pass:**
 

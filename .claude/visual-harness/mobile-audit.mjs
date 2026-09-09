@@ -1,6 +1,6 @@
 import { chromium } from "@playwright/test";
 const b = await chromium.launch({ channel: "chrome" });
-const routes = ["/", "/reviews/peakwager", "/blog/how-odds-boosts-actually-work",
+const routes = ["/", "/reviews/sportsbooks/peakwager", "/blog/how-odds-boosts-actually-work",
   "/legal/privacy-policy", "/categories/esports-betting", "/responsible-gambling",
   "/responsible-gambling/help-directory", "/authors/jane-placeholder"];
 

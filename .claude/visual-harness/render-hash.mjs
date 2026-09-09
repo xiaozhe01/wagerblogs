@@ -11,7 +11,7 @@ const ROUTES = [
   "/",
   "/blog/how-odds-boosts-actually-work",
   "/reviews",
-  "/reviews/peakwager",
+  "/reviews/sportsbooks/peakwager",
   "/categories",
   "/categories/esports-betting",
   "/authors/jane-placeholder",

@@ -110,7 +110,7 @@ for (const [vp, width, height] of VPS) {
       const routes = [
         ["home", "/"],
         ["blog-post", "/blog/how-odds-boosts-actually-work"],
-        ["review", "/reviews/peakwager"],
+        ["review", "/reviews/sportsbooks/peakwager"],
         ["category", "/categories/esports-betting"],
         ["author", "/authors/jane-placeholder"],
         ["legal-privacy", "/legal/privacy-policy"],
@@ -159,7 +159,9 @@ for (const [vp, width, height] of VPS) {
       })()`);
       say(`\n[${vp}] BONUS OFFER CARDS (h-full, same grid row)`);
       for (const c of out as unknown as Probe[])
-        say(`  h=${c.h} padB=${c.pad} inkTop=${c.inkT} inkBottom=${c.inkB}  "${(c.name||'').slice(0,24)}"`);
+        say(
+          `  h=${c.h} padB=${c.pad} inkTop=${c.inkT} inkBottom=${c.inkB}  "${(c.name || "").slice(0, 24)}"`,
+        );
     });
   });
 }

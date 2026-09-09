@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 const ROUTES: Array<[string, string]> = [
   ["home", "/"],
   ["blog-post", "/blog/how-odds-boosts-actually-work"],
-  ["review", "/reviews/peakwager"],
+  ["review", "/reviews/sportsbooks/peakwager"],
   ["reviews-hub", "/reviews"],
   ["category", "/categories/esports-betting"],
   ["categories-hub", "/categories"],

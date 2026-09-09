@@ -3,13 +3,13 @@
 **First swept 2026-08-25, re-verified 2026-08-29.** Records where things stand,
 not what to do next. Everything below was checked live, not inferred.
 
-| Check | Result |
-| --- | --- |
-| `npx tsc --noEmit` | clean |
-| `npm run lint` | 0 errors, 4 warnings (all in `.claude/visual-harness/` and `playwright/` scratch scripts) |
-| `npm run test:a11y` | 25 passed, 1 skipped |
-| landmark naming | 72 named, 0 unnamed (`visual-harness/section-names.mjs`) |
-| horizontal overflow @ 1370 / 390px | none on 10 routes (`visual-harness/overflow-check.mjs`) |
+| Check                              | Result                                                                                    |
+| ---------------------------------- | ----------------------------------------------------------------------------------------- |
+| `npx tsc --noEmit`                 | clean                                                                                     |
+| `npm run lint`                     | 0 errors, 4 warnings (all in `.claude/visual-harness/` and `playwright/` scratch scripts) |
+| `npm run test:a11y`                | 25 passed, 1 skipped                                                                      |
+| landmark naming                    | 72 named, 0 unnamed (`visual-harness/section-names.mjs`)                                  |
+| horizontal overflow @ 1370 / 390px | none on 10 routes (`visual-harness/overflow-check.mjs`)                                   |
 
 ## Stack
 
@@ -33,23 +33,21 @@ unbuilt. Everything renders from `lib/mock-data.ts`, which is what the ~47
 **1 · Five internal link targets 404.** Linked from real navigation, not
 placeholders:
 
-| route | linked from |
-| --- | ---: |
-| `/about` | 9 files |
-| `/news` | 5 files |
-| `/contact` | 5 files |
-| `/blog` (index; only `[slug]` exists) | 4 files |
-| `/login` | 2 files |
+| route                                 | linked from |
+| ------------------------------------- | ----------: |
+| `/about`                              |     9 files |
+| `/news`                               |     5 files |
+| `/contact`                            |     5 files |
+| `/blog` (index; only `[slug]` exists) |     4 files |
+| `/login`                              |     2 files |
 
 **2 · No crawl plumbing.** No `app/robots.ts`, no `app/sitemap.ts`. Required by
 `docs/00` Layer 4; an off-page SEO site cannot ship without them.
 
 **3 · `globals.css`'s breakpoint doc block contradicts the file it sits in.**
-The prose block says *"no custom `--breakpoint-*` tokens are declared — use
-unprefixed, `md:`, `lg:` directly"*, but line 153 declares
-`--breakpoint-wide: 1370px`, and `wide:` is what actually drives the shell.
-The same block describes the side-nav replacing the top-header at `lg:`
-(1024px); since the shell/tablet refactor that switch happens at `wide:`
+The prose block says _"no custom `--breakpoint-_`tokens are declared — use
+unprefixed,`md:`, `lg:`directly"*, but line 153 declares`--breakpoint-wide: 1370px`, and `wide:`is what actually drives the shell.
+The same block describes the side-nav replacing the top-header at`lg:`(1024px); since the shell/tablet refactor that switch happens at`wide:`
 (1370px). Both statements are now wrong, in the file that calls itself the
 source of truth.
 
@@ -57,12 +55,21 @@ source of truth.
 — a different project's host.
 
 **5 · The "Component Reference — Filled States" page doesn't exist.**
-CLAUDE.md rule 3 names it as the *only* place filled-in mockups belong. Until it
+CLAUDE.md rule 3 names it as the _only_ place filled-in mockups belong. Until it
 exists there is nowhere legitimate to put them.
 
 **6 · `full-review` is referenced in `lib/mock-data.ts` (×2)** after the route
 was deleted. The other ~24 references are inside `.claude/` audit docs and are
 historical.
+
+---
+
+## Parked, not open
+
+**Light/dark theme toggle** — fully scoped 2026-08-31, then deliberately
+deferred until PayloadCMS Phase 1 lands and the blog-body typography exists.
+Reasoning, the phase estimate, and the four `TODO(theme)` debt sites are in
+`theme-toggle-deferred.md`. Do not re-derive it.
 
 ---
 
@@ -76,6 +83,10 @@ historical.
   weight-400 nodes 56% → 11%. See `typography-weight-audit.md`.
 - **Two h1 deviations** (`/responsible-gambling`, `/responsible-gambling/help-directory`)
   — both back on the `text-5xl-*` ramp.
+- **Warm-light palette** (2026-08-31) — backgrounds, borders and the
+  placeholder gradient warmed off `#ffffff`/`#fafafa`; text ramp unchanged.
+  Three dead placeholder tokens deleted. Measurements in
+  `theme-toggle-deferred.md`.
 
 ## References removed from this doc
 

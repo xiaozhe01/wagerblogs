@@ -7,7 +7,7 @@ import { test } from "@playwright/test";
 
 const ROUTES: Array<[string, string]> = [
   ["home", "/"],
-  ["review", "/reviews/peakwager"],
+  ["review", "/reviews/sportsbooks/peakwager"],
   ["blog-post", "/blog/how-odds-boosts-actually-work"],
   ["legal", "/legal/privacy-policy"],
   ["responsible-gambling", "/responsible-gambling"],
@@ -30,7 +30,7 @@ for (const [name, path] of ROUTES) {
       const aside = document.querySelector<HTMLElement>("aside.wide\\:sticky");
       if (!aside) return [];
       const cards = Array.from(
-        aside.querySelectorAll<HTMLElement>(".card, .card-dark, .card-compact")
+        aside.querySelectorAll<HTMLElement>(".card, .card-dark, .card-compact"),
       );
       return cards.map((card) => {
         const cs = getComputedStyle(card);
@@ -63,11 +63,11 @@ for (const [name, path] of ROUTES) {
         // gaps between consecutive rows (box-to-box)
         const gaps: number[] = [];
         const lis = Array.from(card.querySelectorAll<HTMLElement>("li")).filter(
-          (el) => el.getClientRects().length
+          (el) => el.getClientRects().length,
         );
         for (let i = 0; i < lis.length - 1; i++) {
           gaps.push(
-            r2(lis[i + 1].getBoundingClientRect().top - lis[i].getBoundingClientRect().bottom)
+            r2(lis[i + 1].getBoundingClientRect().top - lis[i].getBoundingClientRect().bottom),
           );
         }
 
@@ -92,14 +92,14 @@ for (const [name, path] of ROUTES) {
     for (const c of out) {
       console.log(`  "${c.title}"  [${c.cls}]`);
       console.log(
-        `      pad ${c.padding}  radius ${c.radius}  border ${c.border}  rows ${c.rowCount}`
+        `      pad ${c.padding}  radius ${c.radius}  border ${c.border}  rows ${c.rowCount}`,
       );
       if (c.rowCount) {
         console.log(
-          `      rowH ${JSON.stringify(c.rowHeights)}  padY ${JSON.stringify(c.rowPadY)}  minH ${JSON.stringify(c.rowMinH)}`
+          `      rowH ${JSON.stringify(c.rowHeights)}  padY ${JSON.stringify(c.rowPadY)}  minH ${JSON.stringify(c.rowMinH)}`,
         );
         console.log(
-          `      insets ${JSON.stringify(c.rowInsets)}  gaps ${JSON.stringify(c.rowGaps)}  lastRow->border ${c.lastRowToBorder}px`
+          `      insets ${JSON.stringify(c.rowInsets)}  gaps ${JSON.stringify(c.rowGaps)}  lastRow->border ${c.lastRowToBorder}px`,
         );
       }
     }
