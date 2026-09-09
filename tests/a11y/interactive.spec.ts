@@ -31,3 +31,55 @@ test("Home — SideNav nav-menu expand is accessible in its open state", async (
 
   await assertNoViolations(page, "Home — 'News' nav menu expanded (dynamic ARIA state)");
 });
+
+// The mobile/tablet counterpart: SideNav is hidden below wide:, so navigation
+// lives in a drawer (components/layout/MobileNav.tsx). Its open state is
+// runtime-only, so a static scan never sees it.
+test("News — mobile nav drawer is accessible in its open state", async ({ page }, testInfo) => {
+  test.skip(
+    testInfo.project.name.startsWith("desktop"),
+    "The drawer replaces SideNav only below the wide: breakpoint — see components/layout/TopHeader.tsx",
+  );
+
+  await page.goto("/news");
+
+  const trigger = page.getByRole("button", { name: "Menu" });
+  await expect(trigger).toBeVisible();
+
+  await trigger.click();
+
+  const drawer = page.getByRole("dialog");
+  await expect(drawer).toBeVisible();
+  await expect(drawer.getByRole("link", { name: "Football", exact: true })).toBeVisible();
+
+  await assertNoViolations(page, "News — mobile nav drawer open (dynamic ARIA state)");
+
+  // Escape closes it and returns focus to the trigger it came from.
+  await page.keyboard.press("Escape");
+  await expect(drawer).toBeHidden();
+  await expect(trigger).toBeFocused();
+});
+
+// The FAQ accordion (components/ui/accordion.tsx) toggles aria-expanded and
+// mounts its answer only when open, so a static scan sees seven collapsed
+// headers and never reads an answer.
+test("FAQ — accordion is accessible with answers expanded", async ({ page }) => {
+  await page.goto("/faq");
+
+  // Scoped by data-slot: SideNav's nav triggers are also buttons carrying
+  // aria-expanded, and an unscoped role query reaches them first.
+  const triggers = page.locator('[data-slot="accordion-trigger"]');
+  const first = triggers.nth(0);
+  const second = triggers.nth(1);
+  await expect(first).toBeVisible();
+
+  await first.click();
+  await expect(first).toHaveAttribute("aria-expanded", "true");
+
+  // multiple: opening a second answer must not collapse the first.
+  await second.click();
+  await expect(second).toHaveAttribute("aria-expanded", "true");
+  await expect(first).toHaveAttribute("aria-expanded", "true");
+
+  await assertNoViolations(page, "FAQ — accordion expanded (dynamic ARIA state)");
+});

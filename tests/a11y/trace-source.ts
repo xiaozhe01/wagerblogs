@@ -86,7 +86,8 @@ export function traceSource(nodeHtml: string, minOverlap = 3): TraceResult[] {
       const overlap = classSet.filter((c) => targetSet.has(c)).length;
       if (overlap > best) best = overlap;
     }
-    if (best >= minOverlap) results.push({ file: entry.file, matched: best, of: targetClasses.length });
+    if (best >= minOverlap)
+      results.push({ file: entry.file, matched: best, of: targetClasses.length });
   }
   return results.sort((a, b) => b.matched - a.matched).slice(0, 3);
 }

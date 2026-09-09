@@ -5,7 +5,11 @@ import { traceSource } from "./trace-source";
 
 // axe-core has no single "wcag22aa" tag on its own — WCAG levels are
 // cumulative, so a real 2.2 AA sweep needs every tag up through it.
-const WCAG22AA_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+export const WCAG22AA_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+
+// heading-order, landmark-unique, region and friends. Real defects, but not
+// conformance failures — hence their own spec, not folded into the tags above.
+export const BEST_PRACTICE_TAGS = ["best-practice"];
 
 // Single place to exclude a rule, with a reason — never disable a rule inline
 // in a spec. Empty by default; every entry here should be a documented,
@@ -16,8 +20,11 @@ type AxeResults = Awaited<ReturnType<InstanceType<typeof AxeBuilder>["analyze"]>
 type AxeViolation = AxeResults["violations"][number];
 type AxeNode = AxeViolation["nodes"][number];
 
-export async function scanForViolations(page: Page): Promise<AxeViolation[]> {
-  const builder = new AxeBuilder({ page }).withTags(WCAG22AA_TAGS);
+export async function scanForViolations(
+  page: Page,
+  tags: string[] = WCAG22AA_TAGS,
+): Promise<AxeViolation[]> {
+  const builder = new AxeBuilder({ page }).withTags(tags);
   if (DISABLED_RULES.length) builder.disableRules(DISABLED_RULES.map((r) => r.id));
   const results = await builder.analyze();
   return results.violations;
@@ -27,7 +34,10 @@ function formatNode(node: AxeNode, index: number): string {
   const trace = traceSource(node.html);
   const traceLine = trace.length
     ? trace
-        .map((t) => `        possible source: ${t.file}  (${t.matched}/${t.of} classes matched — verify manually)`)
+        .map(
+          (t) =>
+            `        possible source: ${t.file}  (${t.matched}/${t.of} classes matched — verify manually)`,
+        )
         .join("\n")
     : "        possible source: not traced automatically — grep the class names below under components/ or app/";
   const summary = (node.failureSummary ?? "").replace(/\n/g, "\n        ");
@@ -40,14 +50,23 @@ function formatNode(node: AxeNode, index: number): string {
   ].join("\n");
 }
 
-export function formatViolations(violations: AxeViolation[], routeLabel: string): string {
+export function formatViolations(
+  violations: AxeViolation[],
+  routeLabel: string,
+  standard = "WCAG 2.2 AA",
+): string {
   if (violations.length === 0) return "";
-  const header = `\n${violations.length} axe violation(s) on ${routeLabel} (WCAG 2.2 AA):\n`;
+  const header = `\n${violations.length} axe violation(s) on ${routeLabel} (${standard}):\n`;
   const body = violations
     .map((v) => {
-      const wcagTags = v.tags.filter((t) => t.startsWith("wcag")).join(", ");
+      // Best-practice rules carry no wcag* tag, so fall back to the rule's own
+      // tags rather than printing an empty criterion.
+      const wcagTags = v.tags.filter((t) => t.startsWith("wcag"));
+      const criterion = wcagTags.length
+        ? `WCAG: ${wcagTags.join(", ")}`
+        : `tags: ${v.tags.join(", ")}`;
       const nodes = v.nodes.map((n, i) => formatNode(n, i)).join("\n");
-      return `  ● [${v.impact ?? "unknown"}] ${v.id} — ${v.help}\n    ${v.description}\n    WCAG: ${wcagTags}\n    ${v.helpUrl}\n${nodes}`;
+      return `  ● [${v.impact ?? "unknown"}] ${v.id} — ${v.help}\n    ${v.description}\n    ${criterion}\n    ${v.helpUrl}\n${nodes}`;
     })
     .join("\n\n");
   return `${header}\n${body}\n`;
@@ -56,12 +75,16 @@ export function formatViolations(violations: AxeViolation[], routeLabel: string)
 /** Scans the current page state and fails the test with a formatted, per-node
  * violation report (impact, WCAG criterion, offending markup, heuristically
  * traced source file) rather than a bare pass/fail. */
-export async function assertNoViolations(page: Page, routeLabel: string): Promise<void> {
+export async function assertNoViolations(
+  page: Page,
+  routeLabel: string,
+  { tags = WCAG22AA_TAGS, standard = "WCAG 2.2 AA" } = {},
+): Promise<void> {
   // Not "networkidle": Next.js's <Link> prefetching keeps background requests
   // going indefinitely on link-heavy pages (e.g. not-found.tsx), so networkidle
   // can time out even though the page itself is fully rendered. page.goto()'s
   // default "load" wait is already sufficient for a static/SSG page's content.
-  const violations = await scanForViolations(page);
-  const report = formatViolations(violations, routeLabel);
+  const violations = await scanForViolations(page, tags);
+  const report = formatViolations(violations, routeLabel, standard);
   expect(violations.length, report).toBe(0);
 }

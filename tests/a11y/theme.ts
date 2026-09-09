@@ -14,7 +14,8 @@ export async function expectProjectTheme(page: Page, testInfo: TestInfo) {
   // The class can be present while the tokens are not.
   const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   const isDark = bg === "rgb(23, 21, 15)";
-  expect(isDark, `body background ${bg} does not match the ${wantsDark ? "dark" : "light"} page token`).toBe(
-    wantsDark,
-  );
+  expect(
+    isDark,
+    `body background ${bg} does not match the ${wantsDark ? "dark" : "light"} page token`,
+  ).toBe(wantsDark);
 }
