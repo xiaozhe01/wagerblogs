@@ -55,12 +55,7 @@ export default async function NewsSectionPage({
     <PageShell
       activeNavId="news"
       register="editorial"
-      rail={
-        <NewsRail
-          searchPlaceholder={`Search ${section.category} news...`}
-          currentSlug={section.slug}
-        />
-      }
+      rail={<NewsRail currentSlug={section.slug} />}
     >
       {/* Register: Editorial · Tier 1 — reporting, no outbound operator links */}
       <Breadcrumbs

@@ -47,7 +47,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
   const siblings = section.stories.filter((s) => s.slug !== story.slug);
 
   const rail = (
-    <NewsRail searchPlaceholder={`Search ${section.category} news...`} currentSlug={section.slug}>
+    <NewsRail currentSlug={section.slug}>
       {/* Only the other stories in this section — a card listing just the page
           you are on is not a way out of it. */}
       {siblings.length > 0 && (

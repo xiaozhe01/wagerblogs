@@ -8,7 +8,6 @@ import PostRow from "@/components/cards/PostRow";
 import TeaserCardGrid from "@/components/cards/TeaserCardGrid";
 import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
-import SearchInput from "@/components/rail/SearchInput";
 import InfoCard from "@/components/rail/InfoCard";
 import { notFound } from "next/navigation";
 import { categoryArticles, categoryCompareLinks } from "@/lib/mock-data";
@@ -72,7 +71,6 @@ export default async function CategoryPage({
 
   const rail = (
     <>
-      <SearchInput placeholder={`Search within ${category.name}...`} />
       <section className="card" aria-labelledby="rail-all-categories">
         <h2 id="rail-all-categories" className="heading text-sm mb-2.5">
           All categories

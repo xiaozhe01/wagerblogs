@@ -3,7 +3,6 @@ import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import BlogPostCard from "@/components/cards/BlogPostCard";
 import InfoCard from "@/components/rail/InfoCard";
-import SearchInput from "@/components/rail/SearchInput";
 import EditorialSection from "@/components/section/EditorialSection";
 import RecentPublishedSection from "@/components/section/RecentPublishedSection";
 import { blogPosts } from "@/lib/blog";
@@ -27,7 +26,6 @@ export default async function BlogIndexPage({
   const postPage = paginate(blogPosts, query[PAGE_PARAM]);
   const rail = (
     <>
-      <SearchInput placeholder="Search the blog..." />
       <InfoCard
         title="Editorial standards"
         body="How we research, source, and correct what we publish."

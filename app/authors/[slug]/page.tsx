@@ -5,7 +5,6 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PostRow from "@/components/cards/PostRow";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import InfoCard from "@/components/rail/InfoCard";
-import SearchInput from "@/components/rail/SearchInput";
 import EditorialSection from "@/components/section/EditorialSection";
 import { mockAuthor, authorBeats, authorArticles, authorStandards } from "@/lib/mock-data";
 
@@ -31,7 +30,6 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
 
   const rail = (
     <>
-      <SearchInput placeholder={`Search ${mockAuthor.name}'s work...`} />
       <section className="card" aria-labelledby="rail-coverage-areas">
         <h2 id="rail-coverage-areas" className="heading text-sm mb-2.5">
           Coverage areas

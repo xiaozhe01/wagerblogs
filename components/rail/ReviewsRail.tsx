@@ -1,18 +1,10 @@
-import SearchInput from "./SearchInput";
 import AnchorList from "./AnchorList";
 import InfoCard from "./InfoCard";
 import { reviewGroups } from "@/lib/reviews";
 
-export default function ReviewsRail({
-  searchPlaceholder = "Search reviews...",
-  currentSlug,
-}: {
-  searchPlaceholder?: string;
-  currentSlug?: string;
-}) {
+export default function ReviewsRail({ currentSlug }: { currentSlug?: string }) {
   return (
     <>
-      <SearchInput placeholder={searchPlaceholder} />
       <AnchorList
         title="Review sections"
         cardClassName="card"

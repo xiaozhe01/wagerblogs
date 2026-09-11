@@ -7,7 +7,6 @@ import AnchorList from "@/components/rail/AnchorList";
 import ArticleByline from "@/components/section/ArticleByline";
 import BlogPostCard from "@/components/cards/BlogPostCard";
 import EditorialSection from "@/components/section/EditorialSection";
-import SearchInput from "@/components/rail/SearchInput";
 import KeyTakeaways from "@/components/section/KeyTakeaways";
 import { blogToc, blogBodyList, blogTakeaways, blogRelated } from "@/lib/mock-data";
 import { blogAuthor, blogParams, blogPosts, findBlogPost } from "@/lib/blog";
@@ -42,7 +41,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const siblings = blogPosts.filter((entry) => entry.slug !== post.slug);
   const rail = (
     <>
-      <SearchInput />
       <AnchorList title="On this page" cardClassName="card hidden wide:block" items={blogToc} />
       {siblings.length > 0 && (
         <AnchorList

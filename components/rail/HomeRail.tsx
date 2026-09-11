@@ -1,4 +1,3 @@
-import SearchInput from "./SearchInput";
 import TrendingCard from "./TrendingCard";
 import EditorsCard from "./EditorsCard";
 
@@ -7,7 +6,6 @@ import EditorsCard from "./EditorsCard";
 export default function HomeRail({ categoryParam }: { categoryParam?: string | string[] }) {
   return (
     <>
-      <SearchInput />
       <TrendingCard categoryParam={categoryParam} />
       <EditorsCard />
     </>

@@ -47,15 +47,7 @@ export default async function ReviewGroupPage({
   const operatorPage = paginate(group.operators, query[PAGE_PARAM]);
 
   return (
-    <PageShell
-      activeNavId="reviews"
-      rail={
-        <ReviewsRail
-          searchPlaceholder={`Search ${group.noun} reviews...`}
-          currentSlug={group.slug}
-        />
-      }
-    >
+    <PageShell activeNavId="reviews" rail={<ReviewsRail currentSlug={group.slug} />}>
       {/* Register: Comparison · Tier 2/3 — internal links only, no operator CTAs */}
       <Breadcrumbs
         currentPath={group.href}

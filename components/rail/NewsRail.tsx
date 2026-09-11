@@ -1,22 +1,18 @@
 import type { ReactNode } from "react";
-import SearchInput from "./SearchInput";
 import AnchorList from "./AnchorList";
 import InfoCard from "./InfoCard";
 import { newsSections } from "@/lib/news";
 
 export default function NewsRail({
-  searchPlaceholder = "Search news...",
   currentSlug,
   children,
 }: {
-  searchPlaceholder?: string;
   currentSlug?: string;
   /** Extra cards for one route, between the section list and the standing tail. */
   children?: ReactNode;
 }) {
   return (
     <>
-      <SearchInput placeholder={searchPlaceholder} />
       <AnchorList
         title="Sections"
         cardClassName="card"

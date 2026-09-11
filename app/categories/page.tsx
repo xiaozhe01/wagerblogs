@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import InfoCard from "@/components/rail/InfoCard";
-import SearchInput from "@/components/rail/SearchInput";
 import LinkTileGrid from "@/components/cards/LinkTileGrid";
 import EditorialSection from "@/components/section/EditorialSection";
 import RecentPublishedSection from "@/components/section/RecentPublishedSection";
@@ -19,7 +18,6 @@ export const metadata: Metadata = {
 export default function CategoriesIndexPage() {
   const rail = (
     <>
-      <SearchInput placeholder="Search categories..." />
       <InfoCard
         title="Editorial standards"
         body="How we research, source, and correct our category coverage."
