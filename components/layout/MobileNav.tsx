@@ -7,7 +7,7 @@ import { Menu, X, ChevronRight, CircleDot, Ellipsis, User } from "lucide-react";
 import { navGroups, type NavGroup } from "@/lib/nav";
 import { navIcons, subNavIcons } from "./nav-icons";
 import { useFocusGuardAriaHiddenFix } from "@/hooks/use-focus-guard-fix";
-import { NAV_ICON_BUTTON, NAV_ICON_BUTTON_BORDERED, NAV_ROW as ROW } from "./nav-styles";
+import { NAV_ICON_BUTTON, NAV_ROW as ROW } from "./nav-styles";
 
 /** The nav SideNav carries at wide:, for the widths where SideNav is hidden.
  * Groups are flattened rather than put behind dropdowns — a drawer has the room,
@@ -19,17 +19,17 @@ export default function MobileNav({ activeId }: { activeId?: string }) {
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger aria-label="Menu" className={NAV_ICON_BUTTON_BORDERED}>
-        <Menu size={24} className="shrink-0" aria-hidden="true" />
+      <Dialog.Trigger aria-label="Menu" className={NAV_ICON_BUTTON}>
+        <Menu strokeWidth={2.5} className="size-3 shrink-0" aria-hidden="true" />
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-50 bg-bg-inverted/40 transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0" />
+        <Dialog.Backdrop className="fixed inset-0 z-50 touch-none overscroll-contain bg-scrim/70 transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0" />
         <Dialog.Popup className="fixed inset-y-0 right-0 z-50 w-[min(20rem,86vw)] flex flex-col gap-3 overflow-y-auto overscroll-contain bg-bg-card border-l border-border-divider p-4 transition-transform duration-200 data-ending-style:translate-x-full data-starting-style:translate-x-full">
           <div className="flex items-center justify-between gap-3 pb-3 border-b border-border-divider">
             <Dialog.Title className="heading text-2xl leading-heading">Menu</Dialog.Title>
             <Dialog.Close aria-label="Close menu" className={`${NAV_ICON_BUTTON} -mr-2`}>
-              <X size={20} className="shrink-0" aria-hidden="true" />
+              <X strokeWidth={2.5} className="size-3 shrink-0" aria-hidden="true" />
             </Dialog.Close>
           </div>
 

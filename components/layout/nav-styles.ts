@@ -15,13 +15,18 @@ const FOCUS_RING =
 
 /** A drawer row. SideNav's rows get their box from the shadcn primitives, so
  * only the drawer needs the layout half spelled out. */
-export const NAV_ROW = `flex items-center gap-2.5 min-h-11 px-2.5 rounded-md no-underline ${NAV_INTERACTION} ${FOCUS_RING}`;
+export const NAV_ROW = `flex items-center gap-2.5 min-h-11 px-2.5 no-underline ${NAV_INTERACTION} ${FOCUS_RING}`;
+
+/** Colour only, no fill. The 44px touch box is larger than the icon it holds,
+ * so painting it drew a slab that read as its own control — and on a Close
+ * nudged out by -mr-2, that slab sat off the panel's alignment. */
+const NAV_ICON_INTERACTION =
+  "transition-colors duration-200 hover:text-brand active:text-brand " +
+  "focus-visible:text-brand data-open:text-brand data-popup-open:text-brand";
 
 /** 44px square in the header chrome — Search, Menu, and the drawer's Close.
  * text-text-primary is load-bearing: without it the icon inherits shadcn's
  * chroma-0 --foreground off body and reads cool against the warm ink. */
 export const NAV_ICON_BUTTON =
   `w-11 h-11 shrink-0 flex items-center justify-center rounded-md cursor-pointer ` +
-  `text-text-primary ${NAV_INTERACTION} ${FOCUS_RING}`;
-
-export const NAV_ICON_BUTTON_BORDERED = `${NAV_ICON_BUTTON} border border-border-default hover:border-brand active:border-brand`;
+  `text-text-primary ${NAV_ICON_INTERACTION} ${FOCUS_RING}`;
