@@ -83,3 +83,25 @@ test("FAQ — accordion is accessible with answers expanded", async ({ page }) =
 
   await assertNoViolations(page, "FAQ — accordion expanded (dynamic ARIA state)");
 });
+
+// The search dialog's combobox is runtime-only: the listbox, its options and
+// aria-activedescendant exist only once a query has returned.
+test("Search — dialog combobox is accessible with results showing", async ({ page }) => {
+  await page.goto("/news");
+
+  const trigger = page.getByRole("button", { name: /search/i }).first();
+  await expect(trigger).toBeVisible();
+  await trigger.click();
+
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+
+  await dialog.locator('input[name="q"]').fill("review");
+  await expect(page.getByRole("option").first()).toBeVisible();
+
+  await assertNoViolations(page, "Search — dialog open with results (dynamic ARIA state)");
+
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+});

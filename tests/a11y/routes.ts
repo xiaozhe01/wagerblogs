@@ -29,6 +29,8 @@ export const routes: RouteUnderTest[] = [
   { path: "/about", label: "About", register: "editorial" },
   { path: "/contact", label: "Contact", register: "editorial" },
   { path: "/faq", label: "FAQ", register: "editorial" },
+  { path: "/search", label: "Search — empty", register: "editorial" },
+  { path: "/search?q=review", label: "Search — results", register: "editorial" },
   { path: "/news", label: "News index", register: "editorial" },
   { path: "/news/football", label: "News section", register: "editorial" },
   {
