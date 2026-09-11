@@ -15,7 +15,7 @@ function ResultRow({ hit }: { hit: SearchHit }) {
         <span className="text-lg font-semibold leading-snug text-text-primary text-pretty transition-colors duration-200 group-hover:text-brand group-active:text-brand">
           {hit.title}
         </span>
-        <span className="text-sm text-text-muted leading-relaxed text-pretty line-clamp-2">
+        <span className="text-sm font-medium text-text-body leading-relaxed text-pretty line-clamp-2">
           {hit.excerpt}
         </span>
         <span className="text-xs text-text-muted tabular-nums">{hit.href}</span>

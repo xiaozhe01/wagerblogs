@@ -18,7 +18,7 @@ const inputShell =
   "flex h-7 w-full min-w-0 items-center gap-2.5 px-3 rounded-md " +
   "border border-border-input bg-bg-subtle/40 transition-colors focus-within:border-brand";
 const inputControl =
-  "flex-1 min-w-0 bg-transparent border-0 outline-none text-lg text-text-primary " +
+  "flex-1 min-w-0 bg-transparent border-0 outline-none text-lg font-medium text-text-primary " +
   "placeholder:text-text-muted";
 
 export default function SearchBox({
@@ -104,7 +104,7 @@ export default function SearchBox({
               <span className="meta-label-caps shrink-0">{hit.kicker}</span>
               <span className="text-lg font-semibold text-pretty line-clamp-1">{hit.title}</span>
             </span>
-            <span className="text-xs text-text-body leading-relaxed line-clamp-1">
+            <span className="text-xs font-medium text-text-body leading-relaxed line-clamp-1">
               {hit.excerpt}
             </span>
           </Autocomplete.Item>
