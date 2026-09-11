@@ -15,7 +15,7 @@ const FOCUS_RING =
 
 /** A drawer row. SideNav's rows get their box from the shadcn primitives, so
  * only the drawer needs the layout half spelled out. */
-export const NAV_ROW = `flex items-center gap-2.5 min-h-11 px-2.5 no-underline ${NAV_INTERACTION} ${FOCUS_RING}`;
+export const NAV_ROW = `flex items-center gap-2.5 min-h-11 px-2.5 rounded-md no-underline ${NAV_INTERACTION} ${FOCUS_RING}`;
 
 /** Colour only, no fill. The 44px touch box is larger than the icon it holds,
  * so painting it drew a slab that read as its own control — and on a Close
