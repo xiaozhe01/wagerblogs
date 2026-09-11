@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { navIcons, subNavIcons } from "./nav-icons";
 import { NAV_INTERACTION as NAV_ROW } from "./nav-styles";
+import SearchTrigger from "./SearchTrigger";
 
 function NavIconLabel({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
@@ -41,6 +42,8 @@ export default function SideNav({ activeId }: { activeId?: string }) {
           WagerBlogs
         </Link>
       </div>
+
+      <SearchTrigger variant="row" />
 
       <NavigationMenu
         side="right"

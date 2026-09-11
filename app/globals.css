@@ -74,6 +74,10 @@
   --color-bg-accent-active: #000000;
   --color-bg-subtle-active: #e5e1d9;
   --color-bg-inverted: #1c1a14;
+  /* Modal scrim. Deliberately NOT overridden in .dark: bg-inverted flips to
+     near-white there, so backdrops built on it dimmed the dark theme with a
+     white wash. A scrim is dark in both themes or it isn't a scrim. */
+  --color-scrim: #0c0b08;
   --color-border-on-inverted: #36332c;
   /* Chroma above the 0.0125 surface band on purpose: at block scale the warm/
      cool pairing with the navy strip above reads as deliberate rather than as
@@ -286,6 +290,10 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--spacing-container-desktop);
+  /* Holds the scrollbar's width even while a dialog locks the body. Without it
+     the lock removes the scrollbar, the viewport widens, and centred content
+     jumps right on open and back left on close. No-op for overlay scrollbars. */
+  scrollbar-gutter: stable;
 }
 
 /* Route change fade — see app/template.tsx. */

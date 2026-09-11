@@ -1,7 +1,6 @@
-import { Search } from "lucide-react";
 import Link from "next/link";
 import MobileNav from "./MobileNav";
-import { NAV_ICON_BUTTON_BORDERED } from "./nav-styles";
+import SearchTrigger from "./SearchTrigger";
 
 // Mobile/tablet header (below wide:). Replaced by SideNav above it.
 export default function TopHeader({ activeNavId }: { activeNavId?: string }) {
@@ -14,10 +13,7 @@ export default function TopHeader({ activeNavId }: { activeNavId?: string }) {
         WagerBlogs
       </Link>
       <div className="flex items-center gap-2.5">
-        {/* TODO: wire up real search */}
-        <button aria-label="Search" className={NAV_ICON_BUTTON_BORDERED}>
-          <Search size={24} className="shrink-0" aria-hidden="true" />
-        </button>
+        <SearchTrigger />
         <MobileNav activeId={activeNavId} />
       </div>
     </header>
