@@ -8,7 +8,7 @@ import { dirname, resolve } from "node:path";
 
 // argv[2] overrides the target so the guard can be tested against a fixture.
 const CSS =
-  process.argv[2] ?? resolve(dirname(fileURLToPath(import.meta.url)), "..", "app", "globals.css");
+  process.argv[2] ?? resolve(dirname(fileURLToPath(import.meta.url)), "..", "app", "(frontend)", "globals.css");
 
 // Perceptual distance, not equality (one unit apart still reads identical) and
 // not contrast (luminance-only, so it can't tell a grey from a blue).
