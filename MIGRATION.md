@@ -234,6 +234,32 @@ no file under `app/(frontend)/`, `components/` or `lib/` references Lexical or
 rich text, and no frontend page imports `@payload-config`. Body copy today is
 hardcoded JSX plus `lib/mock-data.ts` placeholders.
 
+### Move from Drizzle push to tracked migrations
+
+Payload runs Drizzle's push in dev, which recreates tables and **silently drops
+per-table RLS**. Observed three times in one session: on a schema edit, and on
+`getPayload()` from a standalone script — including `npm run seed`. Grants are
+unaffected, because those are role-level default privileges; only the per-table
+RLS flag is lost.
+
+`npm run rls:check` / `npm run rls:apply` exist as the stopgap, and `seed`
+re-applies automatically. The real fix is `payload migrate:create` +
+`payload migrate`, so schema changes stop recreating tables. That is a larger
+change and deserves its own handoff with proper scope — **not done here**.
+
+### Vertical slug conflict deferred to frontend-wiring handoff
+
+`/categories/online-casinos` and `/reviews/casinos` are both live today, serving
+the same conceptual Vertical. Seed uses `'online-casinos'` as canonical. The
+frontend-wiring handoff decides whether to (a) rename `/reviews/casinos` to
+`/reviews/online-casinos`, (b) add a `reviewsSlug` field to Verticals for the
+divergent case, or (c) something else. **Do not resolve now** — this is a
+routing decision, not a schema decision.
+
+`scripts/seed.ts` encodes the mapping explicitly in `REVIEW_GROUP_BY_VERTICAL`
+because it is not derivable: `chipSlug("Online Casinos")` is `online-casinos`,
+but `lib/reviews.ts` calls the same concept `casinos`.
+
 ### Route naming reconciliation
 
 The frontend uses `blog/[slug]`, `news/[slug]/[story]`,

@@ -26,12 +26,12 @@ changed.
 
 ## Verified against current docs
 
-| Claim | Status |
-| --- | --- |
-| Payload v3 supports our Next version | Docs list `16.2.6+`; we are on **16.2.12** |
-| Node floor | Docs require `20.9.0+`; local is **v24.15.0** |
-| Route-group convention `(payload)` + frontend group | Current, unchanged |
-| `src/` required | **No.** Config goes "at the root of your repository, or next to your /app folder" |
+| Claim                                               | Status                                                                            |
+| --------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Payload v3 supports our Next version                | Docs list `16.2.6+`; we are on **16.2.12**                                        |
+| Node floor                                          | Docs require `20.9.0+`; local is **v24.15.0**                                     |
+| Route-group convention `(payload)` + frontend group | Current, unchanged                                                                |
+| `src/` required                                     | **No.** Config goes "at the root of your repository, or next to your /app folder" |
 
 Source: [Payload — Installation](https://payloadcms.com/docs/getting-started/installation).
 
@@ -65,7 +65,7 @@ Flagged, not fixed — auth is out of scope here.
 With the file at `app/(frontend)/robots.ts` the build registered `/llms.txt`
 and `/sitemap.xml` but **no `/robots.txt` at all**, and the URL returned
 **HTTP 404**. Moving it to `app/robots.ts` registered it immediately.
-`sitemap.ts` and `llms.txt/` work in *either* location and are kept beside it
+`sitemap.ts` and `llms.txt/` work in _either_ location and are kept beside it
 only for consistency.
 
 > **Do not "tidy" these three files into `(frontend)` later.** They look like
@@ -80,7 +80,7 @@ only for consistency.
 lives. But unmatched URLs never enter a route group, so they fell through to
 Next's built-in 404 — plain black-on-white, no editorial register, violating
 the CLAUDE.md rule that error pages stay in editorial register. Putting the
-file at `app/` root instead *renders* our markup but outside
+file at `app/` root instead _renders_ our markup but outside
 `(frontend)/layout.tsx`, so it loses `ThemeProvider` and the `globals.css`
 import — the a11y suite caught this as `expected the light theme / Received
 ""`. The fix is `app/(frontend)/[...notfound]/page.tsx`, a one-line route that
@@ -140,8 +140,46 @@ proven against a stub handler.
 
 `app/(frontend)/[...notfound]/` is a catch-all. Payload's routes (`/admin`,
 `/api`) are explicit segments and should win over it the same way
-`/api/search` does — but confirm unmatched URLs still 404 *and* `/admin`
+`/api/search` does — but confirm unmatched URLs still 404 _and_ `/admin`
 still resolves once Payload is installed.
+
+## ⚠️ RLS drops on getPayload() outside the app
+
+Any `getPayload()` call from a standalone script (including `npm run seed`)
+triggers Drizzle's push mode, which recreates tables and silently drops
+per-table RLS.
+
+Before running any of these, know that RLS will be dropped and needs
+re-applying:
+
+- `npm run seed`
+- Any custom script in `/scripts` that imports payload
+- Any `tsx` / `node` command that imports the Payload config
+
+After running any of these, verify RLS is back:
+
+```
+npm run rls:check    # expect 43/43
+```
+
+If it's not, restore it:
+
+```
+npm run rls:apply
+```
+
+`npm run seed` already calls `rls:apply` for you and fails loudly if it cannot
+— but anything else you write does not.
+
+Fix is to move to tracked migrations. Tracked as a follow-up in MIGRATION.md,
+"Move from Drizzle push to tracked migrations".
+
+## Seeding a fresh environment
+
+`npm run seed` creates the 6 Verticals and 5 NewsSections that existing routes
+need in order to have backing data. Run it once on a fresh clone or new
+database; it skips records that already exist and never updates them. Not part
+of the build or CI — it is a manual bootstrap step.
 
 ## Out of scope here
 
