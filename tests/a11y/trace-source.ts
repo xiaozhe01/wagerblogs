@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 // Best-effort "which component did this come from" tracer for axe violation
 // nodes. There is no real source map from rendered DOM back to JSX in a React
@@ -10,7 +11,9 @@ import path from "node:path";
 // one of those strings. Treat results as a lead to verify, not a citation —
 // low-overlap or tied matches are reported as such, not hidden.
 
-const ROOT = path.resolve(__dirname, "..", "..");
+// fileURLToPath, not __dirname: package.json is "type": "module", which Payload's
+// CLI requires because @payloadcms/richtext-lexical uses top-level await.
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SOURCE_DIRS = ["components", "app"];
 const STRING_LITERAL = /"([^"\n]{3,400})"|`([^`\n]{3,400})`/g;
 
