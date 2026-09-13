@@ -181,6 +181,18 @@ need in order to have backing data. Run it once on a fresh clone or new
 database; it skips records that already exist and never updates them. Not part
 of the build or CI — it is a manual bootstrap step.
 
+## Code style — collections/
+
+13 of the 18 files in `collections/` were authored with single quotes and no
+semicolons, out of step with the other 5 and with the rest of the repo, which
+Prettier formats at `--print-width 100` with double quotes. Running
+`prettier --write` across the folder rewrites those 13 wholesale, which buries
+a one-line change under a few hundred lines of churn.
+
+Not urgent. Normalise when next touching a file, or as part of a dedicated
+repo-wide formatting pass if one ever happens — not as a standalone formatting
+commit, which only adds git-blame noise.
+
 ## Out of scope here
 
 Collection configs, any auth wiring, subdomain/Cloudflare Access setup, and
