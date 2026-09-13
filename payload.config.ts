@@ -1,5 +1,19 @@
 import sharp from "sharp";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import {
+  BlockquoteFeature,
+  BoldFeature,
+  HeadingFeature,
+  HorizontalRuleFeature,
+  InlineCodeFeature,
+  InlineToolbarFeature,
+  ItalicFeature,
+  LinkFeature,
+  OrderedListFeature,
+  ParagraphFeature,
+  UnderlineFeature,
+  UnorderedListFeature,
+  lexicalEditor,
+} from "@payloadcms/richtext-lexical";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
@@ -26,8 +40,40 @@ import { Verticals } from "./collections/Verticals";
 
 // Relative imports, not "@/": Payload's CLI loads this config outside Next's
 // resolver, where the tsconfig alias is not applied.
+// Sitewide rich-text feature set. Passing an array REPLACES Payload's 20
+// defaults rather than extending them, so everything wanted is named here —
+// inheriting "whatever the defaults happen to include" breaks silently on a
+// version bump.
+//
+// Deliberately dropped from the defaults, because the editor must not offer
+// what the eventual renderer cannot produce: Align, Indent, Checklist,
+// Strikethrough, Subscript, Superscript.
+//
+// To enable when the renderer supports them:
+//   UploadFeature       — needs the frontend Image component wiring
+//   BlocksFeature       — needs block-type definitions we do not have yet
+//   RelationshipFeature — needs a decision on how inline refs render
+const editorFeatures = [
+  ParagraphFeature(),
+  // h2-h4 only: h1 belongs to the page title, never to body content.
+  HeadingFeature({ enabledHeadingSizes: ["h2", "h3", "h4"] }),
+  BoldFeature(),
+  ItalicFeature(),
+  UnderlineFeature(),
+  LinkFeature(),
+  UnorderedListFeature(),
+  OrderedListFeature(),
+  BlockquoteFeature(),
+  HorizontalRuleFeature(),
+  InlineCodeFeature(),
+  // UI only, produces no nodes — without it authors lose the selection toolbar.
+  InlineToolbarFeature(),
+];
+
 export default buildConfig({
-  editor: lexicalEditor(),
+  // Authors.bio inherits this set. It intentionally excludes UploadFeature, so
+  // bios cannot embed images — no per-field override needed to achieve that.
+  editor: lexicalEditor({ features: editorFeatures }),
   collections: [
     Articles,
     News,

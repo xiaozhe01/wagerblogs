@@ -1,4 +1,15 @@
 import type { GlobalConfig } from 'payload'
+import {
+  BoldFeature,
+  HeadingFeature,
+  InlineToolbarFeature,
+  ItalicFeature,
+  LinkFeature,
+  OrderedListFeature,
+  ParagraphFeature,
+  UnorderedListFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical'
 
 // Legal documents (privacy policy, terms of service, affiliate
 // disclosure, cookie policy). There are exactly four per
@@ -68,6 +79,20 @@ export const LegalDocuments: GlobalConfig = {
               name: 'body',
               type: 'richText',
               required: true,
+              // Narrower than the sitewide set: legal copy is prose and lists.
+              // No blockquote, horizontal rule or inline code.
+              editor: lexicalEditor({
+                features: [
+                  ParagraphFeature(),
+                  HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
+                  BoldFeature(),
+                  ItalicFeature(),
+                  UnorderedListFeature(),
+                  OrderedListFeature(),
+                  LinkFeature(),
+                  InlineToolbarFeature(),
+                ],
+              }),
             },
           ],
         },
