@@ -4,6 +4,7 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 
+import { AdminUsers } from "./collections/AdminUsers";
 import { Articles } from "./collections/Articles";
 import { Authors } from "./collections/Authors";
 import { BonusOffers } from "./collections/BonusOffers";
@@ -43,6 +44,7 @@ export default buildConfig({
     ForumReplies,
     Notifications,
     Media,
+    AdminUsers,
   ],
   globals: [FAQ, LegalDocuments, MarketStats],
   plugins: [
