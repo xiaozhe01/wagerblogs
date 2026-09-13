@@ -23,6 +23,7 @@ import type { CollectionConfig } from "payload";
 export const ReaderReviews: CollectionConfig = {
   slug: "reader-reviews",
   admin: {
+    group: "Community",
     useAsTitle: "id",
     defaultColumns: ["author", "operator", "rating", "status", "createdAt"],
   },

@@ -11,6 +11,7 @@ import type { CollectionConfig } from 'payload'
 export const ForumThreads: CollectionConfig = {
   slug: 'forum-threads',
   admin: {
+    group: 'Community',
     useAsTitle: 'title',
     defaultColumns: ['title', 'author', 'replyCount', 'lastActivityAt', 'status'],
   },

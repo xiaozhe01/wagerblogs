@@ -12,6 +12,7 @@ import type { CollectionConfig } from 'payload'
 export const Notifications: CollectionConfig = {
   slug: 'notifications',
   admin: {
+    group: 'Community',
     useAsTitle: 'title',
     defaultColumns: ['recipient', 'type', 'title', 'read', 'createdAt'],
   },

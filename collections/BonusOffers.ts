@@ -16,6 +16,7 @@ import type { CollectionConfig } from 'payload'
 export const BonusOffers: CollectionConfig = {
   slug: 'bonus-offers',
   admin: {
+    group: 'Editorial',
     useAsTitle: 'name',
     defaultColumns: ['name', 'operator', 'isPrimaryDomain', 'active'],
   },

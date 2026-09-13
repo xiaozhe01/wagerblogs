@@ -23,6 +23,7 @@ import { seoFields } from "./fields/seo";
 export const Reviews: CollectionConfig = {
   slug: "reviews",
   admin: {
+    group: "Editorial",
     useAsTitle: "name",
     defaultColumns: ["name", "vertical", "score", "status", "lastVerified"],
   },

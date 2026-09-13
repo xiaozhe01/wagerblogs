@@ -14,6 +14,7 @@ import type { CollectionConfig } from 'payload'
 export const Authors: CollectionConfig = {
   slug: 'authors',
   admin: {
+    group: 'Editorial Team',
     useAsTitle: 'name',
     defaultColumns: ['name', 'credentialLine', 'active'],
   },

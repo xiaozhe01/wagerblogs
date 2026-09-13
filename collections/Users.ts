@@ -16,6 +16,7 @@ import type { CollectionConfig } from 'payload'
 export const Users: CollectionConfig = {
   slug: 'site-users',
   admin: {
+    group: 'People',
     useAsTitle: 'username',
     defaultColumns: ['username', 'name', 'email', 'moderationStatus'],
   },

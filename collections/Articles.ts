@@ -21,6 +21,7 @@ import { seoFields } from './fields/seo'
 export const Articles: CollectionConfig = {
   slug: 'articles',
   admin: {
+    group: 'Editorial',
     useAsTitle: 'title',
     defaultColumns: ['title', 'type', 'vertical', 'author', 'status', 'publishedAt'],
   },

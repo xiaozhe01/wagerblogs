@@ -16,6 +16,7 @@ import { seoFields } from './fields/seo'
 export const Verticals: CollectionConfig = {
   slug: 'verticals',
   admin: {
+    group: 'Taxonomy',
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'hasReviews', 'order'],
   },

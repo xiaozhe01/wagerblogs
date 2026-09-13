@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 export const ForumReplies: CollectionConfig = {
   slug: 'forum-replies',
   admin: {
+    group: 'Community',
     useAsTitle: 'id',
     defaultColumns: ['thread', 'author', 'createdAt', 'flagged'],
   },

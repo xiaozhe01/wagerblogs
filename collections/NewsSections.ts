@@ -8,6 +8,7 @@ import { seoFields } from './fields/seo'
 export const NewsSections: CollectionConfig = {
   slug: 'news-sections',
   admin: {
+    group: 'Editorial',
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'order'],
   },

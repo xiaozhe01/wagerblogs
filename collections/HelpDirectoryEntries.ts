@@ -13,6 +13,7 @@ import type { CollectionConfig } from "payload";
 export const HelpDirectoryEntries: CollectionConfig = {
   slug: "help-directory-entries",
   admin: {
+    group: "Reference",
     useAsTitle: "name",
     defaultColumns: ["name", "country", "region", "verified", "isCrisisLine"],
   },
