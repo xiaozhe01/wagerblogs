@@ -12,7 +12,10 @@
     "check:tokens": "node scripts/check-color-invariants.mjs",
     "prebuild": "npm run check:tokens",
     "pretest:a11y": "npm run check:tokens",
-    "test:a11y": "playwright test"
+    "test:a11y": "playwright test",
+    "seed": "tsx --env-file=.env.local scripts/seed.ts",
+    "rls:check": "tsx --env-file=.env.local scripts/rls.ts check",
+    "rls:apply": "tsx --env-file=.env.local scripts/rls.ts apply"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
