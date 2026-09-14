@@ -198,6 +198,54 @@ Recorded so a later handoff does not re-litigate them.
 | **Help directory**       | **A collection of external-organisation records**               | `HelpDirectoryEntry = { name, country, desc, contacts{phone,site,chat}, isCrisisLine? }` grouped by region. Third-party organisations with contact routes — not articles, and not navigation over our own content. `isCrisisLine` carries a verification constraint (`lib/types.ts:153-157`): it is _"a claim about a real organisation, so it is set only alongside a verified entry."_ That needs a verified/unverified field, per CLAUDE.md rule 3. |
 | **NCPG self-assessment** | **Skip — no collection**                                        | `SelfAssessment.tsx` holds answers in `useState` only: no `fetch`, no `POST`, no `localStorage`. Responses never leave the browser. For the real NCPG instrument that is a privacy property to preserve, not a gap to fill.                                                                                                                                                                                                                            |
 
+### Responsible-gambling content stays static — 2026-09-14
+
+`/responsible-gambling` keeps reading `lib/mock-data.ts`. No collection, no
+global, no migration. The same applies to `methodSteps` and `helplineNumber`.
+
+In scope: `rgWarningSigns` (6 records), `rgTools` (4), `rgResources` (3),
+`rgCommitments` (4), `rgToc` (5), `methodSteps` (4), and `helplineNumber` —
+`lib/mock-data.ts:580-645`, `:800` and `:1044`.
+
+**Why.** This is editorial policy the publisher writes about itself, not
+content an editor produces on a cadence. `rgCommitments` states what the site
+will and will not do commercially, `methodSteps` states how a review is
+conducted, and the rest is standing reference copy. It changes when the policy
+changes: rarely, and deliberately. Moving it behind the admin UI would take a
+policy edit out of a reviewed diff and put it in a database row. For content
+that is a promise to readers, git history is the better audit trail — who
+changed the promise, when, and what the reviewer said.
+
+**The help directory is not covered by this, and that is not an
+inconsistency.** `rgResources` is a three-record teaser whose full version,
+`helpDirectory`, does become a collection
+(`collections/HelpDirectoryEntries.ts`) with `verified`, `verifiedAt` and
+`isCrisisLine` fields. Those records are third-party organisations whose phone
+numbers and URLs go stale without anyone here touching the repo. Our own policy
+copy does not. Third-party facts belong in the CMS; our own promises stay in
+git.
+
+**Tradeoff accepted.** CLAUDE.md rule 3 is enforced for `helplineNumber` by
+code review, not by a Payload hook. `HelpDirectoryEntries` gets a `verified`
+field and hook-level validation; `helplineNumber` gets a bracketed string and a
+reviewer who has to notice it:
+
+```ts
+export const helplineNumber = "[helpline number — verify before launch]";
+```
+
+Until someone confirms a real, current number against the operating
+organisation's own website, that bracketed text is what renders — in the footer
+banner on every route (`components/layout/SiteFooter.tsx:18`) and on the page
+itself (`app/(frontend)/responsible-gambling/page.tsx:60`). It is deliberately
+not digit-shaped; the TODO at `lib/mock-data.ts:1039-1043` records why, and
+that a verified number must render as an explicit `tel:` link.
+
+Two related gaps are known and deliberately left open here: nothing enforces
+the `rgToc` href/id contract (5 hand-authored anchors against ids typed in the
+page component), and no lint rule stops the placeholder reaching production.
+Both are follow-ups, not decided by this entry.
+
 ## Outstanding before Step 3
 
 1. The schema draft `.ts` files, including News, FAQ, Categories and Help
