@@ -120,13 +120,23 @@ already exists and partly conflicts.
 
 - **Frontend:** `OperatorCategoryScore = { label: string; score: number }`
   (`lib/types.ts:103`) — `label` is free text, authored per operator.
-  `ComparisonCard` keys `compareRows` **positionally by array index**.
 - **Schema:** scores relate to `RubricCriteria` records.
-- **Recommendation:** **genuine divergence needing a decision.** Index-keyed
-  comparison rows break if criteria become relationships with stable IDs and
-  variable ordering. Whether `ComparisonCard` re-keys by criterion ID is a
-  frontend fix, but whether the rubric is ordered/versioned is a schema
-  question.
+- **Recommendation:** **genuine divergence needing a decision.** Whether the
+  rubric is ordered/versioned is a schema question and stays open.
+
+**Row keying: done (2026-09-14).** `compareRows` rows now carry a stable `id`
+(`lib/mock-data.ts:835`) and `ComparisonCard` keys both renders by it — the
+desktop `<tr>` and the mobile `<dl>` row — instead of by `row.label`, which was
+display copy. Renaming a feature label no longer remounts its row, and the rows
+are ready to key against criterion IDs when the rubric becomes a relationship.
+
+**Still open: operator column keying.** `compareRows[n].values[i]` is still
+matched to `operators[i]` **by array position**, with nothing linking them —
+`row.values.map((v, i) =>` in the desktop table and `r.values[i]` in the mobile
+cards. Reordering `operators` silently attaches every feature value to the wrong
+operator; adding a fourth leaves the `<colgroup>` one `<col>` short and renders
+an empty mobile `<dd>`. Deliberately **not** fixed in the row-keying change —
+it needs an operator identifier on each value, not a row identifier.
 
 ### D3 — Moderation state machine: absent from the frontend
 

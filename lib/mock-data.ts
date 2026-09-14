@@ -833,11 +833,12 @@ export const operators: ComparisonOperator[] = [
 ];
 
 export const compareRows = [
-  { label: "Live Betting", values: ["Yes", "Yes", "Limited"] },
-  { label: "Same-Game Parlay", values: ["Yes", "Yes", "Yes"] },
-  { label: "Casino Cross-Sell", values: ["Yes", "No", "Yes"] },
-  { label: "Payout Speed", values: ["1-3 days", "2-5 days", "1-3 days"] },
+  { id: "live-betting", label: "Live Betting", values: ["Yes", "Yes", "Limited"] },
+  { id: "same-game-parlay", label: "Same-Game Parlay", values: ["Yes", "Yes", "Yes"] },
+  { id: "casino-cross-sell", label: "Casino Cross-Sell", values: ["Yes", "No", "Yes"] },
+  { id: "payout-speed", label: "Payout Speed", values: ["1-3 days", "2-5 days", "1-3 days"] },
   {
+    id: "welcome-bonus",
     label: "Welcome Bonus",
     values: ["Bet $5/$200", "10x $100", "Bet $5/$150"],
   },

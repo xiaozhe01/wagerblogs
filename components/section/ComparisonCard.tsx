@@ -82,7 +82,7 @@ export default function ComparisonCard({ linkTier = "tier2" }: { linkTier?: Link
           </thead>
           <tbody>
             {compareRows.map((row) => (
-              <tr key={row.label} className="border-b border-border-hairline">
+              <tr key={row.id} className="border-b border-border-hairline">
                 <th
                   scope="row"
                   className={`${firstCellPadding} py-4 align-top text-left text-sm font-medium text-text-muted`}
@@ -124,7 +124,7 @@ export default function ComparisonCard({ linkTier = "tier2" }: { linkTier?: Link
             <dl>
               {compareRows.map((r) => (
                 <div
-                  key={r.label}
+                  key={r.id}
                   className="flex justify-between gap-3 text-sm font-bold text-text-muted py-1.5 border-b border-border-hairline-alt"
                 >
                   <dt>{r.label}</dt>
