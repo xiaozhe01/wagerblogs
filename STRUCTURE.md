@@ -159,7 +159,7 @@ re-applying:
 After running any of these, verify RLS is back:
 
 ```
-npm run rls:check    # expect 43/43
+npm run rls:check    # expect 44/44
 ```
 
 If it's not, restore it:
@@ -171,8 +171,16 @@ npm run rls:apply
 `npm run seed` already calls `rls:apply` for you and fails loudly if it cannot
 — but anything else you write does not.
 
-Fix is to move to tracked migrations. Tracked as a follow-up in MIGRATION.md,
-"Move from Drizzle push to tracked migrations".
+Tracked migrations narrow this bug class rather than eliminating it. A
+migration that only alters existing tables leaves RLS alone, but a migration
+that creates a new table still lands with RLS off — that is the Postgres
+default, not something Payload turns off — so `rls:apply` is still needed after
+any migration that adds a table. The improvement is blast radius: the drop
+becomes predictable and per-migration instead of firing on any dev boot or any
+`getPayload()` from a script.
+
+Tracked as a follow-up in MIGRATION.md, "Move from Drizzle push to tracked
+migrations".
 
 ## Seeding a fresh environment
 
