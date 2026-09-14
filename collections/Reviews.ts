@@ -185,11 +185,32 @@ export const Reviews: CollectionConfig = {
       },
     },
     {
-      name: "terms",
+      name: "payoutSpeedText",
       type: "text",
       admin: {
-        description: "Bonus terms line — brief text summarising terms of any current bonus.",
+        description:
+          'Short duration string for the at-a-glance rail, e.g. "1-3 days". Optional — left empty when not yet measured rather than filled with an estimate.',
       },
+    },
+    {
+      name: "bonusTerms",
+      type: "array",
+      admin: {
+        description:
+          'Attribute pairs for the "Bonus detail" definition list on the review page — minimum deposit, wagering requirement, expiry, eligible states. Distinct from the bonus-offers collection, which holds the offer records themselves.',
+      },
+      fields: [
+        {
+          name: "label",
+          type: "text",
+          required: true,
+        },
+        {
+          name: "value",
+          type: "text",
+          required: true,
+        },
+      ],
     },
     {
       name: "isPrimaryDomain",

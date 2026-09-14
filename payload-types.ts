@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | "Pacific/Midway"
-  | "Pacific/Niue"
-  | "Pacific/Honolulu"
-  | "Pacific/Rarotonga"
-  | "America/Anchorage"
-  | "Pacific/Gambier"
-  | "America/Los_Angeles"
-  | "America/Tijuana"
-  | "America/Denver"
-  | "America/Phoenix"
-  | "America/Chicago"
-  | "America/Guatemala"
-  | "America/New_York"
-  | "America/Bogota"
-  | "America/Caracas"
-  | "America/Santiago"
-  | "America/Buenos_Aires"
-  | "America/Sao_Paulo"
-  | "Atlantic/South_Georgia"
-  | "Atlantic/Azores"
-  | "Atlantic/Cape_Verde"
-  | "Europe/London"
-  | "Europe/Berlin"
-  | "Africa/Lagos"
-  | "Europe/Athens"
-  | "Africa/Cairo"
-  | "Europe/Moscow"
-  | "Asia/Riyadh"
-  | "Asia/Dubai"
-  | "Asia/Baku"
-  | "Asia/Karachi"
-  | "Asia/Tashkent"
-  | "Asia/Calcutta"
-  | "Asia/Dhaka"
-  | "Asia/Almaty"
-  | "Asia/Jakarta"
-  | "Asia/Bangkok"
-  | "Asia/Shanghai"
-  | "Asia/Singapore"
-  | "Asia/Tokyo"
-  | "Asia/Seoul"
-  | "Australia/Brisbane"
-  | "Australia/Sydney"
-  | "Pacific/Guam"
-  | "Pacific/Noumea"
-  | "Pacific/Auckland"
-  | "Pacific/Fiji";
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
   auth: {
@@ -69,48 +69,47 @@ export interface Config {
   collections: {
     articles: Article;
     news: News;
-    "news-sections": NewsSection;
+    'news-sections': NewsSection;
     reviews: Review;
     verticals: Vertical;
-    "bonus-offers": BonusOffer;
-    "help-directory-entries": HelpDirectoryEntry;
+    'bonus-offers': BonusOffer;
+    'help-directory-entries': HelpDirectoryEntry;
     authors: Author;
-    "site-users": SiteUser;
+    'site-users': SiteUser;
     comments: Comment;
-    "reader-reviews": ReaderReview;
-    "forum-threads": ForumThread;
-    "forum-replies": ForumReply;
+    'reader-reviews': ReaderReview;
+    'forum-threads': ForumThread;
+    'forum-replies': ForumReply;
     notifications: Notification;
     media: Media;
     users: User;
-    "payload-kv": PayloadKv;
-    "payload-locked-documents": PayloadLockedDocument;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    'payload-kv': PayloadKv;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     news: NewsSelect<false> | NewsSelect<true>;
-    "news-sections": NewsSectionsSelect<false> | NewsSectionsSelect<true>;
+    'news-sections': NewsSectionsSelect<false> | NewsSectionsSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     verticals: VerticalsSelect<false> | VerticalsSelect<true>;
-    "bonus-offers": BonusOffersSelect<false> | BonusOffersSelect<true>;
-    "help-directory-entries": HelpDirectoryEntriesSelect<false> | HelpDirectoryEntriesSelect<true>;
+    'bonus-offers': BonusOffersSelect<false> | BonusOffersSelect<true>;
+    'help-directory-entries': HelpDirectoryEntriesSelect<false> | HelpDirectoryEntriesSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
-    "site-users": SiteUsersSelect<false> | SiteUsersSelect<true>;
+    'site-users': SiteUsersSelect<false> | SiteUsersSelect<true>;
     comments: CommentsSelect<false> | CommentsSelect<true>;
-    "reader-reviews": ReaderReviewsSelect<false> | ReaderReviewsSelect<true>;
-    "forum-threads": ForumThreadsSelect<false> | ForumThreadsSelect<true>;
-    "forum-replies": ForumRepliesSelect<false> | ForumRepliesSelect<true>;
+    'reader-reviews': ReaderReviewsSelect<false> | ReaderReviewsSelect<true>;
+    'forum-threads': ForumThreadsSelect<false> | ForumThreadsSelect<true>;
+    'forum-replies': ForumRepliesSelect<false> | ForumRepliesSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
-    "payload-locked-documents":
-      PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    "payload-preferences": PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    "payload-migrations": PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
@@ -118,13 +117,13 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     faq: Faq;
-    "legal-documents": LegalDocument;
-    "market-stats": MarketStat;
+    'legal-documents': LegalDocument;
+    'market-stats': MarketStat;
   };
   globalsSelect: {
     faq: FaqSelect<false> | FaqSelect<true>;
-    "legal-documents": LegalDocumentsSelect<false> | LegalDocumentsSelect<true>;
-    "market-stats": MarketStatsSelect<false> | MarketStatsSelect<true>;
+    'legal-documents': LegalDocumentsSelect<false> | LegalDocumentsSelect<true>;
+    'market-stats': MarketStatsSelect<false> | MarketStatsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -165,13 +164,13 @@ export interface Article {
   /**
    * Structural article-type taxonomy. Matches the FilterChips on /categories/[slug] pages. Fixed enum — not records, per the deliberate design note in site-data.ts:67.
    */
-  type: "guide" | "analysis" | "research" | "blog";
+  type: 'guide' | 'analysis' | 'research' | 'blog';
   /**
    * The domain this article is about. Independent from type — an article has both a type (Guide) and a vertical (Sportsbooks).
    */
   vertical: number | Vertical;
   author: number | Author;
-  status: "draft" | "published";
+  status: 'draft' | 'published';
   /**
    * Real Date. Frontend formats for display. Only set when status transitions to published — enforce with a beforeChange hook so publishedAt cannot be manually set to a future or fake date.
    */
@@ -192,8 +191,8 @@ export interface Article {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -352,8 +351,8 @@ export interface Author {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -412,9 +411,9 @@ export interface News {
   /**
    * News beat taxonomy — separate from Verticals. "Esports" here is a news beat; "Esports Betting" is a vertical. Similar names, deliberately different meanings.
    */
-  beat: "regulation" | "markets" | "business" | "product" | "esports" | "sports";
+  beat: 'regulation' | 'markets' | 'business' | 'product' | 'esports' | 'sports';
   author: number | Author;
-  status: "draft" | "published";
+  status: 'draft' | 'published';
   /**
    * Real Date. sectionSummary() in news.ts derives "N stories · latest <date>" from array order — publishedAt as a real date makes that a query, not a positional guess.
    */
@@ -431,8 +430,8 @@ export interface News {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -530,7 +529,7 @@ export interface Review {
   /**
    * Flip to "Needs re-verification" once the retest window passes. lastVerified's bracketed placeholder in the current frontend is a symptom of this field being absent.
    */
-  status: "draft" | "published" | "needs-reverification";
+  status: 'draft' | 'published' | 'needs-reverification';
   /**
    * Overall score. See categoryScores below for the breakdown that makes this up.
    */
@@ -577,9 +576,19 @@ export interface Review {
    */
   lastVerified: string;
   /**
-   * Bonus terms line — brief text summarising terms of any current bonus.
+   * Short duration string for the at-a-glance rail, e.g. "1-3 days". Optional — left empty when not yet measured rather than filled with an estimate.
    */
-  terms?: string | null;
+  payoutSpeedText?: string | null;
+  /**
+   * Attribute pairs for the "Bonus detail" definition list on the review page — minimum deposit, wagering requirement, expiry, eligible states. Distinct from the bonus-offers collection, which holds the offer records themselves.
+   */
+  bonusTerms?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * When true, this review renders a PrimaryDomainLink instead of an operator link. Enforcement that only one review per rendered list has this true is at the query/render layer, not the schema — flag for the frontend audit.
    */
@@ -593,7 +602,7 @@ export interface Review {
     /**
      * Only editable on primary domain links. Operator links never have this field — the asymmetry is structural. Dofollow should be a deliberate editorial decision, never a default.
      */
-    relAttribute: "nofollow" | "sponsored" | "dofollow";
+    relAttribute: 'nofollow' | 'sponsored' | 'dofollow';
   };
   /**
    * The outbound link to the operator being reviewed. Never has a relAttribute field — rel is forced to "nofollow sponsored" at the render layer. Making this a structural absence rather than a default preserves the safety property from lib/types.ts.
@@ -610,8 +619,8 @@ export interface Review {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -673,7 +682,7 @@ export interface BonusOffer {
   primaryDomainLink?: {
     anchorText: string;
     url: string;
-    relAttribute: "nofollow" | "sponsored" | "dofollow";
+    relAttribute: 'nofollow' | 'sponsored' | 'dofollow';
   };
   /**
    * No relAttribute — forced to nofollow sponsored at render. Structural safety, same as Reviews.
@@ -711,13 +720,7 @@ export interface HelpDirectoryEntry {
   /**
    * Region grouping for the directory listing. Kept as enum rather than a separate Regions collection — regions rarely change and don't carry their own content.
    */
-  region:
-    | "north-america"
-    | "uk-ireland"
-    | "europe"
-    | "asia-pacific"
-    | "latin-america"
-    | "middle-east-africa";
+  region: 'north-america' | 'uk-ireland' | 'europe' | 'asia-pacific' | 'latin-america' | 'middle-east-africa';
   description: string;
   /**
    * Contact routes. At least one must be present — enforced at hook level.
@@ -760,7 +763,7 @@ export interface SiteUser {
   /**
    * Per-user commenting reputation. Trusted bypasses the moderation queue after enough clean history. Banned blocks new submissions.
    */
-  moderationStatus: "normal" | "trusted" | "flagged" | "banned";
+  moderationStatus: 'normal' | 'trusted' | 'flagged' | 'banned';
   /**
    * Auto-maintained by hooks on Comments and ReaderReviews.
    */
@@ -784,7 +787,7 @@ export interface SiteUser {
 export interface Comment {
   id: number;
   author: number | SiteUser;
-  targetType: "reviews" | "articles" | "news";
+  targetType: 'reviews' | 'articles' | 'news';
   /**
    * ID of the target content. Stored as text + targetType (polymorphic) rather than a union relationship — cleaner than a Payload union field for this shape.
    */
@@ -800,7 +803,7 @@ export interface Comment {
   /**
    * beforeChange hook forces pending on create. Spam is a terminal silent state — no notification sent.
    */
-  status: "pending" | "approved" | "rejected" | "edited" | "spam";
+  status: 'pending' | 'approved' | 'rejected' | 'edited' | 'spam';
   /**
    * When a moderator approves-with-edits, the edited version goes here. Public render uses editedBody when present, falls back to body. Original body preserved for audit.
    */
@@ -809,15 +812,7 @@ export interface Comment {
     moderatedBy?: (number | null) | SiteUser;
     moderatedAt?: string | null;
     rejectionReason?:
-      | (
-          | "off-topic"
-          | "promotional"
-          | "harassment"
-          | "duplicate"
-          | "suspected-spam"
-          | "responsible-gambling"
-          | "other"
-        )
+      | ('off-topic' | 'promotional' | 'harassment' | 'duplicate' | 'suspected-spam' | 'responsible-gambling' | 'other')
       | null;
     additionalContext?: string | null;
     /**
@@ -854,13 +849,11 @@ export interface ReaderReview {
   /**
    * Forced to pending on create by a beforeChange hook. Only approved reader-reviews contribute to AggregateRating.
    */
-  status: "pending" | "approved" | "rejected" | "spam";
+  status: 'pending' | 'approved' | 'rejected' | 'spam';
   moderation?: {
     moderatedBy?: (number | null) | SiteUser;
     moderatedAt?: string | null;
-    rejectionReason?:
-      | ("off-topic" | "not-customer" | "promotional" | "harassment" | "suspected-spam" | "other")
-      | null;
+    rejectionReason?: ('off-topic' | 'not-customer' | 'promotional' | 'harassment' | 'suspected-spam' | 'other') | null;
     additionalContext?: string | null;
   };
   updatedAt: string;
@@ -883,7 +876,7 @@ export interface ForumThread {
    * Optional — link a thread to the review it discusses. Lets review pages surface real reader pushback as a trust signal.
    */
   relatedReview?: (number | null) | Review;
-  status: "pending" | "open" | "locked" | "flagged" | "spam";
+  status: 'pending' | 'open' | 'locked' | 'flagged' | 'spam';
   /**
    * Auto-maintained by an afterChange hook on ForumReplies.
    */
@@ -917,12 +910,12 @@ export interface Notification {
   id: number;
   recipient: number | SiteUser;
   type:
-    | "comment-approved"
-    | "comment-edited"
-    | "comment-rejected"
-    | "reader-review-approved"
-    | "reader-review-rejected"
-    | "comment-reply";
+    | 'comment-approved'
+    | 'comment-edited'
+    | 'comment-rejected'
+    | 'reader-review-approved'
+    | 'reader-review-rejected'
+    | 'comment-reply';
   title: string;
   body: string;
   relatedComment?: (number | null) | Comment;
@@ -958,7 +951,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: "users";
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -985,72 +978,72 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: "articles";
+        relationTo: 'articles';
         value: number | Article;
       } | null)
     | ({
-        relationTo: "news";
+        relationTo: 'news';
         value: number | News;
       } | null)
     | ({
-        relationTo: "news-sections";
+        relationTo: 'news-sections';
         value: number | NewsSection;
       } | null)
     | ({
-        relationTo: "reviews";
+        relationTo: 'reviews';
         value: number | Review;
       } | null)
     | ({
-        relationTo: "verticals";
+        relationTo: 'verticals';
         value: number | Vertical;
       } | null)
     | ({
-        relationTo: "bonus-offers";
+        relationTo: 'bonus-offers';
         value: number | BonusOffer;
       } | null)
     | ({
-        relationTo: "help-directory-entries";
+        relationTo: 'help-directory-entries';
         value: number | HelpDirectoryEntry;
       } | null)
     | ({
-        relationTo: "authors";
+        relationTo: 'authors';
         value: number | Author;
       } | null)
     | ({
-        relationTo: "site-users";
+        relationTo: 'site-users';
         value: number | SiteUser;
       } | null)
     | ({
-        relationTo: "comments";
+        relationTo: 'comments';
         value: number | Comment;
       } | null)
     | ({
-        relationTo: "reader-reviews";
+        relationTo: 'reader-reviews';
         value: number | ReaderReview;
       } | null)
     | ({
-        relationTo: "forum-threads";
+        relationTo: 'forum-threads';
         value: number | ForumThread;
       } | null)
     | ({
-        relationTo: "forum-replies";
+        relationTo: 'forum-replies';
         value: number | ForumReply;
       } | null)
     | ({
-        relationTo: "notifications";
+        relationTo: 'notifications';
         value: number | Notification;
       } | null)
     | ({
-        relationTo: "media";
+        relationTo: 'media';
         value: number | Media;
       } | null)
     | ({
-        relationTo: "users";
+        relationTo: 'users';
         value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   updatedAt: string;
@@ -1063,7 +1056,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   key?: string | null;
@@ -1222,7 +1215,14 @@ export interface ReviewsSelect<T extends boolean = true> {
         id?: T;
       };
   lastVerified?: T;
-  terms?: T;
+  payoutSpeedText?: T;
+  bonusTerms?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
   isPrimaryDomain?: T;
   primaryDomainLink?:
     | T
@@ -1574,7 +1574,7 @@ export interface Faq {
     /**
      * Only published entries appear in FAQPage JSON-LD.
      */
-    status: "draft" | "published";
+    status: 'draft' | 'published';
     /**
      * Optional link to the full source content that this entry summarises. Prevents answer-vs-source drift by making the source explicit.
      */
@@ -1597,7 +1597,7 @@ export interface LegalDocument {
    * The four legal documents.
    */
   documents: {
-    slug: "privacy-policy" | "terms-of-service" | "affiliate-disclosure" | "cookie-policy";
+    slug: 'privacy-policy' | 'terms-of-service' | 'affiliate-disclosure' | 'cookie-policy';
     title: string;
     intro: string;
     /**
@@ -1614,8 +1614,8 @@ export interface LegalDocument {
             version: number;
             [k: string]: unknown;
           }[];
-          direction: ("ltr" | "rtl") | null;
-          format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+          direction: ('ltr' | 'rtl') | null;
+          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
           indent: number;
           version: number;
         };
@@ -1785,7 +1785,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: "full";
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1795,6 +1795,7 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }
