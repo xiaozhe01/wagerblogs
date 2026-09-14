@@ -9,7 +9,7 @@ export const footerCols = [
     heading: "Company",
     links: [
       { label: "About Us", href: "/about" },
-      { label: "How We Review", href: "/about" },
+      { label: "How We Review", href: "/about#how-we-review" },
       { label: "FAQ", href: "/faq" },
       { label: "Contact", href: "/contact" },
     ],
@@ -45,7 +45,7 @@ export const legalLinks = [
   { label: "Privacy Policy", href: "/legal/privacy-policy" },
   { label: "Cookie Policy", href: "/legal/cookie-policy" },
   { label: "Affiliate Disclosure", href: "/legal/affiliate-disclosure" },
-  { label: "Sitemap", href: "/legal/terms-of-service" },
+  { label: "Sitemap", href: "/sitemap.xml" },
 ];
 
 export const legalParagraphs = [
