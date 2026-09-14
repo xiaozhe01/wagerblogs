@@ -182,6 +182,53 @@ becomes predictable and per-migration instead of firing on any dev boot or any
 Tracked as a follow-up in MIGRATION.md, "Move from Drizzle push to tracked
 migrations".
 
+## Schema changes — tracked migrations
+
+Drizzle push is off (`push: false` in `payload.config.ts`). Schema changes are
+tracked files in `migrations/`, committed like any other source.
+
+To change the schema:
+
+```
+1. edit the collection config
+2. npm run migrate:create -- descriptive-name
+3. read the generated .ts before running it
+4. npm run migrate
+5. npm run rls:apply        # only if the migration created a table
+```
+
+Step 3 is not optional. `migrate:create` diffs your config against the newest
+`.json` snapshot in `migrations/`, never against the live database, so a
+generated migration can describe changes you did not intend.
+
+`npm run migrate:status` shows what is pending. It also runs on `predev` and
+`prebuild` for awareness only — neither applies anything, and a pending
+migration does not block either command.
+
+**Never run these without knowing exactly what they do.** They are deliberately
+not npm scripts, so running one means typing it in full:
+
+```
+npx payload migrate:fresh     # drops every table, then re-runs all migrations
+npx payload migrate:reset     # rolls back every migration
+npx payload migrate:refresh   # rolls back every migration, then re-runs them
+```
+
+`npx payload migrate:down` rolls back only the last batch and is wired up as
+`npm run migrate:down`.
+
+### The baseline migration
+
+`migrations/20260914_055459_initial_schema.ts` describes the 44 tables that
+already existed when push was retired. It was **never executed** — its
+`CREATE TABLE` statements would have failed against the live database. Instead
+its row was written into `payload_migrations` directly, and push mode's
+`batch: -1` `dev` sentinel row was deleted.
+
+This matters for a fresh database: running `npm run migrate` there **will**
+execute the baseline and build all 44 tables from scratch, which is correct.
+It only had to be skipped on the database that push had already built.
+
 ## Seeding a fresh environment
 
 `npm run seed` creates the 6 Verticals and 5 NewsSections that existing routes
