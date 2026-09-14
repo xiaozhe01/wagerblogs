@@ -290,7 +290,12 @@ client-side by `TYPE_PARAM`. Nothing links an article to a category record.
 **Relationships** → **Source content** *(explicit intent)*: the `link` field's
 comment states every entry *"summarises a section that already exists somewhere
 else, and links back to it rather than becoming a second source of truth."*
-Some answers are drawn from `methodSteps` and `authorStandards`.
+Some answers restate `methodSteps` and `authorStandards`, but by hand, not by
+reference: `lib/faq.ts` has no imports at all. `siteFaqs[0]` (`lib/faq.ts:14-18`)
+retells all four `methodSteps` entries in prose — two verbatim, two reworded —
+and hardcodes the literal *"four steps"*; two further answers (`lib/faq.ts:34`,
+`:38`) copy `authorStandards` bodies. Source and answer can drift apart with
+nothing to catch it, which is what the file's own TODO names below.
 
 **Lifecycle** `faqPageJsonLd` (`lib/schema.tsx:96`) emits **only entries with
 real answers** — bracketed placeholders are excluded from structured data. That
@@ -423,7 +428,7 @@ Reported as evidence, not proposed as types.
 | `bonusOffers` | `BonusOffer` (`lib/types.ts:30`) — discriminated union on `isPrimaryDomain`; `name`, `headline`, `code`, `benefits?`, plus `primaryDomainLink` **or** `operatorLink` | `components/section/FeaturedBonusesCard.tsx`, `components/cards/BonusOfferCard.tsx` |
 | `marketStats` | `{ value, label, source, period }` — TODO: *"each figure needs a real source + period, or it is dropped from the strip entirely (never shown uncited)"* | `components/section/MarketCard.tsx` |
 | `toolboxItems` | tool links | `components/section/BettingToolboxSection.tsx` |
-| `methodSteps` | review methodology steps | `components/section/ReviewCard.tsx`, and reused by `lib/faq.ts` |
+| `methodSteps` | review methodology steps | `components/section/ReviewCard.tsx` only — `lib/faq.ts` paraphrases it in prose without importing it, see §8 |
 | `authorStandards`, `authorBeats` | string[] | author page |
 | `rgWarningSigns`, `rgTools`, `rgResources`, `rgCommitments`, `rgToc` | page-section content | `/responsible-gambling` |
 | `recentPosts`, `categoryArticles`, `categoryCompareLinks`, `blogRelated`, `reviewRelated`, `authorArticles` | all `PostTeaser[]` | various feeds |

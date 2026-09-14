@@ -28,7 +28,7 @@ Payload/Supabase exist."_
 | `app/(frontend)/reviews/page.tsx`                | `reviewGroups[]`                        | `lib/reviews.ts`                      | working                                                   |
 | `app/(frontend)/reviews/[group]/page.tsx`        | `group.operators[]`, paginated          | `lib/reviews.ts`                      | working                                                   |
 | `app/(frontend)/reviews/[group]/[slug]/page.tsx` | full `Operator` + `mockPeakWagerReview` | `lib/reviews.ts` + `lib/mock-data.ts` | working; byline and Trustpilot render honest empty states |
-| `components/section/ReviewCard.tsx`              | `methodSteps`                           | `lib/site-data.ts`                    | working                                                   |
+| `components/section/ReviewCard.tsx`              | `methodSteps`                           | `lib/mock-data.ts`                    | working                                                   |
 | `components/section/RankedList.tsx`              | `Operator[]`                            | props                                 | working                                                   |
 | `components/section/ComparisonCard.tsx`          | `ComparisonOperator[]`, `compareRows`   | `lib/mock-data.ts`                    | working                                                   |
 | `components/section/ProsConsSection.tsx`         | `Operator.pros/cons`                    | props                                 | working                                                   |
