@@ -113,6 +113,8 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL || "" },
+    push: false,
+    migrationDir: "migrations",
   }),
   sharp,
 });
