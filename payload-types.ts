@@ -170,9 +170,8 @@ export interface Article {
    */
   vertical: number | Vertical;
   author: number | Author;
-  status: 'draft' | 'published';
   /**
-   * Real Date. Frontend formats for display. Only set when status transitions to published — enforce with a beforeChange hook so publishedAt cannot be manually set to a future or fake date.
+   * Real Date. Frontend formats for display. Only set when the document transitions to published — enforce with a beforeChange hook so publishedAt cannot be manually set to a future or fake date.
    */
   publishedAt?: string | null;
   /**
@@ -413,7 +412,6 @@ export interface News {
    */
   beat: 'regulation' | 'markets' | 'business' | 'product' | 'esports' | 'sports';
   author: number | Author;
-  status: 'draft' | 'published';
   /**
    * Real Date. sectionSummary() in news.ts derives "N stories · latest <date>" from array order — publishedAt as a real date makes that a query, not a positional guess.
    */
@@ -527,15 +525,15 @@ export interface Review {
    */
   author: number | Author;
   /**
-   * Flip to "Needs re-verification" once the retest window passes. lastVerified's bracketed placeholder in the current frontend is a symptom of this field being absent.
+   * Re-test cadence flag, orthogonal to the publish lifecycle. Set once the retest window passes; clear when lastVerified is updated.
    */
-  status: 'draft' | 'published' | 'needs-reverification';
+  needsReverification: boolean;
   /**
    * Overall score. See categoryScores below for the breakdown that makes this up.
    */
   score: number;
   /**
-   * D1: must be checked before publishing. This is the data-layer enforcement of "we test with real money" — the editorial promise becomes a schema constraint. A beforeChange hook (later handoff) should block status: published while this is false. The publish button in the admin UI can also gate on it.
+   * D1: must be checked before publishing. This is the data-layer enforcement of "we test with real money" — the editorial promise becomes a schema constraint. A beforeChange hook (later handoff) should block publishing while this is false. The publish button in the admin UI can also gate on it.
    */
   fundedAccountConfirmed: boolean;
   /**
@@ -1093,7 +1091,6 @@ export interface ArticlesSelect<T extends boolean = true> {
   type?: T;
   vertical?: T;
   author?: T;
-  status?: T;
   publishedAt?: T;
   updatedAt?: T;
   excerpt?: T;
@@ -1127,7 +1124,6 @@ export interface NewsSelect<T extends boolean = true> {
   section?: T;
   beat?: T;
   author?: T;
-  status?: T;
   publishedAt?: T;
   excerpt?: T;
   body?: T;
@@ -1186,7 +1182,7 @@ export interface ReviewsSelect<T extends boolean = true> {
   slug?: T;
   vertical?: T;
   author?: T;
-  status?: T;
+  needsReverification?: T;
   score?: T;
   fundedAccountConfirmed?: T;
   categoryScores?:

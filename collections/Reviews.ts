@@ -25,7 +25,7 @@ export const Reviews: CollectionConfig = {
   admin: {
     group: "Editorial",
     useAsTitle: "name",
-    defaultColumns: ["name", "vertical", "score", "status", "lastVerified"],
+    defaultColumns: ["name", "vertical", "score", "needsReverification", "lastVerified"],
   },
   access: {
     read: () => true,
@@ -70,18 +70,13 @@ export const Reviews: CollectionConfig = {
       },
     },
     {
-      name: "status",
-      type: "select",
+      name: "needsReverification",
+      type: "checkbox",
       required: true,
-      defaultValue: "draft",
-      options: [
-        { label: "Draft", value: "draft" },
-        { label: "Published", value: "published" },
-        { label: "Needs re-verification", value: "needs-reverification" },
-      ],
+      defaultValue: false,
       admin: {
         description:
-          'Flip to "Needs re-verification" once the retest window passes. lastVerified\'s bracketed placeholder in the current frontend is a symptom of this field being absent.',
+          "Re-test cadence flag, orthogonal to the publish lifecycle. Set once the retest window passes; clear when lastVerified is updated.",
       },
     },
     {
@@ -102,7 +97,7 @@ export const Reviews: CollectionConfig = {
       defaultValue: false,
       admin: {
         description:
-          'D1: must be checked before publishing. This is the data-layer enforcement of "we test with real money" — the editorial promise becomes a schema constraint. A beforeChange hook (later handoff) should block status: published while this is false. The publish button in the admin UI can also gate on it.',
+          'D1: must be checked before publishing. This is the data-layer enforcement of "we test with real money" — the editorial promise becomes a schema constraint. A beforeChange hook (later handoff) should block publishing while this is false. The publish button in the admin UI can also gate on it.',
       },
     },
     {

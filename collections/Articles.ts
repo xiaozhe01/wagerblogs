@@ -23,7 +23,7 @@ export const Articles: CollectionConfig = {
   admin: {
     group: 'Editorial',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'type', 'vertical', 'author', 'status', 'publishedAt'],
+    defaultColumns: ['title', 'type', 'vertical', 'author', 'publishedAt'],
   },
   access: {
     read: () => true,
@@ -72,21 +72,11 @@ export const Articles: CollectionConfig = {
       required: true,
     },
     {
-      name: 'status',
-      type: 'select',
-      required: true,
-      defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
-    },
-    {
       name: 'publishedAt',
       type: 'date',
       admin: {
         description:
-          'Real Date. Frontend formats for display. Only set when status transitions to published — enforce with a beforeChange hook so publishedAt cannot be manually set to a future or fake date.',
+          'Real Date. Frontend formats for display. Only set when the document transitions to published — enforce with a beforeChange hook so publishedAt cannot be manually set to a future or fake date.',
       },
     },
     {

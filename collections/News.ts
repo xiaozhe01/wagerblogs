@@ -20,7 +20,7 @@ export const News: CollectionConfig = {
   admin: {
     group: 'Editorial',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'section', 'beat', 'author', 'status', 'publishedAt'],
+    defaultColumns: ['title', 'section', 'beat', 'author', 'publishedAt'],
   },
   access: {
     read: () => true,
@@ -72,16 +72,6 @@ export const News: CollectionConfig = {
       type: 'relationship',
       relationTo: 'authors',
       required: true,
-    },
-    {
-      name: 'status',
-      type: 'select',
-      required: true,
-      defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
     },
     {
       name: 'publishedAt',
