@@ -1,4 +1,4 @@
-// Shared by the blog post and the news story — the same numbered block, keyed
+// Shared by the article and the news story — the same numbered block, keyed
 // off whichever record supplies the takeaways.
 export default function KeyTakeaways({ items }: { items: string[] }) {
   return (

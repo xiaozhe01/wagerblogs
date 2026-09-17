@@ -15,16 +15,16 @@ import PageNav from "@/components/controls/PageNav";
 import Prose from "@/components/section/Prose";
 
 export function generateStaticParams() {
-  return newsSections.map((section) => ({ slug: section.slug }));
+  return newsSections.map((section) => ({ section: section.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ section: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const section = findNewsSection(slug);
+  const { section: sectionSlug } = await params;
+  const section = findNewsSection(sectionSlug);
   if (!section) return { title: "News — WagerBlogs" };
   return {
     title: `${section.category} news — WagerBlogs`,
@@ -37,12 +37,12 @@ export default async function NewsSectionPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ section: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { slug } = await params;
+  const { section: sectionSlug } = await params;
   const query = await searchParams;
-  const section = findNewsSection(slug);
+  const section = findNewsSection(sectionSlug);
   // A sport outside the taxonomy is a genuine 404, not an empty section page.
   if (!section) notFound();
   const storyPage = paginate(section.stories, query[PAGE_PARAM]);

@@ -11,9 +11,9 @@ import { headingId } from "@/lib/utils";
 import PageNav from "@/components/controls/PageNav";
 
 export const metadata: Metadata = {
-  title: "Blog — WagerBlogs",
+  title: "Articles — WagerBlogs",
   description: "Guides, strategy, and research on sports betting and casino play.",
-  alternates: { canonical: "/blog" },
+  alternates: { canonical: "/articles" },
 };
 
 // TODO(cms): replace lib/blog.ts with the CMS post list, paginated.
@@ -35,13 +35,13 @@ export default async function BlogIndexPage({
   );
 
   return (
-    <PageShell activeNavId="blog" register="editorial" rail={rail}>
+    <PageShell activeNavId="articles" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — pure authority, no outbound operator links */}
-      <Breadcrumbs items={[{ label: "Blog" }]} />
+      <Breadcrumbs items={[{ label: "Articles" }]} />
 
       <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
-          Blog
+          Articles
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           [Placeholder standfirst — guides, strategy, and research written to stand on their own,
@@ -69,7 +69,7 @@ export default async function BlogIndexPage({
           label="All posts"
           hrefFor={(n) =>
             pageHref({
-              basePath: "/blog",
+              basePath: "/articles",
               page: n,
               anchor: headingId("section", "All posts"),
             })

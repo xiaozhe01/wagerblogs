@@ -19,7 +19,7 @@ export type BlogPost = {
 export const blogPosts: BlogPost[] = [
   {
     slug: "how-odds-boosts-actually-work",
-    href: "/blog/how-odds-boosts-actually-work",
+    href: "/articles/how-odds-boosts-actually-work",
     kicker: "Guides",
     title: "[Placeholder] How odds boosts actually work — and when they're worth it",
     excerpt: "A plain-language breakdown of boosted-odds promos and the math behind them.",
@@ -30,7 +30,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "bankroll-management-101",
-    href: "/blog/bankroll-management-101",
+    href: "/articles/bankroll-management-101",
     kicker: "Guides",
     title: "[Placeholder] Bankroll management 101",
     excerpt: "Simple rules for staking that keep betting sustainable.",
@@ -41,7 +41,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "parlays-vs-straight-bets",
-    href: "/blog/parlays-vs-straight-bets",
+    href: "/articles/parlays-vs-straight-bets",
     kicker: "Analysis",
     title: "[Placeholder] Parlays vs straight bets",
     excerpt: "When each bet type makes sense, and what the math says about the trade.",

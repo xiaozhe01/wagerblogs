@@ -15,11 +15,11 @@ import Prose from "@/components/section/Prose";
 import { newsStoryAuthor, newsStoryTakeaways } from "@/lib/mock-data";
 import { findNewsStory, newsSections, storyRow } from "@/lib/news";
 
-type StoryParams = { slug: string; story: string };
+type StoryParams = { section: string; story: string };
 
 export function generateStaticParams() {
   return newsSections.flatMap((section) =>
-    section.stories.map((story) => ({ slug: section.slug, story: story.slug })),
+    section.stories.map((story) => ({ section: section.slug, story: story.slug })),
   );
 }
 
@@ -28,8 +28,8 @@ export async function generateMetadata({
 }: {
   params: Promise<StoryParams>;
 }): Promise<Metadata> {
-  const { slug, story: storySlug } = await params;
-  const found = findNewsStory(slug, storySlug);
+  const { section: sectionSlug, story: storySlug } = await params;
+  const found = findNewsStory(sectionSlug, storySlug);
   if (!found) return { title: "News — WagerBlogs" };
   return {
     title: `${found.story.title} — WagerBlogs`,
@@ -39,8 +39,8 @@ export async function generateMetadata({
 }
 
 export default async function NewsStoryPage({ params }: { params: Promise<StoryParams> }) {
-  const { slug, story: storySlug } = await params;
-  const found = findNewsStory(slug, storySlug);
+  const { section: sectionSlug, story: storySlug } = await params;
+  const found = findNewsStory(sectionSlug, storySlug);
   // A headline outside the section is a genuine 404, not a soft one.
   if (!found) notFound();
   const { section, story } = found;
@@ -124,7 +124,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
           </h2>
           <p className="text-article text-text-strong-secondary text-pretty">
             [Placeholder body paragraph.] Internal links go to our own explainers — for example{" "}
-            <Link href="/blog" className="link-inline">
+            <Link href="/articles" className="link-inline">
               our betting guides
             </Link>{" "}
             or the{" "}

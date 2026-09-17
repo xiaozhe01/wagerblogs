@@ -64,7 +64,7 @@ export default async function SearchPage({
         items={[
           { href: "/reviews", label: "All reviews", key: "reviews" },
           { href: "/news", label: "Newsroom", key: "news" },
-          { href: "/blog", label: "Guides", key: "blog" },
+          { href: "/articles", label: "Guides", key: "articles" },
           { href: "/faq", label: "FAQ", key: "faq" },
         ]}
       />

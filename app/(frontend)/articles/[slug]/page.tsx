@@ -22,7 +22,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = findBlogPost(slug);
-  if (!post) return { title: "Blog — WagerBlogs" };
+  if (!post) return { title: "Articles — WagerBlogs" };
   return {
     title: `${post.title} — WagerBlogs`,
     description: post.excerpt,
@@ -57,12 +57,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   );
 
   return (
-    <PageShell activeNavId="blog" register="editorial" rail={rail}>
+    <PageShell activeNavId="articles" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — pure authority, no outbound operator links */}
       {/* Page chrome — tracks the column, not the article's measure. */}
       <Breadcrumbs
         currentPath={post.href}
-        items={[{ label: "Blog", href: "/blog" }, { label: post.title }]}
+        items={[{ label: "Articles", href: "/articles" }, { label: post.title }]}
       />
 
       <article aria-labelledby="post-title" className="w-full flex flex-col gap-5">
@@ -123,7 +123,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <p className="text-article text-text-strong-secondary text-pretty">
             [Placeholder body paragraph.] Internal links go to our own explainers and comparison
             surfaces — for example{" "}
-            <Link href="/blog" className="link-inline">
+            <Link href="/articles" className="link-inline">
               our guide to odds formats
             </Link>{" "}
             or the{" "}

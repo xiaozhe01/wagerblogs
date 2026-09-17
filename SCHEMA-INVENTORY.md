@@ -17,8 +17,8 @@ Data comes from four registries — `lib/reviews.ts`, `lib/blog.ts`,
 
 **Rendered by**
 - `app/(frontend)/reviews/page.tsx` — hub, lists groups
-- `app/(frontend)/reviews/[group]/page.tsx` — paginated operator list
-- `app/(frontend)/reviews/[group]/[slug]/page.tsx` — full review
+- `app/(frontend)/reviews/[vertical]/page.tsx` — paginated operator list
+- `app/(frontend)/reviews/[vertical]/[slug]/page.tsx` — full review
 - `components/section/RankedList.tsx`, `RankedListSection.tsx`
 - `components/section/ComparisonCard.tsx`, `ReviewDirectorySection.tsx`
 - `components/section/ProsConsSection.tsx`, `ReviewSection.tsx`
@@ -53,7 +53,7 @@ Data comes from four registries — `lib/reviews.ts`, `lib/blog.ts`,
 - → **ReviewGroup** *(currently structural)*: operators are nested inside a
   hardcoded group array, not referenced by a field on the operator.
 - → **Author/reviewer** *(implied, absent)*. `ReviewerByline` renders an empty
-  state; TODO at `reviews/[group]/[slug]/page.tsx:164` says Review schema needs
+  state; TODO at `reviews/[vertical]/[slug]/page.tsx:164` says Review schema needs
   `author.name`.
 - → **Reader reviews** (§2) and **Comments** (§3) both render on this page.
 
@@ -78,7 +78,7 @@ Data comes from four registries — `lib/reviews.ts`, `lib/blog.ts`,
 
 ## 2. Reader reviews — **distinct from Comments**
 
-**Rendered by** `app/(frontend)/reviews/[group]/[slug]/page.tsx`.
+**Rendered by** `app/(frontend)/reviews/[vertical]/[slug]/page.tsx`.
 Source: `reviewReaderReviews`, `lib/mock-data.ts:298`.
 
 **Fields read**
@@ -109,7 +109,7 @@ conflate.
 ## 3. Comments
 
 **Rendered by** `components/section/Comments.tsx`, mounted only on
-`app/(frontend)/reviews/[group]/[slug]/page.tsx`.
+`app/(frontend)/reviews/[vertical]/[slug]/page.tsx`.
 Source: `sampleComments`, `lib/mock-data.ts:727`.
 
 **Fields read**: `username` (string), `date` (string, bracketed
@@ -133,7 +133,7 @@ then drop the `disabled` flags."*
 ## 4. Blog / Guides
 
 **Rendered by**
-- `app/(frontend)/blog/page.tsx` (paginated), `blog/[slug]/page.tsx`
+- `app/(frontend)/articles/page.tsx` (paginated), `articles/[slug]/page.tsx`
 - `components/cards/BlogPostCard.tsx`, `components/section/BlogSection.tsx`
 - `components/section/RecentPublishedSection.tsx`
 - Source: `lib/blog.ts` (3 records) + `blogToc`, `blogBodyList`,
@@ -144,7 +144,7 @@ then drop the `disabled` flags."*
 | Field | Current treatment |
 | --- | --- |
 | `slug` | string |
-| `href` | string, **stored** (`/blog/<slug>`) rather than derived |
+| `href` | string, **stored** (`/articles/<slug>`) rather than derived |
 | `kicker` | string — values are `"Guides"`, `"Analysis"` |
 | `title` | string, bracketed `[Placeholder] …` |
 | `excerpt` | string, also consumed by the search index |
@@ -170,7 +170,7 @@ strings. No draft/published flag. Ordering is array order.
 **Expected but with no real source** the entire body is shared placeholder —
 `lib/blog.ts:33` TODO: *"the body below is static placeholder; only the record
 fields vary."* Also TOC, takeaways, related posts, and a hero image
-(`blog/[slug]/page.tsx:92` TODO requires a real `<Image>` + figcaption credit).
+(`articles/[slug]/page.tsx:92` TODO requires a real `<Image>` + figcaption credit).
 
 **Related bugs** — MIGRATION.md §D5.
 
@@ -179,8 +179,8 @@ fields vary."* Also TOC, takeaways, related posts, and a hero image
 ## 5. News — its own type, not a Guides variant
 
 **Rendered by**
-- `app/(frontend)/news/page.tsx`, `news/[slug]/page.tsx`,
-  `news/[slug]/[story]/page.tsx`
+- `app/(frontend)/news/page.tsx`, `news/[section]/page.tsx`,
+  `news/[section]/[story]/page.tsx`
 - `components/section/LatestNewsSection.tsx`, `LatestStoriesSection.tsx`
 - `components/rail/NewsRail.tsx`, `components/cards/PostRow.tsx`
 - Source: `lib/news.ts` → `newsFeed` (`lib/mock-data.ts:846`)
@@ -403,7 +403,7 @@ unread count anywhere in the nav or header.
 **Rendered by** nothing in the frontend renders a user record. Three components
 link to `/login` — `components/layout/SideNav.tsx:113`,
 `components/layout/MobileNav.tsx:96`,
-`app/(frontend)/reviews/[group]/[slug]/page.tsx:245` — and **that route does not
+`app/(frontend)/reviews/[vertical]/[slug]/page.tsx:245` — and **that route does not
 exist; it returns HTTP 404**. All three carry `TODO(clerk)` comments.
 
 Payload's own `users` collection exists in Supabase (1 row, the admin account)
@@ -440,7 +440,7 @@ today each instance is hand-authored rather than derived from a source record.
 
 `bonusOffers` is the strongest candidate for a real type of its own: it has a
 declared union type, two dedicated components, and per-operator data
-(`reviews/[group]/[slug]/page.tsx:194` TODO wants the offer to become
+(`reviews/[vertical]/[slug]/page.tsx:194` TODO wants the offer to become
 per-operator). Flagged for the human, not assumed.
 
 ---

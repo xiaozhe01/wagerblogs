@@ -23,15 +23,15 @@ Payload/Supabase exist."_
 
 ### Reviews
 
-| File                                             | Consumes                                | Source                                | State                                                     |
-| ------------------------------------------------ | --------------------------------------- | ------------------------------------- | --------------------------------------------------------- |
-| `app/(frontend)/reviews/page.tsx`                | `reviewGroups[]`                        | `lib/reviews.ts`                      | working                                                   |
-| `app/(frontend)/reviews/[group]/page.tsx`        | `group.operators[]`, paginated          | `lib/reviews.ts`                      | working                                                   |
-| `app/(frontend)/reviews/[group]/[slug]/page.tsx` | full `Operator` + `mockPeakWagerReview` | `lib/reviews.ts` + `lib/mock-data.ts` | working; byline and Trustpilot render honest empty states |
-| `components/section/ReviewCard.tsx`              | `methodSteps`                           | `lib/mock-data.ts`                    | working                                                   |
-| `components/section/RankedList.tsx`              | `Operator[]`                            | props                                 | working                                                   |
-| `components/section/ComparisonCard.tsx`          | `ComparisonOperator[]`, `compareRows`   | `lib/mock-data.ts`                    | working                                                   |
-| `components/section/ProsConsSection.tsx`         | `Operator.pros/cons`                    | props                                 | working                                                   |
+| File                                                | Consumes                                | Source                                | State                                                     |
+| --------------------------------------------------- | --------------------------------------- | ------------------------------------- | --------------------------------------------------------- |
+| `app/(frontend)/reviews/page.tsx`                   | `reviewGroups[]`                        | `lib/reviews.ts`                      | working                                                   |
+| `app/(frontend)/reviews/[vertical]/page.tsx`        | `group.operators[]`, paginated          | `lib/reviews.ts`                      | working                                                   |
+| `app/(frontend)/reviews/[vertical]/[slug]/page.tsx` | full `Operator` + `mockPeakWagerReview` | `lib/reviews.ts` + `lib/mock-data.ts` | working; byline and Trustpilot render honest empty states |
+| `components/section/ReviewCard.tsx`                 | `methodSteps`                           | `lib/mock-data.ts`                    | working                                                   |
+| `components/section/RankedList.tsx`                 | `Operator[]`                            | props                                 | working                                                   |
+| `components/section/ComparisonCard.tsx`             | `ComparisonOperator[]`, `compareRows`   | `lib/mock-data.ts`                    | working                                                   |
+| `components/section/ProsConsSection.tsx`            | `Operator.pros/cons`                    | props                                 | working                                                   |
 
 `Operator` (`lib/types.ts:108`) carries `score`, `categoryScores[]`,
 `advantages[]`, `lastVerified`, `terms`, `isPrimaryDomain`,
@@ -39,16 +39,16 @@ Payload/Supabase exist."_
 
 ### Guides / blog
 
-| File                                  | Consumes                                                                | Source                             | State                                                                                         |
-| ------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------- |
-| `app/(frontend)/blog/page.tsx`        | `blogPosts[]` (3 entries)                                               | `lib/blog.ts`                      | working                                                                                       |
-| `app/(frontend)/blog/[slug]/page.tsx` | post record + `blogToc`, `blogBodyList`, `blogTakeaways`, `blogRelated` | `lib/blog.ts` + `lib/mock-data.ts` | **body copy is static placeholder** — only record fields vary by slug (`lib/blog.ts:33` TODO) |
-| `components/cards/BlogPostCard.tsx`   | title, kicker, excerpt, byline, href                                    | props                              | working                                                                                       |
+| File                                      | Consumes                                                                | Source                             | State                                                                                         |
+| ----------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------- |
+| `app/(frontend)/articles/page.tsx`        | `blogPosts[]` (3 entries)                                               | `lib/blog.ts`                      | working                                                                                       |
+| `app/(frontend)/articles/[slug]/page.tsx` | post record + `blogToc`, `blogBodyList`, `blogTakeaways`, `blogRelated` | `lib/blog.ts` + `lib/mock-data.ts` | **body copy is static placeholder** — only record fields vary by slug (`lib/blog.ts:33` TODO) |
+| `components/cards/BlogPostCard.tsx`       | title, kicker, excerpt, byline, href                                    | props                              | working                                                                                       |
 
 ### News (no collection provided — see gaps)
 
-`app/(frontend)/news/page.tsx`, `news/[slug]/page.tsx`,
-`news/[slug]/[story]/page.tsx` consume `newsSections[]` / `NewsItem` from
+`app/(frontend)/news/page.tsx`, `news/[section]/page.tsx`,
+`news/[section]/[story]/page.tsx` consume `newsSections[]` / `NewsItem` from
 `lib/news.ts`. Story bodies are static placeholder.
 
 ### Authors
@@ -70,7 +70,7 @@ is baked into display text, with the literal token `[author]` never replaced.
 author relationship, no status field, no parent linkage. The composer
 (`textarea` + submit) is hard-`disabled`; copy reads _"held for moderation
 before it appears"_, so moderation exists as a promise in copy with no data
-behind it. Rendered only on `reviews/[group]/[slug]`.
+behind it. Rendered only on `reviews/[vertical]/[slug]`.
 
 ### Forum threads, forum replies, notifications
 
@@ -318,17 +318,35 @@ routing decision, not a schema decision.
 because it is not derivable: `chipSlug("Online Casinos")` is `online-casinos`,
 but `lib/reviews.ts` calls the same concept `casinos`.
 
-### Route naming reconciliation
+### Route naming reconciliation — resolved in FW-1 Phase 3 (2026-09-17)
 
-The frontend uses `blog/[slug]`, `news/[slug]/[story]`,
-`reviews/[group]/[slug]`. The schema uses `articles`, `news`, `reviews` with a
-`verticals` relationship. Route naming reconciliation is a decision for the
-frontend-wiring handoff — either the frontend routes get renamed to match the
-schema, or the data-fetching layer maps between them. **Do not resolve now.**
+The frontend routes were renamed to match the schema rather than mapping
+between them in the data layer:
 
-Related: `reviews/[group]` and the `verticals` collection describe overlapping
-concepts under different names — see SCHEMA-INVENTORY.md on the four taxonomy
-axes, where review groups are a renamed subset of verticals.
+| Was                      | Now                         |
+| ------------------------ | --------------------------- |
+| `blog/[slug]`            | `articles/[slug]`           |
+| `reviews/[group]/[slug]` | `reviews/[vertical]/[slug]` |
+| `news/[slug]/[story]`    | `news/[section]/[story]`    |
+
+`/categories/[slug]` was already schema-consistent and did not move.
+
+**Scope was the URL segment, its route params, and user-facing "Blog" copy.**
+`lib/reviews.ts` keeps `ReviewGroup`, `reviewGroups`, `findReviewGroup` and its
+other symbols unchanged — that file is deleted in Phase 4 when its contents
+become Payload queries, so renaming its domain terms now would be churn that
+gets undone. The resulting incongruity is deliberate and temporary: a route
+param named `vertical` is passed to a lib function named `findReviewGroup`.
+
+`lib/news.ts` needed no change at all — it already called the concept `section`
+(`NewsSection`, `findNewsSection`) and its own comment documented
+`/news/<section>`. The route was the half that was out of step.
+
+No redirects were added from the old URLs. The site is not public, so there is
+no SEO or bookmark history to preserve; if redirects are ever needed they land
+as their own commit with intent. Only `/blog` actually stops resolving —
+`/reviews/sportsbooks` and `/news/football` are unchanged as URLs, because only
+the _name_ of the dynamic segment changed, not its shape.
 
 ### Rich-text body styling is prose defaults, not a visual match
 

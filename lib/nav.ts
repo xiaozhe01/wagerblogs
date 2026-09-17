@@ -93,9 +93,9 @@ export const navGroups: NavGroup[] = [
     ],
   },
   // No subs: posts aren't filterable by kicker yet, so a dropdown here would be
-  // four rows that all land on /blog.
-  // TODO(cms): restore the group once /blog filters on a real taxonomy.
-  { id: "blog", label: "Blog", href: "/blog", subs: [] },
+  // four rows that all land on /articles.
+  // TODO(cms): restore the group once /articles filters on a real taxonomy.
+  { id: "articles", label: "Articles", href: "/articles", subs: [] },
   {
     id: "more",
     label: "More",

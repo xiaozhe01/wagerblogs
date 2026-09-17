@@ -120,7 +120,7 @@ export default async function CategoryPage({
 
       <article aria-labelledby="editors-lead">
         <Link
-          href="/blog/how-odds-boosts-actually-work"
+          href="/articles/how-odds-boosts-actually-work"
           className="flex flex-col md:flex-row gap-3.5 md:gap-4 items-stretch md:items-center no-underline border-t border-b border-border-divider py-4 md:py-5"
         >
           <div

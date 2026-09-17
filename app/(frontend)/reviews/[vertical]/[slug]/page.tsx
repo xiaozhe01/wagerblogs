@@ -23,7 +23,7 @@ import {
 } from "@/lib/mock-data";
 import { findReview, reviewParams } from "@/lib/reviews";
 
-type ReviewParams = { group: string; slug: string };
+type ReviewParams = { vertical: string; slug: string };
 
 // TODO(cms): reviewer comes from the Person record. Shared by the byline below and
 // the Review schema so the two can never drift apart.
@@ -39,8 +39,8 @@ export async function generateMetadata({
 }: {
   params: Promise<ReviewParams>;
 }): Promise<Metadata> {
-  const { group, slug } = await params;
-  const found = findReview(group, slug);
+  const { vertical, slug } = await params;
+  const found = findReview(vertical, slug);
   if (!found) return { title: "Reviews — WagerBlogs" };
   return {
     title: `${found.operator.name} Review — WagerBlogs`,
@@ -50,8 +50,8 @@ export async function generateMetadata({
 }
 
 export default async function OperatorReviewPage({ params }: { params: Promise<ReviewParams> }) {
-  const { group: groupSlug, slug } = await params;
-  const found = findReview(groupSlug, slug);
+  const { vertical: verticalSlug, slug } = await params;
+  const found = findReview(verticalSlug, slug);
   // An operator we haven't reviewed — or one filed under another group — is a
   // genuine 404, not a template on empty data.
   if (!found) notFound();
@@ -76,7 +76,7 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
   return (
     <PageShell activeNavId="reviews" rail={rail}>
       {/* Register: Comparison · Tier 3 — direct reference */}
-      {/* The trail mirrors the route: /reviews/<group>/<slug>. */}
+      {/* The trail mirrors the route: /reviews/<vertical>/<slug>. */}
       <Breadcrumbs
         currentPath={currentPath}
         items={[

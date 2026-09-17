@@ -12,7 +12,7 @@ export const searchScopes = {
   all: "Everything",
   news: "News",
   reviews: "Reviews",
-  blog: "Blog",
+  articles: "Articles",
   categories: "Categories",
   pages: "Pages",
 } as const;
@@ -82,7 +82,7 @@ export function searchDocuments(): SearchDoc[] {
       excerpt: post.excerpt,
       kicker: post.kicker,
       href: post.href,
-      scope: "blog" as const,
+      scope: "articles" as const,
     })),
     ...categories.map((category) => ({
       title: category.name,

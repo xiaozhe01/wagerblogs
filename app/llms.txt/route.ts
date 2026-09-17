@@ -65,7 +65,7 @@ export function GET() {
       ),
     ]),
     section("Guides", [
-      link("/blog", "Blog", "explainers and strategy"),
+      link("/articles", "Articles", "explainers and strategy"),
       ...blogPosts.map((p) => link(p.href, p.title, p.kicker)),
     ]),
     section("Categories", [

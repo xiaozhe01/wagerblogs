@@ -18,7 +18,7 @@ export const footerCols = [
     heading: "Content",
     links: [
       { label: "News", href: "/news" },
-      { label: "Blog", href: "/blog" },
+      { label: "Articles", href: "/articles" },
       { label: "Betting Site Reviews", href: "/reviews" },
     ],
   },

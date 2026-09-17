@@ -4,6 +4,7 @@ import {
   CircleDot,
   Dices,
   Ellipsis,
+  FileText,
   Gamepad2,
   Home,
   Info,
@@ -13,7 +14,6 @@ import {
   Mail,
   Medal,
   Newspaper,
-  PenLine,
   Scale,
   Shield,
   Star,
@@ -31,7 +31,7 @@ export const navIcons: Record<string, LucideIcon> = {
   news: Newspaper,
   reviews: Star,
   categories: LayoutGrid,
-  blog: PenLine,
+  articles: FileText,
   more: Ellipsis,
 };
 

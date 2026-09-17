@@ -54,9 +54,9 @@ export const authorArticles: PostTeaser[] = [
     kicker: "Guide",
     title: "[Placeholder] How moneylines actually work",
     excerpt: "[Placeholder dek — the piece's argument in two lines, readable on its own.]",
-    meta: "Blog · 07/18/2026 · 9 min",
-    metaItems: ["9 min read", "07/18/2026", "Blog"],
-    href: "/blog/how-odds-boosts-actually-work",
+    meta: "Article · 07/18/2026 · 9 min",
+    metaItems: ["9 min read", "07/18/2026", "Article"],
+    href: "/articles/how-odds-boosts-actually-work",
   },
   {
     kicker: "Analysis",
@@ -78,9 +78,9 @@ export const authorArticles: PostTeaser[] = [
     kicker: "Guide",
     title: "[Placeholder] Bankroll management 101",
     excerpt: "[Placeholder dek — the staking basics this guide covers, in two lines.]",
-    meta: "Blog · 07/05/2026 · 7 min",
-    metaItems: ["7 min read", "07/05/2026", "Blog"],
-    href: "/blog/bankroll-management-101",
+    meta: "Article · 07/05/2026 · 7 min",
+    metaItems: ["7 min read", "07/05/2026", "Article"],
+    href: "/articles/bankroll-management-101",
   },
 ];
 
@@ -294,7 +294,7 @@ export const mockPeakWagerReview: Operator = {
 };
 
 // "Other books compared" rail list on the operator review.
-// app/reviews/[group]/[slug]/page.tsx content.
+// app/reviews/[vertical]/[slug]/page.tsx content.
 export const reviewReaderReviews = [
   {
     username: "[@somename]",
@@ -324,8 +324,8 @@ export const reviewRelated: PostTeaser[] = [
   {
     kicker: "Guide",
     title: "[Placeholder] How we score payout speed",
-    meta: "Blog · Tier 1 surface",
-    href: "/blog/parlays-vs-straight-bets",
+    meta: "Article · Tier 1 surface",
+    href: "/articles/parlays-vs-straight-bets",
   },
 ];
 
@@ -337,7 +337,7 @@ export const reviewAtAGlance: AtAGlanceItem[] = [
   { label: "Last verified", value: "[Jun 30, 2026]" },
 ];
 
-// app/reviews/[group]/[slug]/page.tsx "Bonus detail".
+// app/reviews/[vertical]/[slug]/page.tsx "Bonus detail".
 export const reviewBonusTerms = [
   { label: "Minimum deposit", value: "[$10]" },
   { label: "Wagering requirement", value: "[1x]" },
@@ -345,7 +345,7 @@ export const reviewBonusTerms = [
   { label: "Eligible states", value: "[list required]" },
 ];
 
-// app/blog/[slug]/page.tsx (sample blog post) content.
+// app/articles/[slug]/page.tsx (sample article) content.
 // TODO(cms): becomes the post record fetched by slug — title/kicker/dates/author
 // all flow from this one object into metadata, breadcrumbs, H1, and the byline
 // (mirroring how the reviews templates consume mockPeakWagerReview).
@@ -373,8 +373,8 @@ export const blogRelated: PostTeaser[] = [
   {
     kicker: "Guide",
     title: "[Placeholder] Reading odds formats",
-    meta: "Blog · 8 min read",
-    href: "/blog/bankroll-management-101",
+    meta: "Article · 8 min read",
+    href: "/articles/bankroll-management-101",
   },
   {
     kicker: "Comparison",
@@ -397,7 +397,7 @@ export const categoryArticles: PostTeaser[] = [
     title: "[Placeholder] Reading odds before a major event",
     excerpt: "[Placeholder dek — what the guide teaches and who it's for, in two lines.]",
     meta: "07/20/2026 · 8 min · byline required",
-    href: "/blog/how-odds-boosts-actually-work",
+    href: "/articles/how-odds-boosts-actually-work",
     metaItems: ["8 min read", "07/20/2026", "byline required"],
   },
   {
@@ -405,7 +405,7 @@ export const categoryArticles: PostTeaser[] = [
     title: "[Placeholder] Why handicaps price differently",
     excerpt: "[Placeholder dek — the pricing quirk this piece explains, summarised.]",
     meta: "07/18/2026 · 6 min · byline required",
-    href: "/blog/parlays-vs-straight-bets",
+    href: "/articles/parlays-vs-straight-bets",
     metaItems: ["6 min read", "07/18/2026", "byline required"],
   },
   {
@@ -413,7 +413,7 @@ export const categoryArticles: PostTeaser[] = [
     title: "[Placeholder] Which markets hold liquidity out of season",
     excerpt: "[Placeholder dek — the dataset, the period it covers, and the finding.]",
     meta: "07/15/2026 · 12 min · byline required",
-    href: "/blog/bankroll-management-101",
+    href: "/articles/bankroll-management-101",
     metaItems: ["12 min read", "07/15/2026", "byline required"],
   },
   {
@@ -946,7 +946,7 @@ export const newsStoryAuthor = {
   profileHref: `/authors/${mockAuthor.slug}`,
 };
 
-// app/news/[slug]/[story]/page.tsx — one story's takeaways.
+// app/news/[section]/[story]/page.tsx — one story's takeaways.
 // TODO(cms): a per-story field; a story publishes without them if the desk has none.
 export const newsStoryTakeaways = [
   "[Placeholder takeaway — the single fact a reader should leave with.]",
@@ -958,12 +958,12 @@ export const toolboxItems = [
   {
     title: "Betting guides",
     desc: "Bet types, strategy, and state rules explained.",
-    href: "/blog",
+    href: "/articles",
   },
   {
     title: "Market research",
     desc: "Team form, injuries, and matchup trend data.",
-    href: "/blog",
+    href: "/articles",
   },
   {
     title: "State statistics",
@@ -1017,7 +1017,7 @@ export const recentPosts: PostTeaser[] = [
     excerpt: "[Dynamic — the post's own dek, two lines, from the CMS excerpt field.]",
     meta: "[date] · [n] min · byline required",
     metaItems: ["[n] min read", "[date]", "byline required"],
-    href: "/blog/how-odds-boosts-actually-work",
+    href: "/articles/how-odds-boosts-actually-work",
   },
   {
     kicker: "Analysis",
@@ -1025,7 +1025,7 @@ export const recentPosts: PostTeaser[] = [
     excerpt: "[Dynamic — the post's own dek, two lines, from the CMS excerpt field.]",
     meta: "[date] · [n] min · byline required",
     metaItems: ["[n] min read", "[date]", "byline required"],
-    href: "/blog/bankroll-management-101",
+    href: "/articles/bankroll-management-101",
   },
   {
     kicker: "Research",
@@ -1033,7 +1033,7 @@ export const recentPosts: PostTeaser[] = [
     excerpt: "[Dynamic — the post's own dek, two lines, from the CMS excerpt field.]",
     meta: "[date] · [n] min · byline required",
     metaItems: ["[n] min read", "[date]", "byline required"],
-    href: "/blog/parlays-vs-straight-bets",
+    href: "/articles/parlays-vs-straight-bets",
   },
 ];
 

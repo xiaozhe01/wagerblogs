@@ -6,11 +6,11 @@ import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink"
 export default function BlogSection() {
   return (
     <EditorialSection
-      title="From the blog"
+      title="Latest articles"
       register="editorial"
       action={
-        <ArrowLink href="/blog" className={`${sectionCtaClassName} w-fit shrink-0`}>
-          All blogs
+        <ArrowLink href="/articles" className={`${sectionCtaClassName} w-fit shrink-0`}>
+          All articles
         </ArrowLink>
       }
     >
