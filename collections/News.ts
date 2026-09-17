@@ -25,6 +25,11 @@ export const News: CollectionConfig = {
   access: {
     read: () => true,
   },
+  versions: {
+    drafts: {
+      autosave: false,
+    },
+  },
   fields: [
     {
       name: 'title',

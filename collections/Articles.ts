@@ -28,6 +28,11 @@ export const Articles: CollectionConfig = {
   access: {
     read: () => true,
   },
+  versions: {
+    drafts: {
+      autosave: false,
+    },
+  },
   fields: [
     {
       name: 'title',

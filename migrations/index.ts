@@ -1,5 +1,6 @@
 import * as migration_20260914_055459_initial_schema from './20260914_055459_initial_schema';
 import * as migration_20260917_080746_retire_duplicate_status_fields from './20260917_080746_retire_duplicate_status_fields';
+import * as migration_20260917_080929_enable_drafts from './20260917_080929_enable_drafts';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20260917_080746_retire_duplicate_status_fields.up,
     down: migration_20260917_080746_retire_duplicate_status_fields.down,
-    name: '20260917_080746_retire_duplicate_status_fields'
+    name: '20260917_080746_retire_duplicate_status_fields',
+  },
+  {
+    up: migration_20260917_080929_enable_drafts.up,
+    down: migration_20260917_080929_enable_drafts.down,
+    name: '20260917_080929_enable_drafts'
   },
 ];
