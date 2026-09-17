@@ -19,6 +19,7 @@
     "migrate:down": "npx payload migrate:down",
     "pretest:a11y": "npm run check:tokens",
     "test:a11y": "playwright test",
+    "test:unit": "tsx --test \"tests/**/*.test.ts\"",
     "seed": "tsx --env-file=.env.local scripts/seed.ts",
     "rls:check": "tsx --env-file=.env.local scripts/rls.ts check",
     "rls:apply": "tsx --env-file=.env.local scripts/rls.ts apply"
@@ -29,6 +30,7 @@
     "@payloadcms/next": "^3.89.0",
     "@payloadcms/richtext-lexical": "^3.89.0",
     "@payloadcms/storage-s3": "^3.89.0",
+    "@tailwindcss/typography": "^0.5.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "graphql": "^16.14.2",

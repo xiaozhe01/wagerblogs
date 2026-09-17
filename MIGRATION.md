@@ -329,3 +329,25 @@ schema, or the data-fetching layer maps between them. **Do not resolve now.**
 Related: `reviews/[group]` and the `verticals` collection describe overlapping
 concepts under different names — see SCHEMA-INVENTORY.md on the four taxonomy
 axes, where review groups are a renamed subset of verticals.
+
+### Rich-text body styling is prose defaults, not a visual match
+
+Editorial body rendering uses Tailwind Typography prose defaults. Visual match
+to current hand-classed article pages is a Phase 4 design pass, not part of
+Phase 2 scope.
+
+`components/section/Prose.tsx` is not a design contract for this — it is a
+17-line wrapper that renders a single `<p>` and styles nothing below itself.
+Every blockquote, list and heading on the site today is hand-classed at its
+call site, so there is no existing rule set for `<RichText>` to reproduce.
+
+### Rich-text internal links do not resolve yet
+
+`internalDocToHref` (`components/rich-text/converters/link.tsx`) is a stub. A
+Lexical link with `linkType: 'internal'` carries a document reference, and
+turning that into a URL needs the route names Phase 3 settles. Until then the
+stub **throws in development** and returns `/#internal-link-not-resolved` in
+production, rather than Payload's default of logging and rendering `#`.
+
+Phase 4 implements it. Until it does, authors should use custom URLs for
+internal links, not the internal-document picker.
