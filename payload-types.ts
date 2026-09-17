@@ -220,11 +220,11 @@ export interface Article {
   related?: (number | Article)[] | null;
   seo: {
     /**
-     * Written specifically for this page. Do not leave empty and rely on a frontend default — that fallback pattern is exactly what produced the homepage-title bug on review pages.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). Written specifically for this page — do not leave it empty and rely on a frontend default, which is exactly the fallback pattern that produced the homepage-title bug on review pages.
      */
     metaTitle: string;
     /**
-     * A real summary of this specific page, not derived from a byline or excerpt string. Byline-as-description was one of the shipped bugs.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). A real summary of this specific page, not derived from a byline or excerpt string — byline-as-description was one of the shipped bugs.
      */
     metaDescription: string;
     /**
@@ -272,11 +272,11 @@ export interface Vertical {
   order: number;
   seo: {
     /**
-     * Written specifically for this page. Do not leave empty and rely on a frontend default — that fallback pattern is exactly what produced the homepage-title bug on review pages.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). Written specifically for this page — do not leave it empty and rely on a frontend default, which is exactly the fallback pattern that produced the homepage-title bug on review pages.
      */
     metaTitle: string;
     /**
-     * A real summary of this specific page, not derived from a byline or excerpt string. Byline-as-description was one of the shipped bugs.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). A real summary of this specific page, not derived from a byline or excerpt string — byline-as-description was one of the shipped bugs.
      */
     metaDescription: string;
     /**
@@ -459,11 +459,11 @@ export interface News {
     | null;
   seo: {
     /**
-     * Written specifically for this page. Do not leave empty and rely on a frontend default — that fallback pattern is exactly what produced the homepage-title bug on review pages.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). Written specifically for this page — do not leave it empty and rely on a frontend default, which is exactly the fallback pattern that produced the homepage-title bug on review pages.
      */
     metaTitle: string;
     /**
-     * A real summary of this specific page, not derived from a byline or excerpt string. Byline-as-description was one of the shipped bugs.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). A real summary of this specific page, not derived from a byline or excerpt string — byline-as-description was one of the shipped bugs.
      */
     metaDescription: string;
     /**
@@ -491,11 +491,11 @@ export interface NewsSection {
   order: number;
   seo: {
     /**
-     * Written specifically for this page. Do not leave empty and rely on a frontend default — that fallback pattern is exactly what produced the homepage-title bug on review pages.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). Written specifically for this page — do not leave it empty and rely on a frontend default, which is exactly the fallback pattern that produced the homepage-title bug on review pages.
      */
     metaTitle: string;
     /**
-     * A real summary of this specific page, not derived from a byline or excerpt string. Byline-as-description was one of the shipped bugs.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). A real summary of this specific page, not derived from a byline or excerpt string — byline-as-description was one of the shipped bugs.
      */
     metaDescription: string;
     /**
@@ -628,11 +628,11 @@ export interface Review {
   };
   seo: {
     /**
-     * Written specifically for this page. Do not leave empty and rely on a frontend default — that fallback pattern is exactly what produced the homepage-title bug on review pages.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). Written specifically for this page — do not leave it empty and rely on a frontend default, which is exactly the fallback pattern that produced the homepage-title bug on review pages.
      */
     metaTitle: string;
     /**
-     * A real summary of this specific page, not derived from a byline or excerpt string. Byline-as-description was one of the shipped bugs.
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). A real summary of this specific page, not derived from a byline or excerpt string — byline-as-description was one of the shipped bugs.
      */
     metaDescription: string;
     /**

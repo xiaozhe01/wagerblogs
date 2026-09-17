@@ -1,10 +1,14 @@
 import type { Field } from 'payload'
 
 // Reusable SEO group. Attach to any public-facing collection that has its
-// own indexable route. Making metaTitle and metaDescription required at
-// the schema level prevents the "frontend silently falls back to a
-// homepage-level default" failure mode that caused the review-page
-// metadata bug in the earlier audit.
+// own indexable route. metaTitle and metaDescription are required, which
+// prevents the "frontend silently falls back to a homepage-level default"
+// failure mode that caused the review-page metadata bug in the earlier audit.
+//
+// Where that requirement is enforced changed when drafts were enabled: the
+// drafts migration dropped NOT NULL from these columns, so the database no
+// longer rejects an empty value. Payload validates them at publish time
+// instead — a draft saves without them, a publish does not.
 //
 // Canonical is intentionally optional and left blank in almost all cases —
 // the frontend should derive canonical from the record's slug at render.
@@ -22,7 +26,7 @@ export const seoFields: Field = {
       required: true,
       admin: {
         description:
-          'Written specifically for this page. Do not leave empty and rely on a frontend default — that fallback pattern is exactly what produced the homepage-title bug on review pages.',
+          'Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). Written specifically for this page — do not leave it empty and rely on a frontend default, which is exactly the fallback pattern that produced the homepage-title bug on review pages.',
       },
     },
     {
@@ -32,7 +36,7 @@ export const seoFields: Field = {
       maxLength: 160,
       admin: {
         description:
-          'A real summary of this specific page, not derived from a byline or excerpt string. Byline-as-description was one of the shipped bugs.',
+          'Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). A real summary of this specific page, not derived from a byline or excerpt string — byline-as-description was one of the shipped bugs.',
       },
     },
     {

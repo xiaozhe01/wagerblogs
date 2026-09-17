@@ -159,7 +159,7 @@ re-applying:
 After running any of these, verify RLS is back:
 
 ```
-npm run rls:check    # expect 44/44
+npm run rls:check    # expect 56/56
 ```
 
 If it's not, restore it:
@@ -171,13 +171,21 @@ npm run rls:apply
 `npm run seed` already calls `rls:apply` for you and fails loudly if it cannot
 — but anything else you write does not.
 
-Tracked migrations narrow this bug class rather than eliminating it. A
-migration that only alters existing tables leaves RLS alone, but a migration
-that creates a new table still lands with RLS off — that is the Postgres
-default, not something Payload turns off — so `rls:apply` is still needed after
-any migration that adds a table. The improvement is blast radius: the drop
-becomes predictable and per-migration instead of firing on any dev boot or any
-`getPayload()` from a script.
+Tracked migrations narrow this bug class, and on **this** database new tables
+do not arrive unprotected at all. Supabase installs an `ensure_rls` event
+trigger on `ddl_command_end` that calls `rls_auto_enable()` and switches RLS on
+for every `CREATE TABLE` in the public schema. Measured during the Phase 1
+drafts migration: it created 12 tables and `rls:check` reported **56/56 before
+`rls:apply` was run at all**.
+
+This is Supabase behaviour, not vanilla Postgres — plain Postgres leaves
+`relrowsecurity` false on a new table, which is what an earlier revision of
+this document claimed applied here.
+
+`rls:check` / `rls:apply` stay, for two reasons. They are the assertion that
+the trigger actually fired, and they cover the paths that bypass it entirely:
+a dump restore, a replica, or direct SQL run as a role the trigger does not
+catch. Both are idempotent and cost nothing to run.
 
 Tracked as a follow-up in MIGRATION.md, "Move from Drizzle push to tracked
 migrations".
