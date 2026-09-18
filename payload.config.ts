@@ -112,7 +112,13 @@ export default buildConfig({
   ],
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URL || "" },
+    // max caps the pool PER WORKER. Next prerenders with 7 workers, each
+    // opening its own getPayload pool, against a session pooler capped at 15
+    // clients. See STRUCTURE.md "Build-time Postgres connection budget".
+    pool: {
+      connectionString: process.env.DATABASE_URL || "",
+      max: 2,
+    },
     push: false,
     migrationDir: "migrations",
   }),

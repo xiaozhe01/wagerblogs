@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
+import { getPayload } from "payload";
+import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PostRow from "@/components/cards/PostRow";
@@ -7,7 +10,11 @@ import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink"
 import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import Prose from "@/components/section/Prose";
-import { newsSections, storyRow } from "@/lib/news";
+import { storyRow } from "@/lib/news-rows";
+
+// ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
+// skip the cache for that request only.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "News — WagerBlogs",
@@ -15,10 +22,49 @@ export const metadata: Metadata = {
   alternates: { canonical: "/news" },
 };
 
-// TODO(cms): cap each section at the newest few stories once the feed is
-// paginated, and give each story a real href.
-export default function NewsIndexPage() {
-  const sections = newsSections.filter((section) => section.stories.length > 0);
+/** How many stories each section shows on the index before "More X news". */
+const PER_SECTION = 4;
+
+export default async function NewsIndexPage() {
+  const { isEnabled: isDraft } = await draftMode();
+  const payload = await getPayload({ config });
+
+  // news-sections has no _status — structural (no lifecycle).
+  const { docs: sections } = await payload.find({
+    collection: "news-sections",
+    sort: "order",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+
+  // news filters _status — editorial (drafts enabled). One query for every
+  // section, grouped in memory: five sequential per-section queries would be
+  // five round-trips for the same rows.
+  const { docs: stories } = await payload.find({
+    collection: "news",
+    where: isDraft ? {} : { _status: { equals: "published" } },
+    draft: isDraft,
+    sort: "-publishedAt",
+    limit: 500,
+    depth: 1,
+    overrideAccess: false,
+  });
+
+  const bySection = new Map<number, typeof stories>();
+  for (const story of stories) {
+    const id = typeof story.section === "object" ? story.section.id : story.section;
+    bySection.set(id, [...(bySection.get(id) ?? []), story]);
+  }
+
+  // A section with nothing filed is omitted rather than rendered as an empty
+  // card — same behaviour the lib-backed page had.
+  const populated = sections
+    .map((section) => ({
+      section,
+      stories: (bySection.get(section.id) ?? []).slice(0, PER_SECTION),
+    }))
+    .filter((entry) => entry.stories.length > 0);
 
   return (
     <PageShell activeNavId="news" register="editorial" rail={<NewsRail />}>
@@ -35,27 +81,33 @@ export default function NewsIndexPage() {
         </p>
       </header>
 
-      {sections.length === 0 ? (
-        <EmptyState title="No stories filed yet" />
+      {populated.length === 0 ? (
+        <EmptyState
+          title="No stories filed yet"
+          body="Stories appear here once they are published in the admin panel."
+        />
       ) : (
-        sections.map(({ category, slug, href, stories }) => (
+        populated.map(({ section, stories: sectionStories }) => (
           <EditorialSection
-            key={slug}
-            id={slug}
-            title={category}
-            titleHref={href}
+            key={section.id}
+            id={section.slug}
+            title={section.name}
+            titleHref={`/news/${section.slug}`}
             register="editorial"
             className="card"
           >
             <ul role="list" className="flex flex-col gap-3">
-              {stories.map((story) => (
-                <li key={story.slug}>
-                  <PostRow post={storyRow(story)} bleed="card" />
+              {sectionStories.map((story) => (
+                <li key={story.id}>
+                  <PostRow post={storyRow(story, section.slug)} bleed="card" />
                 </li>
               ))}
             </ul>
-            <ArrowLink href={href} className={`${sectionCtaClassName} self-center min-h-4`}>
-              More {category} news
+            <ArrowLink
+              href={`/news/${section.slug}`}
+              className={`${sectionCtaClassName} self-center min-h-4`}
+            >
+              More {section.name} news
             </ArrowLink>
           </EditorialSection>
         ))

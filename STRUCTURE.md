@@ -237,6 +237,37 @@ This matters for a fresh database: running `npm run migrate` there **will**
 execute the baseline and build all 44 tables from scratch, which is correct.
 It only had to be skipped on the database that push had already built.
 
+## Build-time Postgres connection budget
+
+Session-mode pooler (port 5432): **pool_size = 15 clients**. Next.js prerender
+uses **7 worker processes**; each opens its own `getPayload` pool. Current
+setting: **`pool.max = 2`** in `payload.config.ts`, giving 7 x 2 = 14
+build-time connections plus 1 headroom for a running dev server or an ad-hoc
+query.
+
+Re-evaluate this budget if the build worker count changes (Next's default is
+CPU-count dependent), or as more routes are wired and each prerendered page
+starts querying Payload.
+
+If pressure grows:
+
+- Raise Supabase `pool_size` in the dashboard (subject to plan limits).
+- Reduce Next build workers via `experimental.cpus` or
+  `experimental.workerThreads` in `next.config.ts` — trades build speed for
+  headroom.
+- **Do not** switch to the transaction-mode pooler (port 6543) without testing.
+  Payload/Drizzle prepared statements break under transaction pooling in subtle
+  ways.
+
+**Diagnostic signature:** `FATAL` / `EMAXCONNSESSION` — "max clients reached in
+session mode" — with **non-deterministic page names** failing between runs,
+because it is whichever page happens to be holding a connection when the cap is
+hit. A logic error names the same page every time; this does not.
+
+A related trap, found the same day: chain verification commands with `&&`, not
+`;`. A `;` chain returns the exit code of the _last_ command, so a passing
+`rls:check` after a failing `npm run build` reports success overall.
+
 ## Seeding a fresh environment
 
 `npm run seed` creates the 6 Verticals and 5 NewsSections that existing routes

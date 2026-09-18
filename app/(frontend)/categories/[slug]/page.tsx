@@ -1,5 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
+import { getPayload, type Where } from "payload";
+import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnchorList from "@/components/rail/AnchorList";
@@ -9,16 +13,46 @@ import TeaserCardGrid from "@/components/cards/TeaserCardGrid";
 import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import InfoCard from "@/components/rail/InfoCard";
-import { notFound } from "next/navigation";
-import { categoryArticles, categoryCompareLinks } from "@/lib/mock-data";
+// TODO Phase 4 hold — no Payload source for this field yet.
+import { categoryCompareLinks } from "@/lib/mock-data";
 import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
-import { categories, categoryParams, findCategory } from "@/lib/categories";
-import { chipHref, chipMatches, chipSlug, headingId, resolveChip } from "@/lib/utils";
+import { chipHref, chipMatches, chipSlug, formatDate, headingId, resolveChip } from "@/lib/utils";
+import { readTime } from "@/lib/lexical";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import PageNav from "@/components/controls/PageNav";
+import type { Article } from "@/payload-types";
 
-export function generateStaticParams() {
-  return categoryParams;
+// ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
+// skip the cache for that request only.
+export const revalidate = 3600;
+
+/** The article-type enum on Articles. The "News" chip has no member here — news
+ * lives in its own collection with no vertical relationship — so selecting it
+ * can only produce an empty feed. That is the honest answer, not a bug. */
+const ARTICLE_TYPES = ["guide", "analysis", "research", "blog"] as const;
+
+/** verticals has no _status — structural (no lifecycle). */
+async function findVertical(slug: string) {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "verticals",
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs[0];
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "verticals",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs.map((vertical) => ({ slug: vertical.slug }));
 }
 
 export async function generateMetadata({
@@ -27,17 +61,34 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const category = findCategory(slug);
-  if (!category) return { title: "Categories — WagerBlogs" };
+  const vertical = await findVertical(slug);
+  if (!vertical) return { title: "Categories — WagerBlogs" };
+  // Straight from the seo group, placeholders included — composing a title from
+  // vertical.name would hide an unwritten record instead of showing it.
   return {
-    title: `${category.name} — WagerBlogs`,
-    description: category.desc,
-    alternates: { canonical: category.href },
+    title: vertical.seo?.metaTitle,
+    description: vertical.seo?.metaDescription,
+    alternates: { canonical: vertical.seo?.canonicalUrl || `/categories/${vertical.slug}` },
   };
 }
 
-// TODO(cms): the article lists, sub-categories and counts below are shared
-// placeholders; only the category record itself resolves per slug today.
+function articleRow(article: Article) {
+  const typeLabel = article.type.charAt(0).toUpperCase() + article.type.slice(1);
+  const author = typeof article.author === "object" ? article.author?.name : undefined;
+  const published = article.publishedAt ? formatDate(article.publishedAt) : undefined;
+  const minutes = readTime(article.body);
+  return {
+    kicker: typeLabel,
+    title: article.title,
+    excerpt: article.excerpt,
+    meta: [typeLabel, published, minutes].filter(Boolean).join(" · "),
+    metaItems: [minutes, published, author ? `by ${author}` : undefined].filter(
+      (part): part is string => Boolean(part),
+    ),
+    href: `/articles/${article.slug}`,
+  };
+}
+
 export default async function CategoryPage({
   params,
   searchParams,
@@ -46,28 +97,75 @@ export default async function CategoryPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { slug } = await params;
-  const category = findCategory(slug);
+  const vertical = await findVertical(slug);
   // A vertical we don't cover is a genuine 404, not another category's page.
-  if (!category) notFound();
+  if (!vertical) notFound();
+
   const query = await searchParams;
+  const { isEnabled: isDraft } = await draftMode();
+  const payload = await getPayload({ config });
+
   const activeType = resolveChip(categoryFilters, query[TYPE_PARAM], ALL_TYPES);
   const typeHref = (value: string) =>
-    chipHref({
-      basePath: `/categories/${slug}`,
-      param: TYPE_PARAM,
-      value,
-      allValue: ALL_TYPES,
-    });
-  const matchingArticles =
-    activeType === ALL_TYPES
-      ? categoryArticles
-      : categoryArticles.filter((a) => chipMatches(a.kicker ?? "", activeType));
+    chipHref({ basePath: `/categories/${slug}`, param: TYPE_PARAM, value, allValue: ALL_TYPES });
+
+  const matchedType = ARTICLE_TYPES.find((type) => chipMatches(type, activeType));
+  // A chip that names no article type filters to nothing rather than silently
+  // falling back to every article.
+  const chipHasNoType = activeType !== ALL_TYPES && !matchedType;
+
+  // articles filters _status — editorial (drafts enabled). depth 1 resolves the
+  // author relationship for the byline.
+  const forVertical: Where = isDraft
+    ? { vertical: { equals: vertical.id } }
+    : { vertical: { equals: vertical.id }, _status: { equals: "published" } };
+
+  const { docs: articles } = chipHasNoType
+    ? { docs: [] as Article[] }
+    : await payload.find({
+        collection: "articles",
+        where: matchedType ? { ...forVertical, type: { equals: matchedType } } : forVertical,
+        draft: isDraft,
+        sort: "-publishedAt",
+        limit: 500,
+        depth: 1,
+        overrideAccess: false,
+      });
+
+  // The Editor's lead: the newest published article in THIS vertical. No
+  // fallback — if the vertical has nothing, the section is absent entirely.
+  const { docs: leadDocs } = await payload.find({
+    collection: "articles",
+    where: forVertical,
+    draft: isDraft,
+    sort: "-publishedAt",
+    limit: 1,
+    depth: 1,
+    overrideAccess: false,
+  });
+  const lead = leadDocs[0];
+
+  const { totalDocs: guideCount } = await payload.find({
+    collection: "articles",
+    where: { ...forVertical, type: { equals: "guide" } },
+    draft: isDraft,
+    limit: 0,
+    depth: 0,
+    overrideAccess: false,
+  });
+
+  // verticals has no _status — structural.
+  const { docs: verticals } = await payload.find({
+    collection: "verticals",
+    sort: "order",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+
   // Changing the chip drops the page param, so a filter always opens on page 1.
-  const articlePage = paginate(matchingArticles, query[PAGE_PARAM]);
-  const visibleArticles = articlePage.items;
-  // Counted off what this page actually lists; the review tally has no data
-  // behind it yet, so it stays bracketed.
-  const guideCount = categoryArticles.filter((a) => chipMatches(a.kicker ?? "", "Guides")).length;
+  const articlePage = paginate(articles, query[PAGE_PARAM]);
+  const sectionTitle = `Latest in ${vertical.name}`;
 
   const rail = (
     <>
@@ -76,11 +174,11 @@ export default async function CategoryPage({
           All categories
         </h2>
         <AnchorList
-          items={categories.map((c) => ({
-            href: c.href,
-            label: c.name,
-            key: c.slug,
-            current: c.slug === category.slug,
+          items={verticals.map((entry) => ({
+            href: `/categories/${entry.slug}`,
+            label: entry.name,
+            key: entry.slug,
+            current: entry.slug === vertical.slug,
           }))}
         />
       </section>
@@ -96,83 +194,89 @@ export default async function CategoryPage({
     <PageShell activeNavId="categories" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — category navigation, no outbound operator links */}
       <Breadcrumbs
-        currentPath={category.href}
-        items={[{ label: "Categories", href: "/categories" }, { label: category.name }]}
+        currentPath={`/categories/${vertical.slug}`}
+        items={[{ label: "Categories", href: "/categories" }, { label: vertical.name }]}
       />
 
       <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
-          {category.name}
+          {vertical.name}
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder category standfirst — what this vertical covers, who it&apos;s for, and how
-          our coverage is organised. Editorial register: this page navigates and explains; it never
-          sells.]
+          {vertical.description}
         </p>
         <p className="flex gap-4 flex-wrap text-xs text-text-muted tabular-nums">
           <span>
             {guideCount} {guideCount === 1 ? "guide" : "guides"}
           </span>
+          {/* TODO Phase 4 hold — review count and a last-updated stamp have no
+              wired source on this route yet. */}
           <span>[n] reviews</span>
-          <span>Updated [Jul 24, 2026]</span>
+          <span>Updated [date required]</span>
         </p>
       </header>
 
-      <article aria-labelledby="editors-lead">
-        <Link
-          href="/articles/how-odds-boosts-actually-work"
-          className="flex flex-col md:flex-row gap-3.5 md:gap-4 items-stretch md:items-center no-underline border-t border-b border-border-divider py-4 md:py-5"
-        >
-          <div
-            aria-hidden="true"
-            className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-muted tabular-nums text-center"
+      {lead && (
+        <article aria-labelledby="editors-lead">
+          <Link
+            href={`/articles/${lead.slug}`}
+            className="flex flex-col md:flex-row gap-3.5 md:gap-4 items-stretch md:items-center no-underline border-t border-b border-border-divider py-4 md:py-5"
           >
-            [lead image — credit line required]
-          </div>
-          <div className="min-w-0 flex flex-col gap-2">
-            <p className="meta-label-caps">Editor&apos;s lead</p>
-            <h2 id="editors-lead" className="heading text-4xl leading-heading text-pretty">
-              {`[Placeholder] The state of ${category.name} going into the autumn season`}
-            </h2>
-            <p className="text-lg leading-copy text-text-muted text-pretty">
-              [Placeholder excerpt — two lines summarising the piece, written to work as a
-              standalone summary in search and social previews.]
-            </p>
-            <p className="text-xs font-medium text-text-muted tabular-nums">
-              <time dateTime="2026-07-22">07/22/2026</time> · 11 min · byline required before
-              publish
-            </p>
-          </div>
-        </Link>
-      </article>
+            <div
+              aria-hidden="true"
+              className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-muted tabular-nums text-center"
+            >
+              [lead image — credit line required]
+            </div>
+            <div className="min-w-0 flex flex-col gap-2">
+              <p className="meta-label-caps">Editor&apos;s lead</p>
+              <h2 id="editors-lead" className="heading text-4xl leading-heading text-pretty">
+                {lead.title}
+              </h2>
+              <p className="text-lg leading-copy text-text-muted text-pretty">{lead.excerpt}</p>
+              <p className="text-xs font-medium text-text-muted tabular-nums">
+                {lead.publishedAt && (
+                  <time dateTime={lead.publishedAt}>{formatDate(lead.publishedAt)}</time>
+                )}{" "}
+                · {readTime(lead.body)}
+              </p>
+            </div>
+          </Link>
+        </article>
+      )}
 
       <EditorialSection
-        title={`Latest in ${category.name}`}
+        title={sectionTitle}
         register="editorial"
         toolbar={
           <FilterChips
             label="Filter by article type"
-            items={categoryFilters.map((f) => ({
-              label: f,
-              key: f,
-              href: typeHref(f),
-              active: f === activeType,
+            items={categoryFilters.map((filter) => ({
+              label: filter,
+              key: filter,
+              href: typeHref(filter),
+              active: filter === activeType,
             }))}
           />
         }
       >
         {/* Keyed so only the feed replays the fade. */}
         <div key={activeType} className="route-transition">
-          {visibleArticles.length === 0 ? (
+          {articlePage.items.length === 0 ? (
             <EmptyState
-              title={`No ${activeType.toLowerCase()} filed under ${category.name} yet`}
+              title={
+                activeType === ALL_TYPES
+                  ? `Nothing filed under ${vertical.name} yet`
+                  : `No ${activeType.toLowerCase()} filed under ${vertical.name} yet`
+              }
+              body="Articles appear here once they are published in the admin panel."
               action={{ href: typeHref(ALL_TYPES), label: "Show all" }}
             />
           ) : (
             <ul role="list" className="flex flex-col gap-3">
-              {visibleArticles.map((a) => (
-                <li key={a.title}>
-                  <PostRow post={a} />
+              {articlePage.items.map((article) => (
+                <li key={article.id}>
+                  <PostRow post={articleRow(article)} />
                 </li>
               ))}
             </ul>
@@ -181,7 +285,7 @@ export default async function CategoryPage({
         <PageNav
           page={articlePage.page}
           totalPages={articlePage.totalPages}
-          label={`Latest in ${category.name}`}
+          label={sectionTitle}
           hrefFor={(n) =>
             pageHref({
               basePath: `/categories/${slug}`,
@@ -189,7 +293,7 @@ export default async function CategoryPage({
               params: {
                 [TYPE_PARAM]: activeType === ALL_TYPES ? undefined : chipSlug(activeType),
               },
-              anchor: headingId("section", `Latest in ${category.name}`),
+              anchor: headingId("section", sectionTitle),
             })
           }
         />
@@ -199,6 +303,7 @@ export default async function CategoryPage({
           their own collections and routes — six tiles that navigate nowhere and
           count nothing are worse than no section. */}
       <EditorialSection title="Compare operators in this category" register="editorial">
+        {/* TODO Phase 4 hold — no Payload source for this field yet. */}
         <TeaserCardGrid
           items={categoryCompareLinks}
           titleClassName="text-lg font-semibold text-text-primary mb-1.5 leading-snug"
