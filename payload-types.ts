@@ -390,8 +390,24 @@ export interface Author {
    * Uncheck instead of deleting when an author leaves — preserves attribution on their existing published work.
    */
   active?: boolean | null;
+  seo: {
+    /**
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). Written specifically for this page — do not leave it empty and rely on a frontend default, which is exactly the fallback pattern that produced the homepage-title bug on review pages.
+     */
+    metaTitle: string;
+    /**
+     * Required at publish time. Without this, the record cannot be published to production (draft saves are allowed). A real summary of this specific page, not derived from a byline or excerpt string — byline-as-description was one of the shipped bugs.
+     */
+    metaDescription: string;
+    /**
+     * Leave blank in almost all cases. Canonical URL is derived from the record's slug at render. Only set this for deliberate cross-references.
+     */
+    canonicalUrl?: string | null;
+    ogImage?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1361,8 +1377,17 @@ export interface AuthorsSelect<T extends boolean = true> {
         id?: T;
       };
   active?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalUrl?: T;
+        ogImage?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

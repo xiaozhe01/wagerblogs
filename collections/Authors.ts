@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { seoFields } from './fields/seo'
 
 // Real author records. The frontend currently has TWO separate author
 // objects (mockAuthor at mock-data.ts:20 and newsStoryAuthor at :940) with
@@ -20,6 +21,11 @@ export const Authors: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  versions: {
+    drafts: {
+      autosave: false,
+    },
   },
   fields: [
     {
@@ -117,5 +123,6 @@ export const Authors: CollectionConfig = {
         description: 'Uncheck instead of deleting when an author leaves — preserves attribution on their existing published work.',
       },
     },
+    seoFields,
   ],
 }

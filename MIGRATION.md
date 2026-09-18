@@ -369,3 +369,44 @@ production, rather than Payload's default of logging and rendering `#`.
 
 Phase 4 implements it. Until it does, authors should use custom URLs for
 internal links, not the internal-document picker.
+
+### Drafts: editorial collections have a lifecycle, structural ones do not
+
+Settled 2026-09-18, while wiring FW-1 Phase 4. Payload's `_status` field only
+exists on collections with `versions.drafts` enabled, so "filter every query by
+`_status: 'published'`" cannot be a universal rule — on a collection without
+drafts it queries a column that does not exist.
+
+The split is by what the record _is_, not by which collections happened to get
+drafts first:
+
+| Drafts enabled — editorial | No drafts — structural / reference |
+| -------------------------- | ---------------------------------- |
+| Reviews                    | Verticals                          |
+| Articles                   | NewsSections                       |
+| News                       | Media                              |
+| Authors                    | HelpDirectoryEntries               |
+|                            | BonusOffers                        |
+
+Editorial records are written, revised and published by a person, and each has
+its own indexable route. Structural records are taxonomy and reference data:
+they are either correct or they are wrong, and there is no meaningful draft of
+a vertical.
+
+Authors was the correction that produced the rule. It had neither `seoFields`
+nor drafts, which was an oversight rather than a decision — an author page is
+editorial content with a public URL, exactly like an article. Adding
+`seoFields` alone failed: `metaTitle`/`metaDescription` are `required`, which
+on a non-drafts collection means `NOT NULL`, and Postgres refuses to add a
+NOT NULL column to a table that already holds rows. Enabling drafts resolved
+it, because the drafts convention drops NOT NULL and moves required-ness to
+publish-time validation.
+
+**UGC collections are a third category and are not covered by this.**
+ReaderReviews, Comments, ForumThreads and ForumReplies carry their own `status`
+field with moderation semantics (`pending` / `approved` / `rejected` / `spam`).
+That is a moderation queue, not a publish lifecycle, and it stays distinct from
+`_status`.
+
+Every `payload.find` in the frontend states which side it is on in a comment,
+so a missing filter reads as a mistake rather than a style difference.
