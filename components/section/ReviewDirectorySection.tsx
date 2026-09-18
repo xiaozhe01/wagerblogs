@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
-import type { Operator } from "@/lib/types";
-import { reviewPath } from "@/lib/reviews";
 import { headingId } from "@/lib/utils";
 import { TIER_CLASSNAME } from "./heading-tiers";
+
+/** What a tile needs, nothing more. `href` is supplied by the caller rather
+ * than looked up here — the component no longer knows where reviews live. */
+export type ReviewTile = {
+  id: number | string;
+  name: string;
+  score: number;
+  categoryScores: { label: string; score: number }[];
+  /** Display text. `lastVerifiedISO` carries the machine-readable value. */
+  lastVerified: string;
+  lastVerifiedISO?: string;
+  href: string;
+};
 
 // The hub's tile grid — deliberately not the ranked rows on /: no rank, no
 // operator CTA, no bonus terms. Score breakdown and verification date instead.
@@ -16,7 +27,7 @@ export default function ReviewDirectorySection({
   limit,
 }: {
   title: string;
-  operators: Operator[];
+  operators: ReviewTile[];
   /** The group's own page. Omit on that page — it is where the link points. */
   allHref?: string;
   allLabel?: string;
@@ -42,7 +53,7 @@ export default function ReviewDirectorySection({
           <li key={operator.id} className="flex">
             <article className="flex grow">
               <Link
-                href={reviewPath(operator)}
+                href={operator.href}
                 className="card group grow flex flex-col gap-2.5 no-underline transition-colors hover:bg-bg-subtle active:bg-bg-subtle-active"
               >
                 <div className="flex items-center gap-2.5">
@@ -73,7 +84,9 @@ export default function ReviewDirectorySection({
                 <p className="flex items-center justify-between gap-2 text-xs font-medium text-text-muted tabular-nums">
                   <span>
                     Last verified{" "}
-                    <time dateTime={operator.lastVerified}>{operator.lastVerified}</time>
+                    <time dateTime={operator.lastVerifiedISO ?? operator.lastVerified}>
+                      {operator.lastVerified}
+                    </time>
                   </span>
                   {/* The tile is the link, so the CTA colours on the card's
                       hover — .link-cta only reacts to its own. */}

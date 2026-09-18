@@ -54,3 +54,13 @@ export function chipHref({
 export function headingId(prefix: string, title: string) {
   return `${prefix}-${chipSlug(title)}`;
 }
+
+/** Payload stores dates as ISO; the UI wants "Jun 30, 2026". Locale is pinned
+ * so the server render and any later client render cannot disagree. */
+export function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}

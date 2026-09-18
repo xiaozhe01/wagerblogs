@@ -1,19 +1,50 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
+import { getPayload } from "payload";
+import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import ReviewsRail from "@/components/rail/ReviewsRail";
-import ReviewDirectorySection from "@/components/section/ReviewDirectorySection";
+import ReviewDirectorySection, {
+  type ReviewTile,
+} from "@/components/section/ReviewDirectorySection";
+import EmptyState from "@/components/section/EmptyState";
 import ReviewCard from "@/components/section/ReviewCard";
-import { findReviewGroup, reviewGroups } from "@/lib/reviews";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
-import { headingId } from "@/lib/utils";
+import { formatDate, headingId } from "@/lib/utils";
 import PageNav from "@/components/controls/PageNav";
 
 type VerticalParams = { vertical: string };
 
-export function generateStaticParams() {
-  return reviewGroups.map((group) => ({ vertical: group.slug }));
+// ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
+// skip the cache for that request only, so a preview never serves a stale page
+// and an ordinary visitor still gets the cached one.
+export const revalidate = 3600;
+
+/** Verticals is structural taxonomy — no drafts, so no _status filter. */
+async function findVertical(slug: string) {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "verticals",
+    where: { slug: { equals: slug }, hasReviews: { equals: true } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs[0];
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "verticals",
+    where: { hasReviews: { equals: true } },
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs.map((vertical) => ({ vertical: vertical.slug }));
 }
 
 export async function generateMetadata({
@@ -22,12 +53,14 @@ export async function generateMetadata({
   params: Promise<VerticalParams>;
 }): Promise<Metadata> {
   const { vertical: verticalSlug } = await params;
-  const group = findReviewGroup(verticalSlug);
-  if (!group) return { title: "Reviews — WagerBlogs" };
+  const vertical = await findVertical(verticalSlug);
+  if (!vertical) return { title: "Reviews — WagerBlogs" };
+  // Straight from the seo group, placeholders and all. A title composed from
+  // vertical.name would hide an unwritten record instead of showing it.
   return {
-    title: `${group.title} — WagerBlogs`,
-    description: `Every ${group.noun} we've reviewed, scored on the same criteria and re-verified on a schedule.`,
-    alternates: { canonical: group.href },
+    title: vertical.seo?.metaTitle,
+    description: vertical.seo?.metaDescription,
+    alternates: { canonical: vertical.seo?.canonicalUrl || `/reviews/${vertical.slug}` },
   };
 }
 
@@ -40,47 +73,82 @@ export default async function ReviewGroupPage({
 }) {
   const { vertical: verticalSlug } = await params;
   const query = await searchParams;
-  const group = findReviewGroup(verticalSlug);
-  // Anything outside the two groups is a genuine 404 — /reviews/<operator> now
-  // lives one level deeper, so an old flat link lands here.
-  if (!group) notFound();
-  const operatorPage = paginate(group.operators, query[PAGE_PARAM]);
+  const { isEnabled: isDraft } = await draftMode();
+
+  const vertical = await findVertical(verticalSlug);
+  // A vertical we don't cover, or one that carries no reviews, is a genuine
+  // 404 — not an empty directory page.
+  if (!vertical) notFound();
+
+  const payload = await getPayload({ config });
+  // Reviews is editorial: drafts enabled, so _status is filtered unless the
+  // request carries draft mode.
+  const { docs: reviews } = await payload.find({
+    collection: "reviews",
+    where: isDraft
+      ? { vertical: { equals: vertical.id } }
+      : { vertical: { equals: vertical.id }, _status: { equals: "published" } },
+    draft: isDraft,
+    sort: "-score",
+    limit: 500,
+    depth: 0,
+    overrideAccess: false,
+  });
+
+  const tiles: ReviewTile[] = reviews.map((review) => ({
+    id: review.id,
+    name: review.name,
+    score: review.score,
+    categoryScores: (review.categoryScores ?? []).map((entry) => ({
+      label: entry.label,
+      score: entry.score,
+    })),
+    lastVerified: formatDate(review.lastVerified),
+    lastVerifiedISO: review.lastVerified,
+    href: `/reviews/${vertical.slug}/${review.slug}`,
+  }));
+
+  const href = `/reviews/${vertical.slug}`;
+  const sectionTitle = `All ${vertical.noun} reviews`;
+  const reviewPage = paginate(tiles, query[PAGE_PARAM]);
 
   return (
-    <PageShell activeNavId="reviews" rail={<ReviewsRail currentSlug={group.slug} />}>
+    <PageShell activeNavId="reviews" rail={<ReviewsRail currentSlug={vertical.slug} />}>
       {/* Register: Comparison · Tier 2/3 — internal links only, no operator CTAs */}
       <Breadcrumbs
-        currentPath={group.href}
-        items={[{ label: "Reviews", href: "/reviews" }, { label: group.crumb }]}
+        currentPath={href}
+        items={[{ label: "Reviews", href: "/reviews" }, { label: vertical.crumb }]}
       />
 
       <header className="flex flex-col gap-3 max-w-header">
         <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
-          {group.title}
+          {vertical.name} reviews
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — every {group.noun} we&apos;ve reviewed, scored on the same
-          criteria, with the date each was last re-verified.]
+          {vertical.description}
         </p>
       </header>
 
       <div className="flex flex-col gap-3">
-        <ReviewDirectorySection
-          title={`All ${group.noun} reviews`}
-          operators={operatorPage.items}
-        />
-        <PageNav
-          page={operatorPage.page}
-          totalPages={operatorPage.totalPages}
-          label={`All ${group.noun} reviews`}
-          hrefFor={(n) =>
-            pageHref({
-              basePath: group.href,
-              page: n,
-              anchor: headingId("section", `All ${group.noun} reviews`),
-            })
-          }
-        />
+        {reviewPage.items.length === 0 ? (
+          <EmptyState
+            title={`No ${vertical.noun} reviews published yet`}
+            body="A review appears here once it is published in the admin panel."
+            action={{ href: "/reviews", label: "All review sections" }}
+          />
+        ) : (
+          <>
+            <ReviewDirectorySection title={sectionTitle} operators={reviewPage.items} />
+            <PageNav
+              page={reviewPage.page}
+              totalPages={reviewPage.totalPages}
+              label={sectionTitle}
+              hrefFor={(n) =>
+                pageHref({ basePath: href, page: n, anchor: headingId("section", sectionTitle) })
+              }
+            />
+          </>
+        )}
       </div>
 
       <ReviewCard />

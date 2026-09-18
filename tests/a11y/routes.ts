@@ -22,9 +22,13 @@ export type RouteUnderTest = {
   /** Editorial = Tier 1 long-form reading. Comparison = Tier 2/3 ranked/CTA-bearing.
    * Mixed = both registers on one page. Utility = legal/trust boilerplate. */
   register: Register;
+  /** Set to the reason a route is not yet reachable. The entry stays listed so
+   * a URL rename is recorded in one place, but it is excluded from the suite
+   * until the route resolves. */
+  pending?: string;
 };
 
-export const routes: RouteUnderTest[] = [
+const allRoutes: RouteUnderTest[] = [
   { path: "/", label: "Home", register: "mixed" },
   { path: "/about", label: "About", register: "editorial" },
   { path: "/contact", label: "Contact", register: "editorial" },
@@ -43,7 +47,12 @@ export const routes: RouteUnderTest[] = [
   { path: "/reviews", label: "Reviews hub", register: "comparison" },
   { path: "/reviews/sportsbooks/peakwager", label: "Operator review", register: "comparison" },
   { path: "/reviews/sportsbooks", label: "Review group", register: "comparison" },
-  { path: "/reviews/casinos/crownline-coins", label: "Casino review", register: "comparison" },
+  {
+    path: "/reviews/online-casinos/crownline-coins",
+    label: "Casino review",
+    register: "comparison",
+    pending: "operator detail route is wired in FW-1 Phase 4C",
+  },
   { path: "/categories/esports-betting", label: "Category directory", register: "editorial" },
   { path: "/reviews/sportsbooks?page=2", label: "Paged review group", register: "comparison" },
   { path: "/authors/jane-placeholder", label: "Author bio", register: "editorial" },
@@ -62,3 +71,5 @@ export const routes: RouteUnderTest[] = [
     register: "editorial",
   },
 ];
+
+export const routes = allRoutes.filter((route) => !route.pending);

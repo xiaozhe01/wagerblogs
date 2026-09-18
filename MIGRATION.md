@@ -410,3 +410,26 @@ That is a moderation queue, not a publish lifecycle, and it stays distinct from
 
 Every `payload.find` in the frontend states which side it is on in a comment,
 so a missing filter reads as a mistake rather than a style difference.
+
+### Sequencing: a URL producer and its consumer are one unit
+
+Learned the hard way in FW-1 Phase 4A. The plan wired the `/reviews` hub
+(producer of `/reviews/<slug>` links) in one sub-phase and
+`/reviews/[vertical]` (consumer of that slug) in the next. The moment the hub
+started deriving slugs from Payload it emitted `/reviews/online-casinos`, while
+the detail route still resolved against `lib/reviews.ts`, which calls the same
+vertical `casinos`. The hub's primary navigation 404'd.
+
+The slug conflict itself was known and recorded — see "Vertical slug conflict"
+above. What was missed is that moving URL _derivation_ to Payload is not a
+per-route change: it changes the contract between two routes at once.
+
+When splitting future wiring work, look for URL-producer / URL-consumer pairs
+and keep them in the same commit. A route that builds an href and the route
+that resolves it cannot be migrated separately unless both slug sources already
+agree.
+
+One intermediate wart was accepted rather than pulled forward:
+`/reviews/casinos/crownline-coins` still resolves, because the operator detail
+route is lib-backed until Phase 4C. Nothing links to it — it is a stale URL
+that still answers, not a broken link — and it stops resolving when 4C lands.
