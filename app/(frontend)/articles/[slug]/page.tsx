@@ -137,6 +137,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <ArticleByline
             name={author.name}
             credential={author.credentialLine}
+            photo={author.photo}
             profileHref={`/authors/${author.slug}`}
             publishedAt={article.publishedAt ? formatDate(article.publishedAt) : ""}
             readTime={readTime(article.body)}

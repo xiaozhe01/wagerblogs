@@ -185,6 +185,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
           <ArticleByline
             name={author.name}
             credential={author.credentialLine}
+            photo={author.photo}
             profileHref={`/authors/${author.slug}`}
             publishedAt={story.publishedAt ? formatDate(story.publishedAt) : ""}
             readTime={readTime(story.body)}

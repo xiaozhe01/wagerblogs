@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MediaImage, { resolveMedia, type MediaRef } from "@/components/cards/MediaImage";
 
 type ArticleBylineProps = {
   name: string;
@@ -6,16 +7,18 @@ type ArticleBylineProps = {
   profileHref: string;
   publishedAt: string;
   readTime: string;
+  photo?: MediaRef;
 };
 
-// TODO(cms): requires a real Person record (photo, fullName, credential, authorUrl).
-// Article schema requires author.name + author.url — a post cannot publish without it.
+// TODO(cms): Article schema requires author.name + author.url — a post cannot
+// publish without it.
 export default function ArticleByline({
   name,
   credential,
   profileHref,
   publishedAt,
   readTime,
+  photo,
 }: ArticleBylineProps) {
   // Placeholder dates ("[Jul 18, 2026]") must not become a fabricated machine-readable
   // timestamp — <time> renders only once publishedAt is a real ISO date from the CMS.
@@ -23,7 +26,14 @@ export default function ArticleByline({
 
   return (
     <div className="flex items-center gap-3 py-3 border-t border-b border-border-divider max-w-full">
-      <div className="w-9 h-9 shrink-0 rounded-full placeholder-asset" />
+      {/* No photo on the record keeps the skeleton shape. */}
+      {resolveMedia(photo) ? (
+        <div className="w-9 h-9 shrink-0 rounded-full overflow-hidden relative">
+          <MediaImage media={photo} fill sizes="36px" className="object-cover" />
+        </div>
+      ) : (
+        <div aria-hidden="true" className="w-9 h-9 shrink-0 rounded-full placeholder-asset" />
+      )}
       <div className="min-w-0">
         {/* not-italic: preflight doesn't reset <address>'s UA italic. */}
         <address className="not-italic text-sm leading-snug">

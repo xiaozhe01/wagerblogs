@@ -16,6 +16,7 @@ import AtAGlanceCard from "@/components/rail/AtAGlanceCard";
 import EmptyState from "@/components/section/EmptyState";
 import ProsConsSection from "@/components/section/ProsConsSection";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
+import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
 import { ReviewJsonLd } from "@/lib/schema";
 import { publishedFilter } from "@/lib/payload-queries";
@@ -293,7 +294,17 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
           </dl>
           {author && (
             <div className="flex gap-3 items-center bg-bg-card border border-border-divider rounded-md p-3.5">
-              <div className="w-10 h-10 rounded-full placeholder-asset shrink-0" />
+              {/* No photo on the record keeps the skeleton shape. */}
+              {resolveMedia(author.photo) ? (
+                <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 relative">
+                  <MediaImage media={author.photo} fill sizes="40px" className="object-cover" />
+                </div>
+              ) : (
+                <div
+                  aria-hidden="true"
+                  className="w-10 h-10 rounded-full placeholder-asset shrink-0"
+                />
+              )}
               <p className="text-xs font-medium text-text-body">
                 Reviewed by{" "}
                 <Link
