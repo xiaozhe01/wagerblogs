@@ -65,7 +65,10 @@ export const categories = [
 ];
 
 // Content-type filter chips on a category page — structural taxonomy, not per-category content.
-export const categoryFilters = ["All", "Guides", "Analysis", "Research", "News"];
+// No "News" chip: it maps to no articles.type value, and the News collection
+// has no vertical relationship, so the filter could only ever be empty.
+// See MIGRATION.md D7.
+export const categoryFilters = ["All", "Guides", "Analysis", "Research"];
 
 // Region filter chips on the gambling-help directory — structural taxonomy.
 export const regions = ["All regions", "North America", "UK & Ireland", "Europe", "Asia-Pacific"];

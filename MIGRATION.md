@@ -173,8 +173,22 @@ it needs an operator identifier on each value, not a row identifier.
 ### D7 — `articles.type` deliberately excludes `news`
 
 `articles.type` deliberately excludes `'news'` to prevent giving News two
-schema homes. The News filter chip on `/categories/[slug]` pages is resolved as
-a frontend query change, not a schema change.
+schema homes.
+
+**Resolved in FW-1 Phase 4C (2026-09-18): the News chip was removed, not
+re-queried.** The earlier note said the News filter chip on `/categories/[slug]`
+would be "resolved as a frontend query change". Wiring the route showed there is
+no query to change: the chip names no `articles.type` value, **and** the News
+collection has no `vertical` relationship, so nothing on a category page can
+filter to it. A chip that can only ever return an empty feed is worse than no
+chip, so `categoryFilters` in `lib/site-data.ts` is now
+`["All", "Guides", "Analysis", "Research"]`.
+
+If category-scoped news is wanted later it needs a schema change — a `vertical`
+relationship on News — not a frontend one.
+
+Related and still open: `articles.type` includes `'blog'`, which has no chip, so
+those articles surface only under "All".
 
 ### D6 — SEO field group: absent from the frontend
 

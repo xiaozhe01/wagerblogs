@@ -39,22 +39,90 @@ export function isExternalHref(href: null | string | undefined): boolean {
   return host !== SITE_HOST && host !== `www.${SITE_HOST}`;
 }
 
-/** Phase 4 gap. Resolving a document reference to a URL needs the route names
- * settled in Phase 3, so this fails loudly in development rather than quietly
- * rendering "#" the way Payload's default converter does. */
-export function internalDocToHref(): string {
+type LinkedDocRef = {
+  relationTo?: string;
+  value?: number | string | { [key: string]: unknown; id?: number | string; slug?: string };
+};
+type LinkedDoc = LinkedDocRef | null;
+type LinkedValue = LinkedDocRef["value"];
+
+function slugOf(value: LinkedValue): string | undefined {
+  return value && typeof value === "object" && typeof value.slug === "string"
+    ? value.slug
+    : undefined;
+}
+
+/** A nested relationship's slug — the section on a news story, the vertical on
+ * a review. Present only when the page fetched deeply enough to populate it. */
+function parentSlug(value: LinkedValue, field: string): string | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const parent = value[field];
+  return parent &&
+    typeof parent === "object" &&
+    typeof (parent as { slug?: unknown }).slug === "string"
+    ? (parent as { slug: string }).slug
+    : undefined;
+}
+
+function unresolved(reason: string): string {
   if (process.env.NODE_ENV !== "production") {
-    throw new Error(
-      "internalDocToHref is not yet implemented: rich-text internal links cannot " +
-        "resolve until Phase 4 maps a document reference to a route. See MIGRATION.md.",
-    );
+    console.error(`Rich-text internal link could not be resolved: ${reason}`);
   }
   return UNRESOLVED_INTERNAL_HREF;
 }
 
+/** Maps a Lexical internal link's document reference to a frontend route.
+ * Anything it cannot resolve becomes a visibly broken href rather than a
+ * silent "#", so a bad link is findable instead of merely inert. */
+export function internalDocToHref({ linkNode }: { linkNode: { fields: { doc?: LinkedDoc } } }) {
+  const doc = linkNode.fields.doc;
+  const relationTo = doc?.relationTo;
+  const slug = slugOf(doc?.value);
+
+  if (!relationTo) return unresolved("link has no relationTo");
+  if (!slug) {
+    return unresolved(
+      `${relationTo} link was not populated deeply enough to expose a slug — ` +
+        "increase the page query's depth",
+    );
+  }
+
+  switch (relationTo) {
+    case "articles":
+      return `/articles/${slug}`;
+    case "authors":
+      return `/authors/${slug}`;
+    case "verticals":
+      return `/categories/${slug}`;
+    case "news-sections":
+      return `/news/${slug}`;
+    case "news": {
+      const section = parentSlug(doc?.value, "section");
+      return section
+        ? `/news/${section}/${slug}`
+        : unresolved(`news link "${slug}" has no populated section — needs depth 2`);
+    }
+    case "reviews": {
+      const vertical = parentSlug(doc?.value, "vertical");
+      return vertical
+        ? `/reviews/${vertical}/${slug}`
+        : unresolved(`review link "${slug}" has no populated vertical — needs depth 2`);
+    }
+    default:
+      return unresolved(`${relationTo} is not linkable from body content`);
+  }
+}
+
 function anchor(node: SerializedAutoLinkNode | SerializedLinkNode, children: ReactNode) {
   const fields = node.fields;
-  const href = fields.linkType === "internal" ? internalDocToHref() : (fields.url ?? "");
+  const href =
+    fields.linkType === "internal"
+      ? internalDocToHref({
+          linkNode: node as {
+            fields: { doc?: Parameters<typeof internalDocToHref>[0]["linkNode"]["fields"]["doc"] };
+          },
+        })
+      : (fields.url ?? "");
   const external = isExternalHref(href);
 
   return (

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
+import { getPayload } from "payload";
+import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PostRow from "@/components/cards/PostRow";
@@ -12,15 +15,68 @@ import KeyTakeaways from "@/components/section/KeyTakeaways";
 import LatestStoriesSection from "@/components/section/LatestStoriesSection";
 import EmptyState from "@/components/section/EmptyState";
 import Prose from "@/components/section/Prose";
-import { newsStoryAuthor, newsStoryTakeaways } from "@/lib/mock-data";
-import { findNewsStory, newsSections, storyRow } from "@/lib/news";
+import { RichText } from "@/components/rich-text/RichText";
+import { publishedFilter } from "@/lib/payload-queries";
+import { storyRow } from "@/lib/news-rows";
+import { readTime } from "@/lib/lexical";
+import { formatDate } from "@/lib/utils";
 
 type StoryParams = { section: string; story: string };
 
-export function generateStaticParams() {
-  return newsSections.flatMap((section) =>
-    section.stories.map((story) => ({ section: section.slug, story: story.slug })),
-  );
+// ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
+// skip the cache for that request only.
+export const revalidate = 3600;
+
+/** news-sections has no _status — structural (no lifecycle). */
+async function findSection(slug: string) {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "news-sections",
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs[0];
+}
+
+async function findStory(sectionSlug: string, storySlug: string, isDraft: boolean) {
+  const section = await findSection(sectionSlug);
+  if (!section) return undefined;
+  const payload = await getPayload({ config });
+  const { where, draft } = publishedFilter(isDraft, {
+    slug: { equals: storySlug },
+    section: { equals: section.id },
+  });
+  // depth 2: author for the byline, plus enough to resolve rich-text internal
+  // links that point at another news story or a review.
+  const { docs } = await payload.find({
+    collection: "news",
+    where,
+    draft,
+    limit: 1,
+    depth: 2,
+    overrideAccess: false,
+  });
+  return docs[0] ? { section, story: docs[0] } : undefined;
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config });
+  const { where } = publishedFilter(false);
+  const { docs } = await payload.find({
+    collection: "news",
+    where,
+    limit: 500,
+    depth: 1,
+    overrideAccess: false,
+  });
+  return docs
+    .map((story) => ({
+      section: typeof story.section === "object" ? story.section.slug : undefined,
+      story: story.slug,
+    }))
+    .filter((entry): entry is StoryParams => Boolean(entry.section));
 }
 
 export async function generateMetadata({
@@ -29,22 +85,48 @@ export async function generateMetadata({
   params: Promise<StoryParams>;
 }): Promise<Metadata> {
   const { section: sectionSlug, story: storySlug } = await params;
-  const found = findNewsStory(sectionSlug, storySlug);
+  const { isEnabled: isDraft } = await draftMode();
+  const found = await findStory(sectionSlug, storySlug, isDraft);
   if (!found) return { title: "News — WagerBlogs" };
+  const { story } = found;
   return {
-    title: `${found.story.title} — WagerBlogs`,
-    description: found.story.excerpt,
-    alternates: { canonical: found.story.href },
+    title: story.seo?.metaTitle,
+    description: story.seo?.metaDescription,
+    alternates: {
+      canonical: story.seo?.canonicalUrl || `/news/${sectionSlug}/${story.slug}`,
+    },
   };
 }
 
 export default async function NewsStoryPage({ params }: { params: Promise<StoryParams> }) {
   const { section: sectionSlug, story: storySlug } = await params;
-  const found = findNewsStory(sectionSlug, storySlug);
+  const { isEnabled: isDraft } = await draftMode();
+  const found = await findStory(sectionSlug, storySlug, isDraft);
   // A headline outside the section is a genuine 404, not a soft one.
   if (!found) notFound();
   const { section, story } = found;
-  const siblings = section.stories.filter((s) => s.slug !== story.slug);
+
+  const payload = await getPayload({ config });
+  const { where, draft } = publishedFilter(isDraft, {
+    section: { equals: section.id },
+    id: { not_equals: story.id },
+  });
+  const { docs: siblings } = await payload.find({
+    collection: "news",
+    where,
+    draft,
+    sort: "-publishedAt",
+    limit: 20,
+    depth: 1,
+    overrideAccess: false,
+  });
+
+  const author = typeof story.author === "object" ? story.author : undefined;
+  const takeaways = (story.takeaways ?? [])
+    .map((entry) => entry.takeaway)
+    .filter((entry): entry is string => Boolean(entry));
+  const sources = (story.sources ?? []).filter((entry) => entry.label && entry.url);
+  const href = `/news/${section.slug}/${story.slug}`;
 
   const rail = (
     <NewsRail currentSlug={section.slug}>
@@ -52,12 +134,12 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
           you are on is not a way out of it. */}
       {siblings.length > 0 && (
         <AnchorList
-          title={`More in ${section.category}`}
+          title={`More in ${section.name}`}
           cardClassName="card"
-          items={siblings.map((s) => ({
-            href: s.href,
-            label: s.title,
-            key: s.slug,
+          items={siblings.map((entry) => ({
+            href: `/news/${section.slug}/${entry.slug}`,
+            label: entry.title,
+            key: entry.slug,
           }))}
         />
       )}
@@ -68,10 +150,10 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
     <PageShell activeNavId="news" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — reporting, no outbound operator links */}
       <Breadcrumbs
-        currentPath={story.href}
+        currentPath={href}
         items={[
           { label: "News", href: "/news" },
-          { label: section.category, href: section.href },
+          { label: section.name, href: `/news/${section.slug}` },
           { label: story.title },
         ]}
       />
@@ -79,8 +161,11 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
       <article aria-labelledby="story-title" className="w-full flex flex-col gap-5">
         <header className="flex flex-col gap-3 max-w-header">
           <p className="meta-label-caps">
-            <Link href={section.href} className="no-underline hover:underline underline-offset-2">
-              {section.category}
+            <Link
+              href={`/news/${section.slug}`}
+              className="no-underline hover:underline underline-offset-2"
+            >
+              {section.name}
             </Link>
           </p>
           <h1
@@ -94,16 +179,19 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
           </p>
         </header>
 
-        <ArticleByline
-          name={newsStoryAuthor.name}
-          credential={newsStoryAuthor.credential}
-          profileHref={newsStoryAuthor.profileHref}
-          publishedAt={story.publishedAt}
-          readTime={story.readTime}
-        />
+        {author && (
+          <ArticleByline
+            name={author.name}
+            credential={author.credentialLine}
+            profileHref={`/authors/${author.slug}`}
+            publishedAt={story.publishedAt ? formatDate(story.publishedAt) : ""}
+            readTime={readTime(story.body)}
+          />
+        )}
 
         <figure className="w-full">
-          {/* TODO(cms): real <Image> + a <figcaption> credit line; both required before publish. */}
+          {/* TODO Phase 4 hold — heroImage is on the schema but image rendering
+              needs the Media upload wiring, which is not in FW-1. */}
           <div
             aria-hidden="true"
             className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
@@ -112,51 +200,32 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
           </div>
         </figure>
 
-        <div className="flex flex-col gap-5">
-          <p className="text-article text-text-strong-secondary text-pretty">
-            [Placeholder opening paragraph — the news in the first two sentences, then the context
-            that makes it matter. Editorial register: reporting only, no operator links anywhere in
-            this template.]
-          </p>
+        <RichText data={story.body} />
 
-          <h2 id="what-happened" className="heading text-h2 leading-heading mt-4">
-            What happened
-          </h2>
-          <p className="text-article text-text-strong-secondary text-pretty">
-            [Placeholder body paragraph.] Internal links go to our own explainers — for example{" "}
-            <Link href="/articles" className="link-inline">
-              our betting guides
-            </Link>{" "}
-            or the{" "}
-            <Link href={section.href} className="link-inline">
-              rest of our {section.category.toLowerCase()} coverage
-            </Link>
-            .
-          </p>
+        {takeaways.length > 0 && <KeyTakeaways items={takeaways} />}
 
-          <h2 id="what-it-means" className="heading text-h2 leading-heading mt-4">
-            What it means
-          </h2>
-          <p className="text-article text-text-strong-secondary text-pretty">
-            [Placeholder closing section — the practical read for a bettor, without recommending an
-            operator.]
-          </p>
-        </div>
-
-        <KeyTakeaways items={newsStoryTakeaways} />
-
-        {/* TODO(cms): Sources[] — publisher, title, url, retrievedAt per entry.
-            Until the desk files them the section states their absence rather
-            than rendering plausible-looking citations. */}
         <EditorialSection title="Sources" register="editorial" tier="supporting">
-          <EmptyState
-            title="No sources filed for this story yet"
-            body="Every claim carrying a number needs a citation — publisher, title, link, and the date we retrieved it — before this story publishes."
-          />
+          {sources.length === 0 ? (
+            <EmptyState
+              title="No sources filed for this story yet"
+              body="Every claim carrying a number needs a citation — publisher, title, link, and the date we retrieved it — before this story publishes."
+            />
+          ) : (
+            <ul role="list" className="flex flex-col gap-2">
+              {sources.map((source) => (
+                <li key={source.id ?? source.url}>
+                  <a href={source.url!} rel="nofollow noopener noreferrer" className="link-inline">
+                    {source.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </EditorialSection>
 
         <EditorialSection title="Corrections" register="editorial" tier="supporting">
-          {/* TODO(cms): revisions[] — a published correction appends a dated entry here. */}
+          {/* TODO(cms): revisions[] — News has no corrections field. The block
+              states their absence rather than inventing one. */}
           <Prose>
             No corrections have been issued for this story. Spotted something wrong?{" "}
             <Link href="/contact" className="link-inline">
@@ -169,14 +238,14 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
 
       {siblings.length > 0 && (
         <EditorialSection
-          title={`More in ${section.category}`}
-          titleHref={section.href}
+          title={`More in ${section.name}`}
+          titleHref={`/news/${section.slug}`}
           register="editorial"
         >
           <ul role="list" className="flex flex-col gap-3">
-            {siblings.map((s) => (
-              <li key={s.slug}>
-                <PostRow post={storyRow(s)} />
+            {siblings.map((entry) => (
+              <li key={entry.id}>
+                <PostRow post={storyRow(entry, section.slug)} />
               </li>
             ))}
           </ul>

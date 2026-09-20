@@ -102,11 +102,59 @@ test("autolink nodes are enforced the same way", () => {
   );
 });
 
-test("internal linkType throws in development rather than rendering '#'", () => {
-  assert.throws(
-    () => render({ linkType: "internal", newTab: false }),
-    /internalDocToHref is not yet implemented/,
+const doc = (relationTo: string, value: Record<string, unknown>) => ({
+  linkType: "internal",
+  newTab: false,
+  doc: { relationTo, value },
+});
+
+test("internal links map each linkable collection to its route", () => {
+  const cases: [string, Record<string, unknown>, string][] = [
+    ["articles", { slug: "odds-boosts" }, "/articles/odds-boosts"],
+    ["authors", { slug: "dave" }, "/authors/dave"],
+    ["verticals", { slug: "sportsbooks" }, "/categories/sportsbooks"],
+    ["news-sections", { slug: "football" }, "/news/football"],
+    [
+      "news",
+      { slug: "transfer-window", section: { slug: "football" } },
+      "/news/football/transfer-window",
+    ],
+    [
+      "reviews",
+      { slug: "stakeblogs", vertical: { slug: "online-casinos" } },
+      "/reviews/online-casinos/stakeblogs",
+    ],
+  ];
+  for (const [relationTo, value, href] of cases) {
+    assert.ok(
+      render(doc(relationTo, value)).includes(`href="${href}"`),
+      `${relationTo} -> ${href}`,
+    );
+  }
+});
+
+// Anything unresolvable becomes a visibly broken href rather than a silent "#",
+// so a bad link is findable in the rendered page.
+test("unresolvable internal links fall through to a visible marker", () => {
+  const unresolved = 'href="/#internal-link-not-resolved"';
+  // A news story whose section was not populated deeply enough.
+  assert.ok(render(doc("news", { slug: "transfer-window" })).includes(unresolved));
+  // A review whose vertical was not populated.
+  assert.ok(render(doc("reviews", { slug: "stakeblogs" })).includes(unresolved));
+  // A collection that is not linkable from body content.
+  assert.ok(render(doc("comments", { slug: "whatever" })).includes(unresolved));
+  // A reference that came back as a bare id rather than a document.
+  assert.ok(
+    render({
+      linkType: "internal",
+      newTab: false,
+      doc: { relationTo: "articles", value: 7 },
+    }).includes(unresolved),
   );
+});
+
+test("internal links are never treated as external", () => {
+  assert.ok(!render(doc("articles", { slug: "odds-boosts" })).includes("nofollow"));
 });
 
 test("empty and unparseable hrefs are not external", () => {
