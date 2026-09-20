@@ -460,6 +460,10 @@ async function seedHelpDirectory() {
         note("skipped", `help-directory-entries/${entry.name}`);
         continue;
       }
+      // A bracketed name is a placeholder organisation, not a checked one, so
+      // it carries no verification stamp — the route's verified filter then
+      // keeps it off the page (CLAUDE.md rule 3).
+      const verified = !entry.name.includes("[");
       await payload.create({
         collection: "help-directory-entries",
         data: {
@@ -473,9 +477,9 @@ async function seedHelpDirectory() {
             website: entry.contacts.site || undefined,
             chat: entry.contacts.chat || undefined,
           },
-          verified: true,
-          verifiedAt: new Date().toISOString(),
-          isCrisisLine: Boolean(entry.isCrisisLine),
+          verified,
+          verifiedAt: verified ? new Date().toISOString() : undefined,
+          isCrisisLine: verified && Boolean(entry.isCrisisLine),
         } as never,
       });
       note("created", `help-directory-entries/${entry.name}`);

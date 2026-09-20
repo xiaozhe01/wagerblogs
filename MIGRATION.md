@@ -447,3 +447,65 @@ One intermediate wart was accepted rather than pulled forward:
 `/reviews/casinos/crownline-coins` still resolves, because the operator detail
 route is lib-backed until Phase 4C. Nothing links to it — it is a stale URL
 that still answers, not a broken link — and it stops resolving when 4C lands.
+
+## Known skeletons
+
+Sites that render a grey `placeholder-asset` block or an empty list **by
+design**, not because the wiring was missed. Each one is either waiting on a
+schema field that does not exist yet, or on a route that has not been flipped
+to Payload. This is institutional memory, not a bug list: check here before
+filing one.
+
+The author-photo pattern is the reference for all of them — a populated
+relationship renders the image, an unpopulated one keeps the caller's own
+skeleton (`components/cards/MediaImage.tsx` returns `null` rather than
+inventing a placeholder).
+
+### Operator logo — 4 sites
+
+| Site | Surface |
+| --- | --- |
+| `app/(frontend)/reviews/[vertical]/[slug]/page.tsx` | operator mark on the review header |
+| `components/section/ReviewDirectorySection.tsx` | directory tile |
+| `components/section/RankedList.tsx` | ranked-list row |
+| `components/cards/BonusOfferCard.tsx` | bonus card |
+
+`Reviews` has no `logo` upload field, so there is nothing to render. One field
+covers all four: `BonusOffers.operator` is a relationship to `reviews`, so the
+bonus card reads the logo through it at depth 2. Deferred rather than added
+alone — it batches with the next round of Reviews schema additions, since each
+one costs a migration.
+
+### UGC avatars — 3 sites
+
+`components/section/Comments.tsx` (comment row and the composer) and the
+reader-review row in `app/(frontend)/reviews/[vertical]/[slug]/page.tsx`.
+
+`Users` has no avatar field, deliberately: UGC identity is kept thin, and an
+uploaded avatar is a moderation surface that FW-2 has not scoped. Revisit with
+the comment and reader-review forms if it becomes relevant then; until then
+these stay skeletons and are **correct as-is**.
+
+### Lib-backed teaser sections — 3 components
+
+`components/section/RecentPublishedSection.tsx`,
+`components/section/LatestStoriesSection.tsx` and
+`components/section/LatestNewsSection.tsx` still read `lib/` fixtures. They
+render skeleton thumbnails because their data never had a `heroImage` to begin
+with — the fix is Phase 4D-3 flipping them to Payload queries, not a media
+change.
+
+Three thumbnail surfaces remain unwired even where a `heroImage` exists —
+`PostRow`, `BlogPostCard`, and the editor's-lead image on
+`app/(frontend)/categories/[slug]/page.tsx`. `PostTeaser` carries no thumbnail
+field, so the adapters (`storyRow`, `articleRow`) have nowhere to put one.
+Open, not deferred.
+
+### Not a skeleton: `seo.ogImage`
+
+Every collection with `seoFields` has an `ogImage` upload, and no
+`generateMetadata` reads it — there is no `openGraph.images` anywhere in the
+codebase, and `app/(frontend)/layout.tsx` still carries the
+`TODO(cms): per-route openGraph images` marker. Social cards fall back to the
+sitewide default. Invisible on-page, so it does not show up as a grey box, but
+it is the same class of gap.

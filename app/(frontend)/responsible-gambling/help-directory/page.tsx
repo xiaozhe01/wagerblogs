@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import type { HelpDirectoryEntry } from "@/payload-types";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
@@ -8,11 +11,12 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import FilterChips from "@/components/controls/FilterChips";
 import Prose from "@/components/section/Prose";
-import { ALL_REGIONS, REGION_PARAM, regions } from "@/lib/site-data";
-import { helpDirectory } from "@/lib/mock-data";
-import { HELP_CONTACT_KINDS } from "@/lib/types";
-import { chipHref, headingId, resolveChip } from "@/lib/utils";
+import { ALL_REGIONS, REGION_PARAM, regionLabels, regions } from "@/lib/site-data";
+import { chipHref, formatDate, headingId, resolveChip } from "@/lib/utils";
 
+export const revalidate = 3600;
+
+// HelpDirectoryEntries carries no seo group — one page, stable copy.
 export const metadata: Metadata = {
   title: "Gambling-Help Directory — WagerBlogs",
   description:
@@ -21,6 +25,10 @@ export const metadata: Metadata = {
 };
 
 const DIRECTORY_ANCHOR = "directory";
+
+// The schema's contacts group, in render order. lib/types.ts calls the middle
+// one "site"; the collection calls it "website" and the collection wins.
+const CONTACT_KINDS = ["phone", "website", "chat"] as const;
 
 const regionHref = (region: string) =>
   chipHref({
@@ -37,17 +45,37 @@ export default async function RGDirectoryPage({
 }) {
   const query = await searchParams;
   const activeRegion = resolveChip(regions, query[REGION_PARAM], ALL_REGIONS);
-  const visibleGroups =
-    activeRegion === ALL_REGIONS
-      ? helpDirectory
-      : helpDirectory.filter((g) => g.region === activeRegion);
+
+  const payload = await getPayload({ config });
+  // HelpDirectoryEntries is structural — no drafts, so no _status filter. The
+  // verified gate is CLAUDE.md rule 3: an unchecked organisation is not a real
+  // one, and a help directory is the worst place to guess.
+  const { docs: entries } = await payload.find({
+    collection: "help-directory-entries",
+    where: { verified: { equals: true } },
+    sort: "name",
+    depth: 0,
+    pagination: false,
+    overrideAccess: false,
+  });
+
+  // Grouped in the taxonomy's own order, not the order records happen to load.
+  const visibleGroups = regions
+    .filter((region) => region !== ALL_REGIONS)
+    .filter((region) => activeRegion === ALL_REGIONS || region === activeRegion)
+    .map((region) => ({
+      region,
+      entries: entries.filter((entry) => entry.region === region),
+    }))
+    .filter((group) => group.entries.length > 0);
+
   const rail = (
     <>
       <nav aria-label="Regions" className="card">
         <AnchorList
           items={regions.map((r) => ({
             href: regionHref(r),
-            label: r,
+            label: regionLabels[r],
             key: r,
             current: r === activeRegion,
           }))}
@@ -111,7 +139,7 @@ export default async function RGDirectoryPage({
         <FilterChips
           label="Filter by region"
           items={regions.map((r) => ({
-            label: r,
+            label: regionLabels[r],
             key: r,
             href: regionHref(r),
             active: r === activeRegion,
@@ -131,7 +159,7 @@ export default async function RGDirectoryPage({
                   id={headingId("region", activeRegion)}
                   className="heading text-h2 leading-heading"
                 >
-                  {activeRegion}
+                  {regionLabels[activeRegion]}
                 </h2>
                 <span className="text-xs text-text-muted font-semibold tabular-nums">
                   0 Organizations
@@ -140,7 +168,7 @@ export default async function RGDirectoryPage({
               {/* min-h-80 so an empty region holds the rhythm a populated one does. */}
               <EmptyState
                 className="min-h-80"
-                title={`No verified organizations for ${activeRegion} yet`}
+                title={`No verified organizations for ${regionLabels[activeRegion]} yet`}
                 body="Entries appear here only after their contact details are checked against the organization's own published information."
                 action={{
                   href: regionHref(ALL_REGIONS),
@@ -156,7 +184,7 @@ export default async function RGDirectoryPage({
                   id={headingId("region", grp.region)}
                   className="heading text-h2 leading-heading"
                 >
-                  {grp.region}
+                  {regionLabels[grp.region]}
                 </h2>
                 <span className="text-xs text-text-muted font-semibold tabular-nums">
                   {grp.entries.length} Organizations
@@ -167,7 +195,7 @@ export default async function RGDirectoryPage({
                 className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3 items-stretch"
               >
                 {grp.entries.map((e) => (
-                  <li key={e.name} className="min-w-0 flex">
+                  <li key={e.id} className="min-w-0 flex">
                     <article
                       aria-labelledby={headingId("org", e.name)}
                       className="grow border border-border-divider rounded-md p-4 flex flex-col"
@@ -190,13 +218,15 @@ export default async function RGDirectoryPage({
                           </span>
                         </div>
                       </div>
-                      <p className="text-xs text-text-muted leading-relaxed mb-3">{e.desc}</p>
+                      <p className="text-xs text-text-muted leading-relaxed mb-3">
+                        {e.description}
+                      </p>
                       <dl className="flex flex-col gap-1.5 mb-3.5">
-                        {HELP_CONTACT_KINDS.map((kind) => {
-                          const value = e.contacts[kind];
+                        {CONTACT_KINDS.map((kind) => {
+                          const value = e.contacts?.[kind];
                           return (
                             <div key={kind} className="flex gap-2.5 items-center">
-                              <dt className="w-11 shrink-0 text-2xs font-semibold text-text-muted uppercase tracking-wide">
+                              <dt className="w-16 shrink-0 text-2xs font-semibold text-text-muted uppercase tracking-wide">
                                 {kind}
                               </dt>
                               {value ? (
@@ -213,7 +243,7 @@ export default async function RGDirectoryPage({
                         })}
                       </dl>
                       <p className="meta-label border-t border-dashed border-border-input pt-2.5 mt-auto leading-relaxed">
-                        Verified — [pending] · entry does not publish without this stamp
+                        {verifiedStamp(e)} · entry does not publish without this stamp
                       </p>
                     </article>
                   </li>
@@ -235,4 +265,12 @@ export default async function RGDirectoryPage({
       </EditorialSection>
     </PageShell>
   );
+}
+
+/** verified gates the query; verifiedAt is the date behind the claim. An entry
+ * can be verified without one, and the stamp says so rather than inventing a
+ * date. */
+function verifiedStamp(entry: HelpDirectoryEntry) {
+  if (!entry.verifiedAt) return "Verified — [date pending]";
+  return `Verified — ${formatDate(entry.verifiedAt)}`;
 }

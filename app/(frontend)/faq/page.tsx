@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { getPayload } from "payload";
+import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import AnchorList from "@/components/rail/AnchorList";
 import InfoCard from "@/components/rail/InfoCard";
 import EditorialSection from "@/components/section/EditorialSection";
+import EmptyState from "@/components/section/EmptyState";
 import Prose from "@/components/section/Prose";
 import {
   Accordion,
@@ -12,9 +15,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { siteFaqs } from "@/lib/faq";
 import { JsonLd, faqPageJsonLd } from "@/lib/schema";
 
+export const revalidate = 3600;
+
+// The FAQ global carries no seo group — one page, stable copy.
 export const metadata: Metadata = {
   title: "FAQ — WagerBlogs",
   description: "How we review operators, how we make money, and what we do when we get it wrong.",
@@ -36,8 +41,17 @@ const relatedPages = [
   { href: "/responsible-gambling", label: "Responsible gambling", key: "rg" },
 ];
 
-export default function FaqPage() {
-  const faqSchema = faqPageJsonLd(siteFaqs);
+export default async function FaqPage() {
+  const payload = await getPayload({ config });
+  // FAQ is a global — no drafts. The per-entry `status` is the entry's own
+  // moderation state, not the editorial _status lifecycle.
+  const faq = await payload.findGlobal({ slug: "faq", depth: 0, overrideAccess: false });
+  const entries = (faq.entries ?? []).filter((entry) => entry.status === "published");
+  // faqPageJsonLd drops bracketed placeholders on top of this: a published
+  // entry whose answer is still a placeholder renders, but stays out of the
+  // rich result.
+  const faqSchema = faqPageJsonLd(entries.map((entry) => ({ q: entry.question, a: entry.answer })));
+
   const rail = (
     <>
       <AnchorList title="Read further" cardClassName="card" items={relatedPages} />
@@ -65,33 +79,41 @@ export default function FaqPage() {
         </p>
       </header>
 
-      {/* Only the entries with real answers reach the schema — see faqPageJsonLd.
-          Every question still renders on the page. */}
       {faqSchema && <JsonLd data={faqSchema} />}
 
       <EditorialSection title="Questions readers ask" register="editorial">
-        {/* multiple: a reader comparing two answers shouldn't lose the first
-            one to open the second. */}
-        <Accordion multiple>
-          {siteFaqs.map((faq) => (
-            <AccordionItem key={faq.q}>
-              <AccordionTrigger>{faq.q}</AccordionTrigger>
-              <AccordionContent>
-                <p className="text-sm font-semibold text-text-muted leading-relaxed text-pretty">
-                  {faq.a}
-                </p>
-                {faq.link && (
-                  <ArrowLink
-                    href={faq.link.href}
-                    className={`${sectionCtaClassName} min-h-11 w-fit`}
-                  >
-                    {faq.link.label}
-                  </ArrowLink>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        {entries.length === 0 ? (
+          <EmptyState
+            title="No questions published yet"
+            body="An entry appears here once it is marked published in the admin panel."
+            action={{ href: "/about", label: "About WagerBlogs" }}
+          />
+        ) : (
+          /* multiple: a reader comparing two answers shouldn't lose the first
+             one to open the second. */
+          <Accordion multiple>
+            {entries.map((entry) => (
+              <AccordionItem key={entry.id ?? entry.question}>
+                <AccordionTrigger>{entry.question}</AccordionTrigger>
+                <AccordionContent>
+                  {/* answer is a textarea, not rich text — whitespace-pre-line
+                      keeps an editor's line breaks without inviting markup. */}
+                  <p className="text-sm font-semibold text-text-muted leading-relaxed text-pretty whitespace-pre-line">
+                    {entry.answer}
+                  </p>
+                  {entry.sourceLink?.href && (
+                    <ArrowLink
+                      href={entry.sourceLink.href}
+                      className={`${sectionCtaClassName} min-h-11 w-fit`}
+                    >
+                      {entry.sourceLink.label || "Read the full answer"}
+                    </ArrowLink>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        )}
       </EditorialSection>
 
       <EditorialSection title="Still stuck?" register="editorial">

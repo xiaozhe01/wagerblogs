@@ -1,15 +1,55 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getPayload } from "payload";
+import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import AnchorList from "@/components/rail/AnchorList";
 import FilterChips from "@/components/controls/FilterChips";
-import { legalDocs, type DocSlug } from "@/lib/mock-data";
+import { RichText } from "@/components/rich-text/RichText";
+import { formatDate } from "@/lib/utils";
 
-// TODO(cms): swap for generateStaticParams() returning the real set of legal docs.
-export function generateStaticParams() {
-  return Object.keys(legalDocs).map((doc) => ({ doc }));
+// ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
+// skip the cache for that request only.
+export const revalidate = 3600;
+
+// LegalDocuments carries no seo group — the set is four documents with stable
+// copy, so the metadata lives here rather than as schema plumbing.
+const DOC_META: Record<string, { title: string; description: string }> = {
+  "privacy-policy": {
+    title: "Privacy Policy — WagerBlogs",
+    description:
+      "What WagerBlogs collects, why, how long it is kept, and the rights readers have over it.",
+  },
+  "terms-of-service": {
+    title: "Terms of Service — WagerBlogs",
+    description:
+      "The terms governing use of WagerBlogs: acceptable use, liability, and the law that applies.",
+  },
+  "affiliate-disclosure": {
+    title: "Affiliate Disclosure — WagerBlogs",
+    description:
+      "Which links earn WagerBlogs commission, and how that is kept out of editorial scoring.",
+  },
+  "cookie-policy": {
+    title: "Cookie Policy — WagerBlogs",
+    description:
+      "The cookies and analytics WagerBlogs runs, what each records, and how to opt out.",
+  },
+};
+
+/** LegalDocuments is a global — no drafts, so no _status filter. depth 2 so an
+ * internal link inside a section body can resolve: news and reviews need their
+ * parent section/vertical slug to build an href. */
+async function findLegalDocuments() {
+  const payload = await getPayload({ config });
+  return payload.findGlobal({ slug: "legal-documents", depth: 2, overrideAccess: false });
+}
+
+export async function generateStaticParams() {
+  const legal = await findLegalDocuments();
+  return (legal.documents ?? []).map((doc) => ({ doc: doc.slug }));
 }
 
 export async function generateMetadata({
@@ -18,24 +58,34 @@ export async function generateMetadata({
   params: Promise<{ doc: string }>;
 }): Promise<Metadata> {
   const { doc: docSlug } = await params;
-  const doc = legalDocs[docSlug as DocSlug];
-  if (!doc) return { title: "WagerBlogs" };
+  const meta = DOC_META[docSlug];
+  if (!meta) return { title: "WagerBlogs" };
   return {
-    title: `${doc.title} — WagerBlogs`,
-    description: `${doc.title} for WagerBlogs — what it covers, in plain language before it is legal.`,
+    title: meta.title,
+    description: meta.description,
     alternates: { canonical: `/legal/${docSlug}` },
   };
 }
 
 export default async function LegalPage({ params }: { params: Promise<{ doc: string }> }) {
   const { doc: docSlug } = await params;
-  const doc = legalDocs[docSlug as DocSlug];
+  const legal = await findLegalDocuments();
+  const documents = legal.documents ?? [];
+  const doc = documents.find((entry) => entry.slug === docSlug);
   if (!doc) notFound();
-  const sections = doc.sections.map((s, i) => ({
-    ...s,
+
+  // Anchors stay positional: renaming a heading must not break a link someone
+  // has already shared.
+  const sections = doc.sections.map((section, i) => ({
+    ...section,
     num: String(i + 1).padStart(2, "0"),
     anchorId: `section-${i + 1}`,
   }));
+  const revisions = doc.revisions ?? [];
+  const lastUpdated = revisions
+    .map((revision) => revision.date)
+    .sort()
+    .at(-1);
 
   const rail = (
     <>
@@ -44,28 +94,41 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         cardClassName="card"
         items={sections.map((s) => ({
           href: `#${s.anchorId}`,
-          label: `${s.num} · ${s.title}`,
+          label: `${s.num} · ${s.heading}`,
           key: s.anchorId,
         }))}
       />
       <AnchorList
         title="All legal documents"
         cardClassName="card"
-        items={Object.entries(legalDocs).map(([slug, d]) => ({
-          href: `/legal/${slug}`,
-          label: d.title,
-          key: slug,
-          current: slug === docSlug,
+        items={documents.map((entry) => ({
+          href: `/legal/${entry.slug}`,
+          label: entry.title,
+          key: entry.slug,
+          current: entry.slug === docSlug,
         }))}
       />
       <section className="card" aria-labelledby="rail-change-log">
         <h2 id="rail-change-log" className="heading text-sm mb-2.5">
           Change log
         </h2>
-        {/* TODO(cms): revisions[] — every published change appends a dated entry here. */}
-        <p className="text-xs text-text-muted tabular-nums leading-loose">
-          No revisions recorded yet.
-        </p>
+        {revisions.length === 0 ? (
+          <p className="text-xs text-text-muted tabular-nums leading-loose">
+            No revisions recorded yet.
+          </p>
+        ) : (
+          <ol className="flex flex-col gap-2.5">
+            {revisions.map((revision) => (
+              <li key={revision.id ?? revision.version} className="text-xs leading-loose">
+                <p className="font-semibold text-text-body tabular-nums">
+                  {revision.version} ·{" "}
+                  <time dateTime={revision.date}>{formatDate(revision.date)}</time>
+                </p>
+                <p className="text-text-muted">{revision.summary}</p>
+              </li>
+            ))}
+          </ol>
+        )}
       </section>
     </>
   );
@@ -83,8 +146,15 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">{doc.intro}</p>
         <p className="flex gap-4 flex-wrap text-xs text-text-muted tabular-nums">
           <span>Effective [date required]</span>
-          <span>Last updated [date required]</span>
-          <span>Version [n]</span>
+          <span>
+            Last updated{" "}
+            {lastUpdated ? (
+              <time dateTime={lastUpdated}>{formatDate(lastUpdated)}</time>
+            ) : (
+              "[date required]"
+            )}
+          </span>
+          <span>Version {doc.currentVersion}</span>
         </p>
       </header>
 
@@ -105,11 +175,11 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
       <section aria-label="Numbered sections" className="flex flex-col gap-3">
         <FilterChips
           label="Legal documents"
-          items={Object.entries(legalDocs).map(([slug, d]) => ({
-            href: `/legal/${slug}`,
-            label: d.title,
-            active: slug === docSlug,
-            key: slug,
+          items={documents.map((entry) => ({
+            href: `/legal/${entry.slug}`,
+            label: entry.title,
+            active: entry.slug === docSlug,
+            key: entry.slug,
           }))}
         />
         {/* Keyed so only the clauses replay the fade. Depends on the shared
@@ -125,11 +195,11 @@ export default async function LegalPage({ params }: { params: Promise<{ doc: str
               <div className="text-sm text-text-muted tabular-nums pt-0.5">#{s.num}</div>
               <div className="min-w-0">
                 <h2 id={`${s.anchorId}-title`} className="heading text-2xl leading-heading mb-2.5">
-                  {s.title}
+                  {s.heading}
                 </h2>
-                <p className="text-xl leading-loose text-text-strong-secondary text-pretty max-w-[68ch]">
-                  {s.body}
-                </p>
+                <div className="max-w-[68ch]">
+                  <RichText data={s.body} />
+                </div>
               </div>
             </section>
           ))}

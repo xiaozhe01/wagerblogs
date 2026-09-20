@@ -72,7 +72,19 @@ export const categories = [
 export const categoryFilters = ["All", "Guides", "Analysis", "Research"];
 
 // Region filter chips on the gambling-help directory — structural taxonomy.
-export const regions = ["All regions", "North America", "UK & Ireland", "Europe", "Asia-Pacific"];
+// Keys mirror the HelpDirectoryEntries.region enum, so the chip, the URL and
+// the stored value are one string; the label is display only.
+export const ALL_REGIONS = "all";
+export const regionLabels: Record<string, string> = {
+  [ALL_REGIONS]: "All regions",
+  "north-america": "North America",
+  "uk-ireland": "UK & Ireland",
+  europe: "Europe",
+  "asia-pacific": "Asia Pacific",
+  "latin-america": "Latin America",
+  "middle-east-africa": "Middle East and Africa",
+};
+export const regions = Object.keys(regionLabels);
 
 // Query-string contract for the filter chips. The "all" values are the first
 // entry of their own list rather than repeated literals, so a rename cannot
@@ -80,7 +92,6 @@ export const regions = ["All regions", "North America", "UK & Ireland", "Europe"
 export const TYPE_PARAM = "type";
 export const ALL_TYPES = categoryFilters[0];
 export const REGION_PARAM = "region";
-export const ALL_REGIONS = regions[0];
 
 // Sport filter chips on the latest-news rail — structural taxonomy.
 export const newsCategories = ["All", "Football", "Basketball", "Soccer", "Esports", "Industry"];

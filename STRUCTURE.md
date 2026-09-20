@@ -241,9 +241,11 @@ It only had to be skipped on the database that push had already built.
 
 Session-mode pooler (port 5432): **pool_size = 15 clients**.
 
-**Build parallelism.** Next prerenders with **7 worker processes**, each opening
-its own `getPayload` pool. The build-time cap must satisfy
-`workers x max < 15`.
+**Build parallelism.** Next collects page data and prerenders with a pool of
+worker processes, each opening its own `getPayload` pool. The build-time cap
+must satisfy `workers x max < 15`. The worker count defaults to cores-1 (7 on
+this machine), which is **pinned to 4** by `experimental.cpus` in
+`next.config.ts` — see below.
 
 **Dev / runtime.** One process — but active use is the admin panel _and_ route
 rendering _and_ ad-hoc queries at the same time. A cap of 2 here deadlocks on
@@ -257,20 +259,35 @@ connectionTimeoutMillis: 10_000,
 idleTimeoutMillis: 30_000,
 ```
 
-- **Build:** 7 workers x 2 = 14, leaving 1 spare for scripts and `rls:check`.
+- **Build:** 4 workers x 2 = 8, leaving 7 spare for scripts and `rls:check`.
 - **Dev:** 1 process x 10, comfortably under 15.
+
+**Why the worker count is pinned.** The default 7 workers x 2 = 14 fits under 15
+only on paper: it assumes the workers never all want a connection at once. That
+held while few routes queried Payload at collect time. FW-1 Phase 4D-2 added
+`generateStaticParams` on `/legal/[doc]` — enough extra collect-time query sites
+that all 7 workers wanted a pool simultaneously, and the build failed with
+`EMAXCONNSESSION` on a **different route each run** (`/legal/[doc]`, then
+`/authors/[slug]`). Capping workers at 4 fixes the multiplier rather than
+shaving the per-process cap, which keeps `max` at 2 and avoids the single-client
+deadlock risk that `max: 1` would carry.
+
+Note that `pg_stat_activity` is the wrong instrument here: it shows Supavisor's
+warm upstream connections to Postgres (15, near-permanently), not the client
+sessions the `pool_size` limit actually counts. It will look saturated even with
+nothing running. Trust the build's exit code, not the row count.
 
 The timeouts exist so that pool exhaustion surfaces as a **timeout error** —
 a loud failure — rather than an infinite hang, which is a silent one. Same
 principle as chaining verification commands with `&&` instead of `;`.
 
-Re-evaluate the production side if the build worker count changes (Next's
-default is CPU-count dependent), or as more routes are wired and each
-prerendered page opens more query sites.
+Re-evaluate the production side as more routes are wired and each prerendered
+page opens more query sites. The worker count no longer moves with the machine's
+core count, so a faster machine will not silently reintroduce the failure.
 
 ### Dev + build coexistence
 
-The dev server (`max` 10) and a build (7 x 2 = 14) **cannot run at the same
+The dev server (`max` 10) and a build (4 x 2 = 8) **cannot run at the same
 time** — combined they exceed the 15-client cap. Kill the dev server before
 `npm run build`, and restart it after.
 
@@ -293,8 +310,8 @@ manual step is bounded.
 ### If pressure grows
 
 - Raise Supabase `pool_size` in the dashboard (subject to plan limits).
-- Reduce Next build workers via `experimental.cpus` in `next.config.ts` —
-  trades build speed for headroom.
+- Reduce Next build workers further via `experimental.cpus` in `next.config.ts`
+  — trades build speed for headroom. Already applied at 4.
 - Add `?statement_timeout=30000` to `DATABASE_URL` to force stuck transactions
   to release. **Not applied** — it is aggressive (it kills any query over 30s)
   and is held as a follow-up should `idle in transaction` recur.

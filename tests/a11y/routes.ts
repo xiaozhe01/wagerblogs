@@ -7,12 +7,9 @@
 // /responsible-gambling). This file is the reconciled, current source of
 // truth for what a11y actually gets tested against.
 //
-// Dynamic routes ([slug]/[doc]) don't yet read their param — every page.tsx
-// in app/ renders the same static mock content regardless of slug (see
-// TODO(cms) markers in each route). Real-looking slugs are used anyway for
-// route/URL correctness, except /legal/[doc], which already has
-// generateStaticParams() over lib/mock-data.ts's legalDocs and is tested for
-// all four real doc slugs.
+// Slugs listed here are real records in Payload, not stand-ins: the dynamic
+// routes resolve their param against the database and 404 on a miss, so a
+// renamed or unpublished record fails this suite until the list follows it.
 
 export type Register = "editorial" | "comparison" | "mixed" | "utility";
 
