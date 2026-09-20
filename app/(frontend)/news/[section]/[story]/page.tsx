@@ -15,6 +15,7 @@ import KeyTakeaways from "@/components/section/KeyTakeaways";
 import LatestStoriesSection from "@/components/section/LatestStoriesSection";
 import EmptyState from "@/components/section/EmptyState";
 import Prose from "@/components/section/Prose";
+import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
 import { publishedFilter } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
@@ -121,6 +122,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
     overrideAccess: false,
   });
 
+  const hero = resolveMedia(story.heroImage);
   const author = typeof story.author === "object" ? story.author : undefined;
   const takeaways = (story.takeaways ?? [])
     .map((entry) => entry.takeaway)
@@ -190,14 +192,34 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
         )}
 
         <figure className="w-full">
-          {/* TODO Phase 4 hold — heroImage is on the schema but image rendering
-              needs the Media upload wiring, which is not in FW-1. */}
-          <div
-            aria-hidden="true"
-            className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
-          >
-            [hero image — 16:9, credit line required]
-          </div>
+          {/* No hero on the record keeps the existing skeleton shape. */}
+          {hero ? (
+            <>
+              <div className="relative w-full h-45 md:h-80 rounded-md overflow-hidden">
+                <MediaImage
+                  media={hero}
+                  fill
+                  sizes="(min-width: 1024px) 920px, 100vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              {(hero.credit || hero.caption) && (
+                <figcaption className="text-xs text-text-muted tabular-nums leading-loose mt-2">
+                  {hero.caption}
+                  {hero.caption && hero.credit ? " " : null}
+                  {hero.credit ? `Credit: ${hero.credit}` : null}
+                </figcaption>
+              )}
+            </>
+          ) : (
+            <div
+              aria-hidden="true"
+              className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
+            >
+              [hero image — 16:9, credit line required]
+            </div>
+          )}
         </figure>
 
         <RichText data={story.body} />

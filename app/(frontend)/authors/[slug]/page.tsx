@@ -1,53 +1,166 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
+import { getPayload } from "payload";
+import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PostRow from "@/components/cards/PostRow";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import InfoCard from "@/components/rail/InfoCard";
 import EditorialSection from "@/components/section/EditorialSection";
-import { mockAuthor, authorBeats, authorArticles, authorStandards } from "@/lib/mock-data";
+import EmptyState from "@/components/section/EmptyState";
+import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
+import { RichText } from "@/components/rich-text/RichText";
+import { publishedFilter } from "@/lib/payload-queries";
+import { readTime } from "@/lib/lexical";
+import { formatDate } from "@/lib/utils";
+import type { PostTeaser } from "@/lib/types";
 
-// TODO(cms): replace with generateStaticParams() from the CMS author list. This
-// route must 404 when no Person record exists — never render with a placeholder
-// name, stock headshot, or invented credential.
-// Required fields: photo, fullName, credential, bio, slug. Optional: sameAs, beats.
-export const metadata: Metadata = {
-  title: `${mockAuthor.name} — WagerBlogs`,
-  description: `${mockAuthor.name}, ${mockAuthor.credentialLine} — coverage areas, recent work, and the standards this desk holds itself to.`,
-  alternates: { canonical: `/authors/${mockAuthor.slug}` },
-};
+// ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
+// skip the cache for that request only.
+export const revalidate = 3600;
 
-export function generateStaticParams() {
-  return [{ slug: mockAuthor.slug }];
+async function findAuthor(slug: string, isDraft: boolean) {
+  const payload = await getPayload({ config });
+  const { where, draft } = publishedFilter(isDraft, { slug: { equals: slug } });
+  const { docs } = await payload.find({
+    collection: "authors",
+    where,
+    draft,
+    limit: 1,
+    depth: 1,
+    overrideAccess: false,
+  });
+  return docs[0];
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config });
+  // No draftMode context at build time — published only, explicitly.
+  const { where } = publishedFilter(false);
+  const { docs } = await payload.find({
+    collection: "authors",
+    where,
+    limit: 500,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs.map((author) => ({ slug: author.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const { isEnabled: isDraft } = await draftMode();
+  const author = await findAuthor(slug, isDraft);
+  if (!author) return { title: "Authors — WagerBlogs" };
+  // Straight from the seo group, placeholders included.
+  return {
+    title: author.seo?.metaTitle,
+    description: author.seo?.metaDescription,
+    alternates: { canonical: author.seo?.canonicalUrl || `/authors/${author.slug}` },
+  };
 }
 
 export default async function AuthorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  // Enforces the rule above: any slug used to render the placeholder record,
-  // making /authors/<anything> an unbounded soft-404.
-  if (slug !== mockAuthor.slug) notFound();
+  const { isEnabled: isDraft } = await draftMode();
+  const author = await findAuthor(slug, isDraft);
+  // No Person record is a genuine 404 — this page never renders with a
+  // placeholder name, stock headshot, or invented credential.
+  if (!author) notFound();
+
+  const payload = await getPayload({ config });
+  const byAuthor = { author: { equals: author.id } };
+  // Three sequential queries — one per editorial collection this author can
+  // appear in. Sequential rather than parallel to stay inside the pool budget
+  // documented in STRUCTURE.md.
+  const articles = await payload.find({
+    collection: "articles",
+    ...publishedFilter(isDraft, byAuthor),
+    sort: "-publishedAt",
+    limit: 10,
+    depth: 1,
+    overrideAccess: false,
+  });
+  const news = await payload.find({
+    collection: "news",
+    ...publishedFilter(isDraft, byAuthor),
+    sort: "-publishedAt",
+    limit: 10,
+    depth: 1,
+    overrideAccess: false,
+  });
+  const reviews = await payload.find({
+    collection: "reviews",
+    ...publishedFilter(isDraft, byAuthor),
+    sort: "-lastVerified",
+    limit: 10,
+    depth: 1,
+    overrideAccess: false,
+  });
+
+  const photo = resolveMedia(author.photo);
+  const beats = (author.beats ?? [])
+    .map((entry) => entry.beat)
+    .filter((entry): entry is string => Boolean(entry));
+  const standards = (author.standards ?? [])
+    .map((entry) => entry.standard)
+    .filter((entry): entry is string => Boolean(entry));
+  const sameAs = (author.sameAs ?? []).filter((entry) => entry.url);
+
+  const recent: PostTeaser[] = [
+    ...articles.docs.map((doc) => ({
+      kicker: doc.type,
+      title: doc.title,
+      excerpt: doc.excerpt,
+      meta: [doc.publishedAt ? formatDate(doc.publishedAt) : undefined, readTime(doc.body)]
+        .filter(Boolean)
+        .join(" · "),
+      href: `/articles/${doc.slug}`,
+    })),
+    ...news.docs.map((doc) => ({
+      kicker: "News",
+      title: doc.title,
+      excerpt: doc.excerpt,
+      meta: [doc.publishedAt ? formatDate(doc.publishedAt) : undefined, readTime(doc.body)]
+        .filter(Boolean)
+        .join(" · "),
+      href: typeof doc.section === "object" ? `/news/${doc.section.slug}/${doc.slug}` : `/news`,
+    })),
+    ...reviews.docs.map((doc) => ({
+      kicker: "Review",
+      title: `${doc.name} review`,
+      meta: `Last verified ${formatDate(doc.lastVerified)}`,
+      href:
+        typeof doc.vertical === "object" ? `/reviews/${doc.vertical.slug}/${doc.slug}` : `/reviews`,
+    })),
+  ];
 
   const rail = (
     <>
-      <section className="card" aria-labelledby="rail-coverage-areas">
-        <h2 id="rail-coverage-areas" className="heading text-sm mb-2.5">
-          Coverage areas
-        </h2>
-        {/* TODO(cms): these become links once an author-filtered archive exists.
-            Static until then — five rows pointing at one sample category is not
-            navigation. */}
-        <ul role="list" className="flex gap-2 flex-wrap">
-          {authorBeats.map((beat) => (
-            <li
-              key={beat}
-              className="btn-secondary min-h-0 py-2 px-3 text-xs leading-heading cursor-default"
-            >
-              {beat}
-            </li>
-          ))}
-        </ul>
-      </section>
+      {beats.length > 0 && (
+        <section className="card" aria-labelledby="rail-coverage-areas">
+          <h2 id="rail-coverage-areas" className="heading text-sm mb-2.5">
+            Coverage areas
+          </h2>
+          {/* TODO(cms): these become links once an author-filtered archive exists. */}
+          <ul role="list" className="flex gap-2 flex-wrap">
+            {beats.map((beat) => (
+              <li
+                key={beat}
+                className="btn-secondary min-h-0 py-2 px-3 text-xs leading-heading cursor-default"
+              >
+                {beat}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <InfoCard
         title="Editorial standards"
         body="How we research, source, and correct what we publish."
@@ -59,55 +172,81 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
   return (
     <PageShell activeNavId="more" register="editorial" rail={rail}>
       {/* Register: Editorial · Tier 1 — author identity surface, no outbound operator links */}
-      <Breadcrumbs items={[{ label: "About", href: "/about" }, { label: mockAuthor.name }]} />
+      <Breadcrumbs
+        currentPath={`/authors/${author.slug}`}
+        items={[{ label: "Authors", href: "/authors" }, { label: author.name }]}
+      />
 
       <header className="flex flex-col gap-4 md:gap-5 max-w-header border-t border-border-divider border-b py-4 md:py-5">
         <div className="flex flex-col md:flex-row items-start gap-4 md:gap-5">
-          <div className="w-24 h-24 md:w-30 md:h-30 rounded-full placeholder-asset shrink-0" />
+          {/* No photo on the record keeps the existing skeleton shape rather
+              than rendering a broken or invented image. */}
+          {photo ? (
+            <div className="w-24 h-24 md:w-30 md:h-30 rounded-full overflow-hidden shrink-0 relative">
+              <MediaImage media={photo} fill sizes="120px" className="object-cover" priority />
+            </div>
+          ) : (
+            <div className="w-24 h-24 md:w-30 md:h-30 rounded-full placeholder-asset shrink-0" />
+          )}
           <div className="min-w-0 flex flex-col gap-3">
             <h1 className="heading text-5xl-mobile md:text-5xl-tablet lg:text-5xl-desktop leading-snug text-pretty">
-              {mockAuthor.name}
+              {author.name}
             </h1>
-            <p className="text-sm font-medium text-text-muted">{mockAuthor.credentialLine}</p>
-            <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-              {mockAuthor.bio}
-            </p>
+            <p className="text-sm font-medium text-text-muted">{author.credentialLine}</p>
+            {author.bio && <RichText data={author.bio} />}
           </div>
         </div>
-        {/* TODO(cms): Person record — required: photo, fullName, credential, bio, slug.
-            Optional: sameAs, beats. Person schema requires name + url; no "WagerBlogs
-            Staff" fallback, no stock headshot, no invented credential. */}
       </header>
 
       <EditorialSection title="Recent work" register="editorial">
-        {/* TODO(cms): article list renders from posts where author === this record. */}
-        <ul role="list" className="flex flex-col gap-3">
-          {authorArticles.map((a) => (
-            <li key={a.title}>
-              <PostRow post={a} />
-            </li>
-          ))}
-        </ul>
+        {recent.length === 0 ? (
+          <EmptyState
+            title={`Nothing published by ${author.name} yet`}
+            body="Articles, news and reviews credited to this author appear here once published."
+          />
+        ) : (
+          <ul role="list" className="flex flex-col gap-3">
+            {recent.map((post) => (
+              <li key={post.href}>
+                <PostRow post={post} />
+              </li>
+            ))}
+          </ul>
+        )}
       </EditorialSection>
 
-      <EditorialSection title="How this author works" register="editorial">
-        <ul
-          role="list"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-legacy-4 md:gap-3"
-        >
-          {authorStandards.map((s) => (
-            <li key={s.title} className="border-t border-border-hairline pt-3">
-              <h3 className="text-lg font-semibold text-text-primary mb-1.5">{s.title}</h3>
-              <p className="text-sm text-text-muted leading-loose">{s.body}</p>
-            </li>
-          ))}
-        </ul>
-        <ArrowLink href="/about" className={sectionCtaClassName}>
-          Read our full editorial standards
-        </ArrowLink>
-      </EditorialSection>
+      {standards.length > 0 && (
+        <EditorialSection title="How this author works" register="editorial">
+          <ul role="list" className="flex flex-col gap-2">
+            {standards.map((standard) => (
+              <li
+                key={standard}
+                className="border-t border-border-hairline pt-3 text-sm text-text-muted leading-loose"
+              >
+                {standard}
+              </li>
+            ))}
+          </ul>
+          <ArrowLink href="/about" className={sectionCtaClassName}>
+            Read our full editorial standards
+          </ArrowLink>
+        </EditorialSection>
+      )}
 
-      {/* TODO(cms): sameAs profiles — omitted; contact routes to the editorial desk instead. */}
+      {sameAs.length > 0 && (
+        <EditorialSection title="Elsewhere" register="editorial" tier="supporting">
+          <ul role="list" className="flex flex-col gap-2">
+            {sameAs.map((entry) => (
+              <li key={entry.id ?? entry.url}>
+                <a href={entry.url!} rel="nofollow noopener noreferrer" className="link-inline">
+                  {entry.label || entry.url}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </EditorialSection>
+      )}
+
       <section aria-label="Contact this author" className="flex flex-col items-start gap-1">
         <p className="text-sm text-text-body font-medium leading-relaxed">
           Questions about this author&apos;s work?

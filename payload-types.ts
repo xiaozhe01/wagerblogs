@@ -200,7 +200,7 @@ export interface Article {
   /**
    * Required. blog/[slug]/page.tsx:92 TODO flags the hero image as required with figcaption credit — this enforces it at the schema level.
    */
-  heroImage: number | Media;
+  heroImage?: (number | null) | Media;
   /**
    * Figcaption/credit line for the hero image.
    */
@@ -337,9 +337,9 @@ export interface Author {
    */
   credentialLine: string;
   /**
-   * Author photo. Required — schema.org Person needs an image for Article structured data, and ArticleByline.tsx:11 states a real Person record must exist for an article to publish.
+   * Author photo. Optional: the frontend renders a blank profile skeleton when it is absent, which is honest about a missing photo. Leaving it empty is better than attaching an unrelated image — schema.org Person wants a real likeness, not a stand-in. Add it before the author fronts published work.
    */
-  photo: number | Media;
+  photo?: (number | null) | Media;
   /**
    * Long-form bio for the author page. Optional — the credentialLine covers the byline surface.
    */
@@ -452,7 +452,7 @@ export interface News {
     };
     [k: string]: unknown;
   };
-  heroImage: number | Media;
+  heroImage?: (number | null) | Media;
   heroImageCredit?: string | null;
   /**
    * Per-story takeaways. The current frontend has one shared newsStoryTakeaways array across all stories — this schema fixes that by making them per-record.

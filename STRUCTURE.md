@@ -237,36 +237,73 @@ This matters for a fresh database: running `npm run migrate` there **will**
 execute the baseline and build all 44 tables from scratch, which is correct.
 It only had to be skipped on the database that push had already built.
 
-## Build-time Postgres connection budget
+## Postgres connection budget
 
-Session-mode pooler (port 5432): **pool_size = 15 clients**. Next.js prerender
-uses **7 worker processes**; each opens its own `getPayload` pool. Current
-setting: **`pool.max = 2`** in `payload.config.ts`, giving 7 x 2 = 14
-build-time connections plus 1 headroom for a running dev server or an ad-hoc
-query.
+Session-mode pooler (port 5432): **pool_size = 15 clients**.
 
-Re-evaluate this budget if the build worker count changes (Next's default is
-CPU-count dependent), or as more routes are wired and each prerendered page
-starts querying Payload.
+**Build parallelism.** Next prerenders with **7 worker processes**, each opening
+its own `getPayload` pool. The build-time cap must satisfy
+`workers x max < 15`.
 
-If pressure grows:
+**Dev / runtime.** One process — but active use is the admin panel _and_ route
+rendering _and_ ad-hoc queries at the same time. A cap of 2 here deadlocks on
+any slow query or `idle in transaction` state.
+
+Current setting, in `payload.config.ts`:
+
+```ts
+max: process.env.NODE_ENV === "production" ? 2 : 10,
+connectionTimeoutMillis: 10_000,
+idleTimeoutMillis: 30_000,
+```
+
+- **Build:** 7 workers x 2 = 14, leaving 1 spare for scripts and `rls:check`.
+- **Dev:** 1 process x 10, comfortably under 15.
+
+The timeouts exist so that pool exhaustion surfaces as a **timeout error** —
+a loud failure — rather than an infinite hang, which is a silent one. Same
+principle as chaining verification commands with `&&` instead of `;`.
+
+Re-evaluate the production side if the build worker count changes (Next's
+default is CPU-count dependent), or as more routes are wired and each
+prerendered page opens more query sites.
+
+### Dev + build coexistence
+
+The dev server (`max` 10) and a build (7 x 2 = 14) **cannot run at the same
+time** — combined they exceed the 15-client cap. Kill the dev server before
+`npm run build`, and restart it after.
+
+**Diagnostic signature:** `EMAXCONNSESSION` during a build while the dev server
+is running.
+
+This is a manual step rather than a config problem: each cap is correct for its
+own context, and only their overlap breaks. The durable fix is raising Supabase
+`pool_size` in the dashboard — deferred, because it needs a paid plan and the
+manual step is bounded.
+
+### Diagnostic signatures
+
+| Where  | Signature                                                                                                                                                        |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Build  | `FATAL` / `EMAXCONNSESSION`, with **non-deterministic page names** failing between runs — a logic error names the same page every time                           |
+| Dev    | **Every Payload-querying route hangs** while cached routes still serve; `pg_stat_activity` shows `idle in transaction` connections that never return to the pool |
+| Either | pool acquire times out after 10s                                                                                                                                 |
+
+### If pressure grows
 
 - Raise Supabase `pool_size` in the dashboard (subject to plan limits).
-- Reduce Next build workers via `experimental.cpus` or
-  `experimental.workerThreads` in `next.config.ts` — trades build speed for
-  headroom.
+- Reduce Next build workers via `experimental.cpus` in `next.config.ts` —
+  trades build speed for headroom.
+- Add `?statement_timeout=30000` to `DATABASE_URL` to force stuck transactions
+  to release. **Not applied** — it is aggressive (it kills any query over 30s)
+  and is held as a follow-up should `idle in transaction` recur.
 - **Do not** switch to the transaction-mode pooler (port 6543) without testing.
-  Payload/Drizzle prepared statements break under transaction pooling in subtle
-  ways.
+  Drizzle prepared statements break under transaction pooling in subtle ways.
 
-**Diagnostic signature:** `FATAL` / `EMAXCONNSESSION` — "max clients reached in
-session mode" — with **non-deterministic page names** failing between runs,
-because it is whichever page happens to be holding a connection when the cap is
-hit. A logic error names the same page every time; this does not.
-
-A related trap, found the same day: chain verification commands with `&&`, not
-`;`. A `;` chain returns the exit code of the _last_ command, so a passing
-`rls:check` after a failing `npm run build` reports success overall.
+A `pool.max` change only takes effect on process restart, and a stuck
+`idle in transaction` client clears the same way — restart the dev server after
+touching this block.
 
 ## Seeding a fresh environment
 

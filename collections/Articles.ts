@@ -111,7 +111,6 @@ export const Articles: CollectionConfig = {
       name: 'heroImage',
       type: 'upload',
       relationTo: 'media',
-      required: true,
       admin: {
         description: 'Required. blog/[slug]/page.tsx:92 TODO flags the hero image as required with figcaption credit — this enforces it at the schema level.',
       },

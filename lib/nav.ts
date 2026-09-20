@@ -102,6 +102,7 @@ export const navGroups: NavGroup[] = [
     href: "/about",
     subs: [
       { label: "About Us", href: "/about#who-we-are", icon: "users" },
+      { label: "Authors", href: "/authors", icon: "authors" },
       {
         label: "How We Review",
         href: "/about#how-we-review",

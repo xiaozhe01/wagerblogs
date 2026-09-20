@@ -10,6 +10,7 @@ import ArticleByline from "@/components/section/ArticleByline";
 import BlogPostCard from "@/components/cards/BlogPostCard";
 import EditorialSection from "@/components/section/EditorialSection";
 import KeyTakeaways from "@/components/section/KeyTakeaways";
+import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
 import { publishedFilter } from "@/lib/payload-queries";
 import { deriveHeadings, readTime } from "@/lib/lexical";
@@ -75,6 +76,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // else's post.
   if (!article) notFound();
 
+  const hero = resolveMedia(article.heroImage);
   const author = typeof article.author === "object" ? article.author : undefined;
   const related = (article.related ?? []).filter(
     (entry): entry is Article => typeof entry === "object",
@@ -142,14 +144,34 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         )}
 
         <figure className="w-full">
-          {/* TODO Phase 4 hold — heroImage is on the schema but image rendering
-              needs the Media upload wiring, which is not in FW-1. */}
-          <div
-            aria-hidden="true"
-            className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
-          >
-            [hero image — 16:9, credit line required]
-          </div>
+          {/* No hero on the record keeps the existing skeleton shape. */}
+          {hero ? (
+            <>
+              <div className="relative w-full h-45 md:h-80 rounded-md overflow-hidden">
+                <MediaImage
+                  media={hero}
+                  fill
+                  sizes="(min-width: 1024px) 920px, 100vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              {(hero.credit || hero.caption) && (
+                <figcaption className="text-xs text-text-muted tabular-nums leading-loose mt-2">
+                  {hero.caption}
+                  {hero.caption && hero.credit ? " " : null}
+                  {hero.credit ? `Credit: ${hero.credit}` : null}
+                </figcaption>
+              )}
+            </>
+          ) : (
+            <div
+              aria-hidden="true"
+              className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
+            >
+              [hero image — 16:9, credit line required]
+            </div>
+          )}
         </figure>
 
         {toc.length > 0 && (

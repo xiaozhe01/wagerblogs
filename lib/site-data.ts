@@ -9,6 +9,7 @@ export const footerCols = [
     heading: "Company",
     links: [
       { label: "About Us", href: "/about" },
+      { label: "Authors", href: "/authors" },
       { label: "How We Review", href: "/about#how-we-review" },
       { label: "FAQ", href: "/faq" },
       { label: "Contact", href: "/contact" },

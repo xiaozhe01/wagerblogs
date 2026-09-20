@@ -51,6 +51,7 @@ export const subNavIcons: Record<string, LucideIcon> = {
   medal: Medal,
   layers: Layers,
   users: Users,
+  authors: Users,
   "badge-check": BadgeCheck,
   info: Info,
   mail: Mail,

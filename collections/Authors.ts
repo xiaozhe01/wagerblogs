@@ -59,9 +59,8 @@ export const Authors: CollectionConfig = {
       name: 'photo',
       type: 'upload',
       relationTo: 'media',
-      required: true,
       admin: {
-        description: 'Author photo. Required — schema.org Person needs an image for Article structured data, and ArticleByline.tsx:11 states a real Person record must exist for an article to publish.',
+        description: 'Author photo. Optional: the frontend renders a blank profile skeleton when it is absent, which is honest about a missing photo. Leaving it empty is better than attaching an unrelated image — schema.org Person wants a real likeness, not a stand-in. Add it before the author fronts published work.',
       },
     },
     {

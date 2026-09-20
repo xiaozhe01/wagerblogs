@@ -112,12 +112,18 @@ export default buildConfig({
   ],
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
-    // max caps the pool PER WORKER. Next prerenders with 7 workers, each
-    // opening its own getPayload pool, against a session pooler capped at 15
-    // clients. See STRUCTURE.md "Build-time Postgres connection budget".
+    // max caps the pool PER PROCESS, so the right value differs by environment.
+    // Build: Next prerenders with 7 workers, each opening its own pool, against
+    // a session pooler capped at 15 clients — 7 x 2 = 14 leaves one spare.
+    // Dev: a single process serving the admin panel, route renders and ad-hoc
+    // queries at once; a cap of 2 there deadlocks on one stuck client.
+    // The timeouts make exhaustion fail loudly instead of hanging forever.
+    // See STRUCTURE.md "Postgres connection budget".
     pool: {
       connectionString: process.env.DATABASE_URL || "",
-      max: 2,
+      max: process.env.NODE_ENV === "production" ? 2 : 10,
+      connectionTimeoutMillis: 10_000,
+      idleTimeoutMillis: 30_000,
     },
     push: false,
     migrationDir: "migrations",

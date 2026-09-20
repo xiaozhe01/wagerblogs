@@ -54,7 +54,7 @@ const allRoutes: RouteUnderTest[] = [
   },
   { path: "/categories/esports-betting", label: "Category directory", register: "editorial" },
   { path: "/reviews/sportsbooks?page=2", label: "Paged review group", register: "comparison" },
-  { path: "/authors/jane-placeholder", label: "Author bio", register: "editorial" },
+  { path: "/authors/jane", label: "Author bio", register: "editorial" },
   { path: "/legal/privacy-policy", label: "Legal — Privacy Policy", register: "utility" },
   { path: "/legal/terms-of-service", label: "Legal — Terms of Service", register: "utility" },
   {

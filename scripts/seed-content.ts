@@ -1,4 +1,3 @@
-import sharp from "sharp";
 import { getPayload } from "payload";
 import config from "../payload.config";
 import { applyRls } from "./rls";
@@ -146,42 +145,8 @@ async function requireBySlug(collection: string, slug: string) {
   return doc;
 }
 
-// --- 1. Media ---------------------------------------------------------------
-const PLACEHOLDER_ALT = "[placeholder hero — replace before publish]";
-
-async function seedPlaceholderMedia(): Promise<number> {
-  const { docs } = await payload.find({
-    collection: "media",
-    where: { alt: { equals: PLACEHOLDER_ALT } },
-    limit: 1,
-    depth: 0,
-    overrideAccess: false,
-  });
-  if (docs[0]) {
-    note("skipped", `media/${PLACEHOLDER_ALT}`);
-    return docs[0].id;
-  }
-
-  // Generated rather than committed: a labelled image, so nobody mistakes it
-  // for a failed load the way a plain grey rectangle reads.
-  const svg = `<svg width="1600" height="900" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1600" height="900" fill="#d4d0c8"/>
-    <rect x="24" y="24" width="1552" height="852" fill="none" stroke="#8a857c" stroke-width="6" stroke-dasharray="28 20"/>
-    <text x="50%" y="46%" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="104" font-weight="700" fill="#5c574e" letter-spacing="6">PLACEHOLDER HERO</text>
-    <text x="50%" y="58%" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="44" fill="#6f6a60">replace before publish</text>
-  </svg>`;
-  const data = await sharp(Buffer.from(svg)).png().toBuffer();
-  const doc = await payload.create({
-    collection: "media",
-    data: { alt: PLACEHOLDER_ALT },
-    file: { data, mimetype: "image/png", name: "placeholder-hero.png", size: data.byteLength },
-  });
-  note("created", `media/${PLACEHOLDER_ALT}`);
-  return doc.id;
-}
-
 // --- 2. Authors -------------------------------------------------------------
-async function seedAuthors(photoId: number) {
+async function seedAuthors() {
   // mockAuthor and newsStoryAuthor are the same fixture person — both resolve
   // to jane-placeholder — so the list is deduped by slug rather than creating
   // one record twice. Dave is a real record created in the admin and is not a
@@ -218,7 +183,10 @@ async function seedAuthors(photoId: number) {
         name: required(person.name, `author ${person.slug} name`),
         slug: person.slug,
         credentialLine: required(person.credentialLine, `author ${person.slug} credentialLine`),
-        photo: photoId,
+        // No photo: the hero placeholder is not a likeness, and the frontend
+        // renders a blank profile skeleton when this is empty. A real photo is
+        // uploaded per author in the admin panel.
+
         bio: person.bio ? richText(paragraph(text(person.bio))) : undefined,
         active: true,
         _status: "published",
@@ -355,7 +323,7 @@ const ARTICLE_TYPE: Record<string, string> = {
   Blog: "blog",
 };
 
-async function seedArticles(authorId: number, photoId: number, reviewIds: Record<string, number>) {
+async function seedArticles(authorId: number, reviewIds: Record<string, number>) {
   // All three fixtures are sports-betting explainers, so sportsbooks is the
   // best fit rather than an arbitrary default.
   const vertical = await requireBySlug("verticals", "sportsbooks");
@@ -392,7 +360,8 @@ async function seedArticles(authorId: number, photoId: number, reviewIds: Record
         publishedAt: isoDate(post.publishedAt, `article ${post.slug} publishedAt`),
         excerpt: required(post.excerpt, `article ${post.slug} excerpt`),
         body: placeholderBody(post.title, extra),
-        heroImage: photoId,
+        // No heroImage: the frontend renders a labelled skeleton when absent,
+        // which is honest about an asset nobody has supplied yet.
         takeaways: [
           { takeaway: "Placeholder takeaway — replace with the piece's real conclusion." },
         ],
@@ -413,7 +382,15 @@ const BEAT: Record<string, string> = {
   Industry: "business",
 };
 
-async function seedNews(authorId: number, photoId: number) {
+/** One seeded body carries a link that resolves, so internalDocToHref has a
+ * demonstrated success path in real rendered output — not only in tests. Its
+ * counterpart is the deliberately unresolvable link in the parlays article,
+ * which exercises the failure path. */
+const LINKED_STORY = "placeholder-headline-football";
+
+async function seedNews(authorId: number) {
+  const sportsbooks = await requireBySlug("verticals", "sportsbooks");
+
   for (const section of newsSections) {
     const sectionDoc = await requireBySlug("news-sections", section.slug);
     for (const story of section.stories) {
@@ -421,6 +398,16 @@ async function seedNews(authorId: number, photoId: number) {
         note("skipped", `news/${story.slug}`);
         continue;
       }
+      const extra =
+        story.slug === LINKED_STORY
+          ? [
+              paragraph(
+                text("Placeholder cross-reference awaiting editorial — see our "),
+                internalLink("verticals", sportsbooks.id, "Sportsbooks category"),
+                text(" for related coverage."),
+              ),
+            ]
+          : [];
       await payload.create({
         collection: "news",
         data: {
@@ -431,8 +418,8 @@ async function seedNews(authorId: number, photoId: number) {
           author: authorId,
           publishedAt: isoDate(story.publishedAt, `news ${story.slug} publishedAt`),
           excerpt: required(story.excerpt, `news ${story.slug} excerpt`),
-          body: placeholderBody(story.title),
-          heroImage: photoId,
+          body: placeholderBody(story.title, extra),
+          // No heroImage — see seedArticles.
           takeaways: [
             { takeaway: "Placeholder takeaway — replace with the story's real conclusion." },
           ],
@@ -566,19 +553,17 @@ async function seedGlobals() {
 }
 
 // --- run --------------------------------------------------------------------
-console.log("\nmedia");
-const photoId = await seedPlaceholderMedia();
 console.log("\nauthors");
-const authorIds = await seedAuthors(photoId);
+const authorIds = await seedAuthors();
 const primaryAuthor = authorIds[mockAuthor.slug];
 console.log("\nreviews");
 const reviewIds = await seedReviews(primaryAuthor);
 console.log("\nbonus-offers");
 await seedBonusOffers(reviewIds);
 console.log("\narticles");
-await seedArticles(primaryAuthor, photoId, reviewIds);
+await seedArticles(primaryAuthor, reviewIds);
 console.log("\nnews");
-await seedNews(authorIds["jane-placeholder"] ?? primaryAuthor, photoId);
+await seedNews(authorIds["jane-placeholder"] ?? primaryAuthor);
 console.log("\nhelp-directory-entries");
 await seedHelpDirectory();
 console.log("\nglobals");
