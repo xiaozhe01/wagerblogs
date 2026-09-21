@@ -23,5 +23,6 @@ export function storyRow(
       (part): part is string => Boolean(part),
     ),
     href: `/news/${sectionSlug}/${story.slug}`,
+    thumbnail: story.heroImage,
   };
 }

@@ -19,5 +19,6 @@ export function articleRow(article: Article): PostTeaser {
       (part): part is string => Boolean(part),
     ),
     href: `/articles/${article.slug}`,
+    thumbnail: article.heroImage,
   };
 }

@@ -194,6 +194,7 @@ export default async function Home({
       byline: [author ? `by ${author.name}` : undefined, published, readTime(article.body)]
         .filter(Boolean)
         .join(" · "),
+      thumbnail: article.heroImage,
     };
   });
 

@@ -1,3 +1,5 @@
+import type { Media } from "@/payload-types";
+
 // Shared content types, mirrored from the eventual PayloadCMS collection
 // shapes (see docs/00-six-layer-map.md Layer 2 and
 // docs/04-claude-code-implementation-brief.md Phase 1). Front-end is being
@@ -68,6 +70,10 @@ export type PostTeaser = {
   metaItems?: string[];
   /** Required: a teaser that renders as a link needs somewhere to go. */
   href: string;
+  /** The record's heroImage, passed through by the row builders. Unpopulated
+   * or absent renders the skeleton — typed off payload-types rather than
+   * MediaImage's MediaRef so lib does not depend on components. */
+  thumbnail?: Media | number | null;
 };
 
 export type NewsItem = {

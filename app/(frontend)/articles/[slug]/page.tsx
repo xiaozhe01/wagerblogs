@@ -204,6 +204,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   kicker={entry.type}
                   title={entry.title}
                   byline={entry.publishedAt ? formatDate(entry.publishedAt) : ""}
+                  thumbnail={entry.heroImage}
                 />
               </li>
             ))}

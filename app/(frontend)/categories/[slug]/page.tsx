@@ -19,6 +19,7 @@ import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
 import { chipHref, chipMatches, chipSlug, formatDate, headingId, resolveChip } from "@/lib/utils";
 import { readTime } from "@/lib/lexical";
 import { articleRow } from "@/lib/article-rows";
+import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import PageNav from "@/components/controls/PageNav";
 import type { Article } from "@/payload-types";
@@ -206,12 +207,25 @@ export default async function CategoryPage({
             href={`/articles/${lead.slug}`}
             className="flex flex-col md:flex-row gap-3.5 md:gap-4 items-stretch md:items-center no-underline border-t border-b border-border-divider py-4 md:py-5"
           >
-            <div
-              aria-hidden="true"
-              className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-muted tabular-nums text-center"
-            >
-              [lead image — credit line required]
-            </div>
+            {/* No heroImage on the record keeps the skeleton shape.
+                Measured: 343px at 390, 320px from md up. */}
+            {resolveMedia(lead.heroImage) ? (
+              <div className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md overflow-hidden relative">
+                <MediaImage
+                  media={lead.heroImage}
+                  fill
+                  sizes="(min-width: 768px) 320px, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div
+                aria-hidden="true"
+                className="w-full md:w-80 h-45 md:h-50 shrink-0 rounded-md placeholder-asset text-2xs text-text-muted tabular-nums text-center"
+              >
+                [lead image — credit line required]
+              </div>
+            )}
             <div className="min-w-0 flex flex-col gap-2">
               <p className="meta-label-caps">Editor&apos;s lead</p>
               <h2 id="editors-lead" className="heading text-4xl leading-heading text-pretty">

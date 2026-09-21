@@ -2,6 +2,7 @@ import BlogPostCard from "../cards/BlogPostCard";
 import EditorialSection from "./EditorialSection";
 import EmptyState from "./EmptyState";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
+import type { MediaRef } from "@/components/cards/MediaImage";
 
 export type ArticleTeaser = {
   slug: string;
@@ -10,6 +11,7 @@ export type ArticleTeaser = {
   title: string;
   excerpt?: string;
   byline?: string;
+  thumbnail?: MediaRef;
 };
 
 export default function BlogSection({ posts }: { posts: ArticleTeaser[] }) {
@@ -39,6 +41,7 @@ export default function BlogSection({ posts }: { posts: ArticleTeaser[] }) {
                 title={post.title}
                 excerpt={post.excerpt}
                 byline={post.byline}
+                thumbnail={post.thumbnail}
               />
             </li>
           ))}

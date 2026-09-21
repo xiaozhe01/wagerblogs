@@ -122,6 +122,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
         .filter(Boolean)
         .join(" · "),
       href: `/articles/${doc.slug}`,
+      thumbnail: doc.heroImage,
     })),
     ...news.docs.map((doc) => ({
       kicker: "News",
@@ -131,6 +132,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
         .filter(Boolean)
         .join(" · "),
       href: typeof doc.section === "object" ? `/news/${doc.section.slug}/${doc.slug}` : `/news`,
+      thumbnail: doc.heroImage,
     })),
     ...reviews.docs.map((doc) => ({
       kicker: "Review",

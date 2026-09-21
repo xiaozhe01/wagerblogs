@@ -134,6 +134,7 @@ export default async function ArticlesIndexPage({
                         ]
                           .filter(Boolean)
                           .join(" · ")}
+                        thumbnail={post.heroImage}
                       />
                     </li>
                   );
