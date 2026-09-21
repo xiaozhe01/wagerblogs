@@ -11,10 +11,12 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import FilterChips from "@/components/controls/FilterChips";
 import Prose from "@/components/section/Prose";
-import { ALL_REGIONS, REGION_PARAM, regionLabels, regions } from "@/lib/site-data";
+import { ALL_REGIONS, REGION_PARAM } from "@/lib/site-data";
+import { helpRegionLabel, helpRegionValues, helpRegions } from "@/lib/help-regions";
 import { chipHref, formatDate, headingId, resolveChip } from "@/lib/utils";
 
-export const revalidate = 3600;
+// No `revalidate`: this route reads searchParams for the region chip, so Next
+// renders it per request and the ISR window would never apply.
 
 // HelpDirectoryEntries carries no seo group — one page, stable copy.
 export const metadata: Metadata = {
@@ -44,7 +46,7 @@ export default async function RGDirectoryPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const query = await searchParams;
-  const activeRegion = resolveChip(regions, query[REGION_PARAM], ALL_REGIONS);
+  const activeRegion = resolveChip(helpRegionValues, query[REGION_PARAM], ALL_REGIONS);
 
   const payload = await getPayload({ config });
   // HelpDirectoryEntries is structural — no drafts, so no _status filter. The
@@ -60,7 +62,7 @@ export default async function RGDirectoryPage({
   });
 
   // Grouped in the taxonomy's own order, not the order records happen to load.
-  const visibleGroups = regions
+  const visibleGroups = helpRegionValues
     .filter((region) => region !== ALL_REGIONS)
     .filter((region) => activeRegion === ALL_REGIONS || region === activeRegion)
     .map((region) => ({
@@ -73,11 +75,11 @@ export default async function RGDirectoryPage({
     <>
       <nav aria-label="Regions" className="card">
         <AnchorList
-          items={regions.map((r) => ({
-            href: regionHref(r),
-            label: regionLabels[r],
-            key: r,
-            current: r === activeRegion,
+          items={helpRegions.map((region) => ({
+            href: regionHref(region.value),
+            label: region.label,
+            key: region.value,
+            current: region.value === activeRegion,
           }))}
         />
       </nav>
@@ -138,11 +140,11 @@ export default async function RGDirectoryPage({
       <section aria-label="Gambling-help organizations" className="flex flex-col gap-3">
         <FilterChips
           label="Filter by region"
-          items={regions.map((r) => ({
-            label: regionLabels[r],
-            key: r,
-            href: regionHref(r),
-            active: r === activeRegion,
+          items={helpRegions.map((region) => ({
+            label: region.label,
+            key: region.value,
+            href: regionHref(region.value),
+            active: region.value === activeRegion,
           }))}
         />
 
@@ -159,7 +161,7 @@ export default async function RGDirectoryPage({
                   id={headingId("region", activeRegion)}
                   className="heading text-h2 leading-heading"
                 >
-                  {regionLabels[activeRegion]}
+                  {helpRegionLabel(activeRegion)}
                 </h2>
                 <span className="text-xs text-text-muted font-semibold tabular-nums">
                   0 Organizations
@@ -168,7 +170,7 @@ export default async function RGDirectoryPage({
               {/* min-h-80 so an empty region holds the rhythm a populated one does. */}
               <EmptyState
                 className="min-h-80"
-                title={`No verified organizations for ${regionLabels[activeRegion]} yet`}
+                title={`No verified organizations for ${helpRegionLabel(activeRegion)} yet`}
                 body="Entries appear here only after their contact details are checked against the organization's own published information."
                 action={{
                   href: regionHref(ALL_REGIONS),
@@ -184,7 +186,7 @@ export default async function RGDirectoryPage({
                   id={headingId("region", grp.region)}
                   className="heading text-h2 leading-heading"
                 >
-                  {regionLabels[grp.region]}
+                  {helpRegionLabel(grp.region)}
                 </h2>
                 <span className="text-xs text-text-muted font-semibold tabular-nums">
                   {grp.entries.length} Organizations
