@@ -486,20 +486,22 @@ uploaded avatar is a moderation surface that FW-2 has not scoped. Revisit with
 the comment and reader-review forms if it becomes relevant then; until then
 these stay skeletons and are **correct as-is**.
 
-### Lib-backed teaser sections — 3 components
+### Teaser thumbnails
 
-`components/section/RecentPublishedSection.tsx`,
-`components/section/LatestStoriesSection.tsx` and
-`components/section/LatestNewsSection.tsx` still read `lib/` fixtures. They
-render skeleton thumbnails because their data never had a `heroImage` to begin
-with — the fix is Phase 4D-3 flipping them to Payload queries, not a media
-change.
+This entry is about **media, not data sources**. The sections listed here take
+their rows from Payload; what stays skeleton is the thumbnail inside each row.
 
-Three thumbnail surfaces remain unwired even where a `heroImage` exists —
 `PostRow`, `BlogPostCard`, and the editor's-lead image on
-`app/(frontend)/categories/[slug]/page.tsx`. `PostTeaser` carries no thumbnail
-field, so the adapters (`storyRow`, `articleRow`) have nowhere to put one.
-Open, not deferred.
+`app/(frontend)/categories/[slug]/page.tsx` render a grey block even where the
+record has a `heroImage`, because `PostTeaser` carries no thumbnail field and
+the adapters (`storyRow`, `articleRow`) have nowhere to put one. Every section
+built on them — `RecentPublishedSection`, `LatestNewsSection`, `BlogSection`,
+the category and news feeds — inherits that. Open, not deferred: it is the
+pass-through follow-up scheduled after 4D-4.
+
+`components/section/LatestStoriesSection.tsx` is the one section still reading
+`lib/` for its **rows** as well. It appears on the 404 page and the news story
+page, neither of which was in 4D-3's scope.
 
 ### Not a skeleton: `seo.ogImage`
 
@@ -509,3 +511,23 @@ codebase, and `app/(frontend)/layout.tsx` still carries the
 `TODO(cms): per-route openGraph images` marker. Social cards fall back to the
 sitewide default. Invisible on-page, so it does not show up as a grey box, but
 it is the same class of gap.
+
+### Editor's pick surfacing — deferred schema question
+
+`EditorsCard` was removed from the homepage rail in Phase 4D-3 rather than
+pointed at a record. It had linked to `mockPeakWagerReview`, whose slug does not
+exist in the database (the seed skipped PeakWager: `advantages` was `[]` against
+`minRows: 1`), so the rail carried a 404.
+
+Nothing in the schema records an editor's pick, and the two available
+substitutes both reverse-engineer the claim: "top-scoring published review"
+would have surfaced the primary-domain entry, which reads as an editorial
+endorsement of the domain the site exists to pass equity to, and "top
+non-primary" is an arbitrary rule dressed as a judgement. Same class of problem
+as the placeholder hero image and the seeded `verified` flag, and resolved the
+same way — the surface stays absent until real data backs it.
+
+Homepage config-level curation (a homepage global with a `featured`
+relationship) is probably the right shape rather than an `isEditorsPick`
+boolean on Reviews, because the claim belongs to the homepage and not to the
+operator. Neither is decided. The card returns when a surfacing mechanism does.

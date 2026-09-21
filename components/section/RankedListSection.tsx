@@ -1,7 +1,6 @@
-import RankedList from "./RankedList";
+import RankedList, { type RankedOperator } from "./RankedList";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import { headingId } from "@/lib/utils";
-import type { Operator } from "@/lib/types";
 import { TIER_CLASSNAME } from "./heading-tiers";
 
 export default function RankedListSection({
@@ -10,7 +9,7 @@ export default function RankedListSection({
   action,
 }: {
   title: string;
-  operators: Operator[];
+  operators: RankedOperator[];
   /** The full directory this list is an extract of. */
   action?: { href: string; label: string };
 }) {

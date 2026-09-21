@@ -1,9 +1,19 @@
-import type { Operator } from "@/lib/types";
 import Link from "next/link";
 import PrimaryDomainLink from "@/components/controls/PrimaryDomainLink";
-import { reviewPath } from "@/lib/reviews";
+import type { PrimaryDomainLinkData } from "@/lib/types";
 
-export default function RankedList({ operators }: { operators: Operator[] }) {
+/** One ranked row, already resolved from a Reviews record: the page builds the
+ * href because only it knows the vertical, and flattens advantages. */
+export type RankedOperator = {
+  id: number;
+  name: string;
+  score: number;
+  advantages: string[];
+  href: string;
+  primaryDomainLink?: PrimaryDomainLinkData;
+};
+
+export default function RankedList({ operators }: { operators: RankedOperator[] }) {
   return (
     <ol role="list" className="rounded-md border border-border-divider bg-bg-card">
       {operators.map((operator, i) => (
@@ -46,7 +56,7 @@ export default function RankedList({ operators }: { operators: Operator[] }) {
               className="flex-1 md:flex-none md:w-full"
             />
             <Link
-              href={reviewPath(operator)}
+              href={operator.href}
               className="btn-secondary flex-1 md:flex-none min-h-11 wide:min-h-5 py-1.5 px-3 text-xs leading-heading md:w-full"
             >
               Read review

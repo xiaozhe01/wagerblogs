@@ -8,6 +8,9 @@ import EmptyState from "@/components/section/EmptyState";
 import RecentPublishedSection from "@/components/section/RecentPublishedSection";
 import { getPayload } from "payload";
 import config from "@payload-config";
+import { draftMode } from "next/headers";
+import { publishedFilter } from "@/lib/payload-queries";
+import { articleRow } from "@/lib/article-rows";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
 // skip the cache for that request only, so a preview never serves a stale page
@@ -23,6 +26,7 @@ export const metadata: Metadata = {
 // Minimal categories index — every vertical as a card. Individual category
 // pages live at /categories/[slug].
 export default async function CategoriesIndexPage() {
+  const { isEnabled: isDraft } = await draftMode();
   const payload = await getPayload({ config });
   // Verticals is structural taxonomy: no drafts, so no _status filter.
   const { docs: verticals } = await payload.find({
@@ -30,6 +34,16 @@ export default async function CategoriesIndexPage() {
     sort: "order",
     limit: 100,
     depth: 0,
+    overrideAccess: false,
+  });
+
+  // articles filters _status — editorial. depth 1 resolves the author byline.
+  const { docs: recent } = await payload.find({
+    collection: "articles",
+    ...publishedFilter(isDraft),
+    sort: "-publishedAt",
+    limit: 3,
+    depth: 1,
     overrideAccess: false,
   });
 
@@ -76,7 +90,7 @@ export default async function CategoriesIndexPage() {
         )}
       </EditorialSection>
 
-      <RecentPublishedSection register="editorial" />
+      <RecentPublishedSection register="editorial" posts={recent.map(articleRow)} />
     </PageShell>
   );
 }

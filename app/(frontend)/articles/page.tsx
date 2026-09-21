@@ -1,37 +1,79 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import type { Article } from "@/payload-types";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import BlogPostCard from "@/components/cards/BlogPostCard";
 import InfoCard from "@/components/rail/InfoCard";
 import EditorialSection from "@/components/section/EditorialSection";
-import RecentPublishedSection from "@/components/section/RecentPublishedSection";
-import { blogPosts } from "@/lib/blog";
-import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
-import { headingId } from "@/lib/utils";
+import EmptyState from "@/components/section/EmptyState";
+import FilterChips from "@/components/controls/FilterChips";
 import PageNav from "@/components/controls/PageNav";
+import { publishedFilter } from "@/lib/payload-queries";
+import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
+import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
+import { readTime } from "@/lib/lexical";
+import { chipHref, chipMatches, formatDate, headingId } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Articles — WagerBlogs",
-  description: "Guides, strategy, and research on sports betting and casino play.",
+  description:
+    "Guides, analysis, and research on sports betting and casino play — written to stand on their own, with no operator recommendations.",
   alternates: { canonical: "/articles" },
 };
 
-// TODO(cms): replace lib/blog.ts with the CMS post list, paginated.
-export default async function BlogIndexPage({
+// No `revalidate`: this route reads searchParams for the type chip and the page
+// number, so Next renders it per request and the ISR window would never apply.
+
+/** Articles.type, the enum the chips map onto. "News" is deliberately absent —
+ * News is its own collection, so a News chip could only ever filter to nothing.
+ * See MIGRATION.md D7. */
+const ARTICLE_TYPES = ["guide", "analysis", "research", "blog"] as const;
+
+const SECTION_TITLE = "All articles";
+
+export default async function ArticlesIndexPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const query = await searchParams;
-  const postPage = paginate(blogPosts, query[PAGE_PARAM]);
+  const { isEnabled: isDraft } = await draftMode();
+  const payload = await getPayload({ config });
+
+  const activeType = resolveType(query[TYPE_PARAM]);
+  const typeHref = (value: string) =>
+    chipHref({ basePath: "/articles", param: TYPE_PARAM, value, allValue: ALL_TYPES });
+
+  const matchedType = ARTICLE_TYPES.find((type) => chipMatches(type, activeType));
+  // A chip that names no article type filters to nothing rather than silently
+  // falling back to every article.
+  const chipHasNoType = activeType !== ALL_TYPES && !matchedType;
+
+  // articles filters _status — editorial (drafts enabled). depth 1 resolves the
+  // author relationship for the byline.
+  const { docs: articles } = chipHasNoType
+    ? { docs: [] as Article[] }
+    : await payload.find({
+        collection: "articles",
+        ...publishedFilter(isDraft, matchedType ? { type: { equals: matchedType } } : {}),
+        sort: "-publishedAt",
+        limit: 500,
+        depth: 1,
+        overrideAccess: false,
+      });
+
+  // Changing the chip drops the page param, so a filter always opens on page 1.
+  const postPage = paginate(articles, query[PAGE_PARAM]);
+
   const rail = (
-    <>
-      <InfoCard
-        title="Editorial standards"
-        body="How we research, source, and correct what we publish."
-        cta={{ href: "/about", label: "Read our methodology" }}
-      />
-    </>
+    <InfoCard
+      title="Editorial standards"
+      body="How we research, source, and correct what we publish."
+      cta={{ href: "/about", label: "Read our methodology" }}
+    />
   );
 
   return (
@@ -49,35 +91,79 @@ export default async function BlogIndexPage({
         </p>
       </header>
 
-      <EditorialSection title="All posts" register="editorial">
-        <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
-          {postPage.items.map((post) => (
-            <li key={post.slug}>
-              <BlogPostCard
-                href={post.href}
-                kicker={post.kicker}
-                title={post.title}
-                excerpt={post.excerpt}
-                byline={post.byline}
+      <EditorialSection
+        title={SECTION_TITLE}
+        register="editorial"
+        toolbar={
+          <FilterChips
+            label="Article types"
+            items={categoryFilters.map((type) => ({
+              label: type,
+              key: type,
+              href: typeHref(type),
+              active: type === activeType,
+            }))}
+          />
+        }
+      >
+        {/* Keyed so only the feed replays the fade. */}
+        <div key={activeType} className="route-transition flex flex-col gap-3">
+          {postPage.items.length === 0 ? (
+            <EmptyState
+              title={`No ${activeType === ALL_TYPES ? "" : `${activeType.toLowerCase()} `}articles published yet`}
+              body="An article appears here once it is published in the admin panel."
+              action={{ href: typeHref(ALL_TYPES), label: "Show all articles" }}
+            />
+          ) : (
+            <>
+              <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
+                {postPage.items.map((post) => {
+                  const author = typeof post.author === "object" ? post.author : undefined;
+                  const published = post.publishedAt ? formatDate(post.publishedAt) : undefined;
+                  return (
+                    <li key={post.id}>
+                      <BlogPostCard
+                        href={`/articles/${post.slug}`}
+                        kicker={post.type}
+                        title={post.title}
+                        excerpt={post.excerpt}
+                        byline={[
+                          author ? `by ${author.name}` : undefined,
+                          published,
+                          readTime(post.body),
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+              <PageNav
+                page={postPage.page}
+                totalPages={postPage.totalPages}
+                label={SECTION_TITLE}
+                hrefFor={(n) =>
+                  pageHref({
+                    basePath: "/articles",
+                    page: n,
+                    anchor: headingId("section", SECTION_TITLE),
+                    params: activeType === ALL_TYPES ? undefined : { [TYPE_PARAM]: activeType },
+                  })
+                }
               />
-            </li>
-          ))}
-        </ul>
-        <PageNav
-          page={postPage.page}
-          totalPages={postPage.totalPages}
-          label="All posts"
-          hrefFor={(n) =>
-            pageHref({
-              basePath: "/articles",
-              page: n,
-              anchor: headingId("section", "All posts"),
-            })
-          }
-        />
+            </>
+          )}
+        </div>
       </EditorialSection>
 
-      <RecentPublishedSection register="editorial" />
     </PageShell>
   );
+}
+
+/** Unknown or absent chip falls back to "All" rather than an empty list. */
+function resolveType(param: string | string[] | undefined) {
+  const value = Array.isArray(param) ? param[0] : param;
+  if (!value) return ALL_TYPES;
+  return categoryFilters.find((type) => chipMatches(type, value)) ?? value;
 }

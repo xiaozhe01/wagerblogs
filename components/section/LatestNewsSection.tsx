@@ -1,25 +1,29 @@
 import PostRow from "../cards/PostRow";
-import { homeNewsSplit, storyRow } from "@/lib/news";
 import FilterChips from "@/components/controls/FilterChips";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import EditorialSection from "./EditorialSection";
 import EmptyState from "./EmptyState";
-import { newsCategories } from "@/lib/site-data";
 import { chipHref } from "@/lib/utils";
+import type { PostTeaser } from "@/lib/types";
 
 export const NEWS_PARAM = "news";
-const ALL_CATEGORY = "All";
+/** Chip value for "no filter". Section chips carry the news-sections slug, so
+ * the chip, the URL and the stored value are one string. */
+export const ALL_NEWS = "all";
 
 export default function LatestNewsSection({
-  categoryParam,
+  sections,
+  stories,
+  activeSection,
 }: {
-  categoryParam?: string | string[];
+  sections: { slug: string; name: string }[];
+  stories: PostTeaser[];
+  activeSection: string;
 }) {
-  // Same records the /news sections render, so a row here links to the story
-  // itself rather than back to the index. The split is shared with the rail's
-  // "More headlines" so the two cannot show the same story twice.
-  // TODO(cms): the newest few, once the feed is ordered and paginated server-side.
-  const { category, shown: items } = homeNewsSplit(categoryParam);
+  const sectionHref = (value: string) =>
+    chipHref({ basePath: "/", param: NEWS_PARAM, value, allValue: ALL_NEWS });
+  const activeName =
+    sections.find((section) => section.slug === activeSection)?.name ?? "this section";
 
   return (
     <EditorialSection
@@ -33,42 +37,27 @@ export default function LatestNewsSection({
       toolbar={
         <FilterChips
           label="News categories"
-          items={newsCategories.map((name) => ({
-            label: name,
-            key: name,
-            href: chipHref({
-              basePath: "/",
-              param: NEWS_PARAM,
-              value: name,
-              allValue: ALL_CATEGORY,
-            }),
-            active: name === category,
+          items={[{ slug: ALL_NEWS, name: "All" }, ...sections].map((section) => ({
+            label: section.name,
+            key: section.slug,
+            href: sectionHref(section.slug),
+            active: section.slug === activeSection,
           }))}
         />
       }
     >
       {/* Keyed so only the feed replays the fade. */}
-      <div key={category} className="route-transition">
-        {items.length === 0 ? (
+      <div key={activeSection} className="route-transition">
+        {stories.length === 0 ? (
           <EmptyState
-            title={`No stories filed under ${category} yet`}
-            action={{
-              href: chipHref({
-                basePath: "/",
-                param: NEWS_PARAM,
-                value: ALL_CATEGORY,
-                allValue: ALL_CATEGORY,
-              }),
-              label: "Show all stories",
-            }}
+            title={`No stories filed under ${activeName} yet`}
+            action={{ href: sectionHref(ALL_NEWS), label: "Show all stories" }}
           />
         ) : (
           <ul role="list" className="flex flex-col gap-3">
-            {items.map((news) => (
-              <li key={news.slug}>
-                {/* The category becomes the kicker, which is what the filter
-                    chips above filter on. */}
-                <PostRow post={storyRow(news, { kicker: news.category })} />
+            {stories.map((story) => (
+              <li key={story.href}>
+                <PostRow post={story} />
               </li>
             ))}
           </ul>

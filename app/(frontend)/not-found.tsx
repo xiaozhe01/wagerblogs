@@ -5,7 +5,9 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnchorList from "@/components/rail/AnchorList";
 import ExploreSection from "@/components/section/ExploreSection";
 import LatestStoriesSection from "@/components/section/LatestStoriesSection";
-import { blogPosts } from "@/lib/blog";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import { publishedFilter } from "@/lib/payload-queries";
 
 export const metadata: Metadata = {
   title: "We couldn't find that page — WagerBlogs",
@@ -19,13 +21,33 @@ export const metadata: Metadata = {
 // Also confirm this route is excluded from sitemap.xml and carries no canonical
 // pointing at the homepage.
 
-export default function NotFound() {
+export default async function NotFound() {
+  const payload = await getPayload({ config });
+  // Sequential, and both structural-or-published reads only: a 404 renders on
+  // any unmatched URL, so it must stay cheap. draftMode() is deliberately not
+  // read — a 404 has no draft to preview.
+  const { docs: verticals } = await payload.find({
+    collection: "verticals",
+    sort: "order",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+  const { docs: recent } = await payload.find({
+    collection: "articles",
+    ...publishedFilter(false),
+    sort: "-publishedAt",
+    limit: 5,
+    depth: 0,
+    overrideAccess: false,
+  });
+
   const rail = (
     <AnchorList
       title="Recent posts"
       cardClassName="card"
-      items={blogPosts.map((post) => ({
-        href: post.href,
+      items={recent.map((post) => ({
+        href: `/articles/${post.slug}`,
         label: post.title,
         key: post.slug,
       }))}
@@ -56,7 +78,7 @@ export default function NotFound() {
 
       <LatestStoriesSection title="Latest news" limit={4} />
 
-      <ExploreSection />
+      <ExploreSection verticals={verticals} />
     </PageShell>
   );
 }

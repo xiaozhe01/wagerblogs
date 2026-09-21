@@ -1,16 +1,17 @@
 import LinkTileGrid from "@/components/cards/LinkTileGrid";
 import EditorialSection from "./EditorialSection";
-import { categories } from "@/lib/categories";
 
-export default function ExploreSection() {
+export type ExploreTile = { slug: string; name: string; description: string };
+
+export default function ExploreSection({ verticals }: { verticals: ExploreTile[] }) {
   return (
     <EditorialSection title="Browse by category" register="editorial" tier="supporting">
       <LinkTileGrid
-        items={categories.map((category) => ({
-          href: category.href,
-          title: category.name,
-          desc: category.desc,
-          key: category.slug,
+        items={verticals.map((vertical) => ({
+          href: `/categories/${vertical.slug}`,
+          title: vertical.name,
+          desc: vertical.description,
+          key: vertical.slug,
         }))}
       />
     </EditorialSection>

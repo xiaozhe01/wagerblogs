@@ -1,13 +1,11 @@
 import TrendingCard from "./TrendingCard";
-import EditorsCard from "./EditorsCard";
 
-// categoryParam is threaded through so "More headlines" can exclude whatever
-// the teaser feed is currently showing — see homeNewsSplit in lib/news.ts.
-export default function HomeRail({ categoryParam }: { categoryParam?: string | string[] }) {
-  return (
-    <>
-      <TrendingCard categoryParam={categoryParam} />
-      <EditorsCard />
-    </>
-  );
+// TODO(cms): EditorsCard — an editor's pick is a curated claim, and nothing in
+// the schema records one. See MIGRATION.md "Editor's pick surfacing".
+export default function HomeRail({
+  trending,
+}: {
+  trending: { href: string; label: string; key: string }[];
+}) {
+  return <TrendingCard items={trending} />;
 }
