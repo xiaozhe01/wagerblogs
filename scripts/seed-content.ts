@@ -546,9 +546,11 @@ async function seedGlobals() {
         stats: marketStats.map((stat) => ({
           value: stat.value,
           label: stat.label,
-          // lib prefixes these for display; the schema stores them bare.
+          // lib prefixes these for display; the schema stores them bare and
+          // MarketCard re-adds the label. "As of:" is one of those display
+          // prefixes too, or the card renders "Period: As of: ...".
           source: stat.source.replace(/^Source:\s*/, ""),
-          period: stat.period.replace(/^Period:\s*/, ""),
+          period: stat.period.replace(/^(Period|As of):\s*/, ""),
         })),
       } as never,
     });
