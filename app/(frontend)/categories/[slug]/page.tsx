@@ -18,6 +18,7 @@ import { categoryCompareLinks } from "@/lib/mock-data";
 import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
 import { chipHref, chipMatches, chipSlug, formatDate, headingId, resolveChip } from "@/lib/utils";
 import { readTime } from "@/lib/lexical";
+import { articleRow } from "@/lib/article-rows";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import PageNav from "@/components/controls/PageNav";
 import type { Article } from "@/payload-types";
@@ -69,23 +70,6 @@ export async function generateMetadata({
     title: vertical.seo?.metaTitle,
     description: vertical.seo?.metaDescription,
     alternates: { canonical: vertical.seo?.canonicalUrl || `/categories/${vertical.slug}` },
-  };
-}
-
-function articleRow(article: Article) {
-  const typeLabel = article.type.charAt(0).toUpperCase() + article.type.slice(1);
-  const author = typeof article.author === "object" ? article.author?.name : undefined;
-  const published = article.publishedAt ? formatDate(article.publishedAt) : undefined;
-  const minutes = readTime(article.body);
-  return {
-    kicker: typeLabel,
-    title: article.title,
-    excerpt: article.excerpt,
-    meta: [typeLabel, published, minutes].filter(Boolean).join(" · "),
-    metaItems: [minutes, published, author ? `by ${author}` : undefined].filter(
-      (part): part is string => Boolean(part),
-    ),
-    href: `/articles/${article.slug}`,
   };
 }
 
