@@ -23,8 +23,8 @@ type AnchorListProps = {
   itemClassName?: string | ((item: AnchorListItem, index: number) => string);
   wrapperClassName?: string;
   /** When set, AnchorList owns its own `<div className="card">` + title
-   * header, matching sibling rail cards like AtAGlanceCard/OtherBooksCard
-   * instead of leaving the card+title hand-typed around each call site. */
+   * header, matching sibling rail cards like AtAGlanceCard instead of
+   * leaving the card+title hand-typed around each call site. */
   title?: string;
   cardClassName?: string;
 };

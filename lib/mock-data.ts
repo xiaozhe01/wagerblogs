@@ -1,6 +1,5 @@
 import type {
   Author,
-  AtAGlanceItem,
   BonusOffer,
   ComparisonOperator,
   HelpDirectoryRegion,
@@ -26,14 +25,6 @@ export const mockAuthor: Author = {
   bio: "[Placeholder short bio — what this author covers and why they are qualified to cover it.]",
 };
 
-export const authorBeats = [
-  "Odds & pricing",
-  "Regulation",
-  "Esports betting",
-  "Bonus terms",
-  "Payout testing",
-];
-
 export const authorStandards = [
   {
     title: "Tested, not summarised",
@@ -46,41 +37,6 @@ export const authorStandards = [
   {
     title: "Corrections published",
     body: "Errors are corrected in the open with a dated note, not silently edited away.",
-  },
-];
-
-export const authorArticles: PostTeaser[] = [
-  {
-    kicker: "Guide",
-    title: "[Placeholder] How moneylines actually work",
-    excerpt: "[Placeholder dek — the piece's argument in two lines, readable on its own.]",
-    meta: "Article · 07/18/2026 · 9 min",
-    metaItems: ["9 min read", "07/18/2026", "Article"],
-    href: "/articles/how-odds-boosts-actually-work",
-  },
-  {
-    kicker: "Analysis",
-    title: "[Placeholder] What changed in state betting law this quarter",
-    excerpt: "[Placeholder dek — which states moved, and what it changes for a bettor.]",
-    meta: "News · 07/16/2026 · 6 min",
-    metaItems: ["6 min read", "07/16/2026", "News"],
-    href: "/news/esports/placeholder-headline-esports",
-  },
-  {
-    kicker: "Review",
-    title: "[Placeholder] PeakWager Sportsbook review",
-    excerpt: "[Placeholder dek — the verdict, the score, and what was tested to get there.]",
-    meta: "Reviews · 07/12/2026 · 12 min",
-    metaItems: ["12 min read", "07/12/2026", "Reviews"],
-    href: "/reviews/sportsbooks/peakwager",
-  },
-  {
-    kicker: "Guide",
-    title: "[Placeholder] Bankroll management 101",
-    excerpt: "[Placeholder dek — the staking basics this guide covers, in two lines.]",
-    meta: "Article · 07/05/2026 · 7 min",
-    metaItems: ["7 min read", "07/05/2026", "Article"],
-    href: "/articles/bankroll-management-101",
   },
 ];
 
@@ -293,21 +249,6 @@ export const mockPeakWagerReview: Operator = {
   ],
 };
 
-// "Other books compared" rail list on the operator review.
-// app/reviews/[vertical]/[slug]/page.tsx content.
-export const reviewReaderReviews = [
-  {
-    username: "[@somename]",
-    meta: "[12/02/2026] · verified member",
-    text: "[Placeholder reader review — what they tested, how payouts went, moderated before publish.]",
-  },
-  {
-    username: "[@somename]",
-    meta: "[04/05/2026] · verified member",
-    text: "[Placeholder reader review — one account per operator; edits create a new moderation pass.]",
-  },
-];
-
 export const reviewRelated: PostTeaser[] = [
   {
     kicker: "Comparison",
@@ -329,22 +270,6 @@ export const reviewRelated: PostTeaser[] = [
   },
 ];
 
-// The editorial score row is prepended from the operator record itself.
-export const reviewAtAGlance: AtAGlanceItem[] = [
-  { label: "Reader average", value: "[x.x] / 5" },
-  { label: "States live", value: "[26]" },
-  { label: "Payout speed", value: "[1–3 days]" },
-  { label: "Last verified", value: "[Jun 30, 2026]" },
-];
-
-// app/reviews/[vertical]/[slug]/page.tsx "Bonus detail".
-export const reviewBonusTerms = [
-  { label: "Minimum deposit", value: "[$10]" },
-  { label: "Wagering requirement", value: "[1x]" },
-  { label: "Expiry", value: "[7 days]" },
-  { label: "Eligible states", value: "[list required]" },
-];
-
 // app/articles/[slug]/page.tsx (sample article) content.
 // TODO(cms): becomes the post record fetched by slug — title/kicker/dates/author
 // all flow from this one object into metadata, breadcrumbs, H1, and the byline
@@ -354,76 +279,6 @@ export const blogToc = [
   { label: "The worked example", href: "#the-worked-example" },
   { label: "Common mistakes", href: "#common-mistakes" },
   { label: "What this means for your bets", href: "#what-this-means" },
-];
-
-export const blogBodyList = [
-  "[Placeholder list item — first step of the worked example]",
-  "[Placeholder list item — second step]",
-  "[Placeholder list item — third step]",
-  "[Placeholder list item — the result, stated plainly]",
-];
-
-export const blogTakeaways = [
-  "[Placeholder takeaway — the single most useful thing a reader should leave with]",
-  "[Placeholder takeaway — the most common misreading, corrected]",
-  "[Placeholder takeaway — what to check before acting on this]",
-];
-
-export const blogRelated: PostTeaser[] = [
-  {
-    kicker: "Guide",
-    title: "[Placeholder] Reading odds formats",
-    meta: "Article · 8 min read",
-    href: "/articles/bankroll-management-101",
-  },
-  {
-    kicker: "Comparison",
-    title: "[Placeholder] Sportsbook comparison tool",
-    meta: "Reviews · Tier 2 surface",
-    href: "/reviews",
-  },
-  {
-    kicker: "Category",
-    title: "[Placeholder] Legal betting by state",
-    meta: "Categories · Tier 2 surface",
-    href: "/categories",
-  },
-];
-
-// app/categories/[slug]/page.tsx (sample category) content.
-export const categoryArticles: PostTeaser[] = [
-  {
-    kicker: "Guide",
-    title: "[Placeholder] Reading odds before a major event",
-    excerpt: "[Placeholder dek — what the guide teaches and who it's for, in two lines.]",
-    meta: "07/20/2026 · 8 min · byline required",
-    href: "/articles/how-odds-boosts-actually-work",
-    metaItems: ["8 min read", "07/20/2026", "byline required"],
-  },
-  {
-    kicker: "Analysis",
-    title: "[Placeholder] Why handicaps price differently",
-    excerpt: "[Placeholder dek — the pricing quirk this piece explains, summarised.]",
-    meta: "07/18/2026 · 6 min · byline required",
-    href: "/articles/parlays-vs-straight-bets",
-    metaItems: ["6 min read", "07/18/2026", "byline required"],
-  },
-  {
-    kicker: "Research",
-    title: "[Placeholder] Which markets hold liquidity out of season",
-    excerpt: "[Placeholder dek — the dataset, the period it covers, and the finding.]",
-    meta: "07/15/2026 · 12 min · byline required",
-    href: "/articles/bankroll-management-101",
-    metaItems: ["12 min read", "07/15/2026", "byline required"],
-  },
-  {
-    kicker: "News",
-    title: "[Placeholder] A regulator opens consultation on betting markets",
-    excerpt: "[Placeholder dek — who opened it, what it covers, and when it closes.]",
-    meta: "07/12/2026 · 4 min · byline required",
-    href: "/news/esports/placeholder-headline-esports",
-    metaItems: ["4 min read", "07/12/2026", "byline required"],
-  },
 ];
 
 // Tier 1 → Tier 2/3 internal link surface — no operator links, scores, or CTAs on this route.
@@ -573,8 +428,6 @@ export const legalDocs = {
     ],
   },
 } as const;
-
-export type DocSlug = keyof typeof legalDocs;
 
 // app/responsible-gambling/page.tsx content.
 export const rgWarningSigns = [
@@ -945,14 +798,6 @@ export const newsStoryAuthor = {
   // would break on a rename.
   profileHref: `/authors/${mockAuthor.slug}`,
 };
-
-// app/news/[section]/[story]/page.tsx — one story's takeaways.
-// TODO(cms): a per-story field; a story publishes without them if the desk has none.
-export const newsStoryTakeaways = [
-  "[Placeholder takeaway — the single fact a reader should leave with.]",
-  "[Placeholder takeaway — what it changes for a bettor, if anything.]",
-  "[Placeholder takeaway — what is still unconfirmed, and what we are waiting on.]",
-];
 
 export const toolboxItems = [
   {
