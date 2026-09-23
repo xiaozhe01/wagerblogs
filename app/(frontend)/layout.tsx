@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ThemeProvider from "@/components/layout/ThemeProvider";
 import { JsonLd, siteUrl, webSiteJsonLd } from "@/lib/schema";
+import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/og";
 
 export const metadata: Metadata = {
   // Resolves relative canonicals to absolute; MetadataRoute needs it too.
@@ -15,9 +16,12 @@ export const metadata: Metadata = {
   // type and siteName and carries its own image default.
   openGraph: {
     type: "website",
-    siteName: "WagerBlogs",
+    siteName: SITE_NAME,
     title: "WagerBlogs",
     description: "Independent reviews, odds comparisons, and state-by-state legal betting guides.",
+    // Shares DEFAULT_OG_IMAGE with buildOpenGraph so the two cannot drift.
+    // metadataBase above makes the relative url absolute.
+    images: [DEFAULT_OG_IMAGE],
   },
   // Safari's data detectors rewrite matched text into links before hydration,
   // which fails hydration and makes React regenerate the tree on the client.
