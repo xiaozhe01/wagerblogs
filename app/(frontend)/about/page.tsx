@@ -8,10 +8,15 @@ import EditorialSection from "@/components/section/EditorialSection";
 import Prose from "@/components/section/Prose";
 import ReviewCard from "@/components/section/ReviewCard";
 import { authorStandards } from "@/lib/mock-data";
+import { buildOpenGraph } from "@/lib/og";
+
+const TITLE = "About — WagerBlogs";
+const DESCRIPTION = "Who publishes WagerBlogs, how we review, and how we make money.";
 
 export const metadata: Metadata = {
-  title: "About — WagerBlogs",
-  description: "Who publishes WagerBlogs, how we review, and how we make money.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/about" }),
   alternates: { canonical: "/about" },
 };
 

@@ -16,13 +16,19 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { JsonLd, faqPageJsonLd } from "@/lib/schema";
+import { buildOpenGraph } from "@/lib/og";
 
 export const revalidate = 3600;
 
 // The FAQ global carries no seo group — one page, stable copy.
+const TITLE = "FAQ — WagerBlogs";
+const DESCRIPTION =
+  "How we review operators, how we make money, and what we do when we get it wrong.";
+
 export const metadata: Metadata = {
-  title: "FAQ — WagerBlogs",
-  description: "How we review operators, how we make money, and what we do when we get it wrong.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/faq" }),
   alternates: { canonical: "/faq" },
 };
 

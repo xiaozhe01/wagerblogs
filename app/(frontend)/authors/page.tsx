@@ -10,14 +10,19 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { publishedFilter } from "@/lib/payload-queries";
+import { buildOpenGraph } from "@/lib/og";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
 // skip the cache for that request only.
 export const revalidate = 3600;
 
+const TITLE = "Authors — WagerBlogs";
+const DESCRIPTION = "The contributors behind WagerBlogs' reviews, reporting and guides.";
+
 export const metadata: Metadata = {
-  title: "Authors — WagerBlogs",
-  description: "The contributors behind WagerBlogs' reviews, reporting and guides.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/authors" }),
   alternates: { canonical: "/authors" },
 };
 

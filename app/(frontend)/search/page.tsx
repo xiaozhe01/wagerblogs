@@ -19,12 +19,19 @@ import {
   type SearchScope,
 } from "@/lib/search";
 import { headingId } from "@/lib/utils";
+import { buildOpenGraph } from "@/lib/og";
 
 // noindex: thin, duplicative and infinitely variable by query. Absent from the
 // sitemap and llms.txt for the same reason.
+const TITLE = "Search — WagerBlogs";
+const DESCRIPTION = "Search WagerBlogs reviews, news, guides and trust pages.";
+
 export const metadata: Metadata = {
-  title: "Search — WagerBlogs",
-  description: "Search WagerBlogs reviews, news, guides and trust pages.",
+  title: TITLE,
+  description: DESCRIPTION,
+  // OG tags still matter on a noindex route: social scrapers do not honour
+  // robots, so a pasted /search link renders a card either way.
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/search" }),
   robots: { index: false, follow: true },
 };
 

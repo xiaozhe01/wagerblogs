@@ -16,11 +16,16 @@ import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import { readTime } from "@/lib/lexical";
 import { chipHref, chipMatches, formatDate, headingId } from "@/lib/utils";
+import { buildOpenGraph } from "@/lib/og";
+
+const TITLE = "Articles — WagerBlogs";
+const DESCRIPTION =
+  "Guides, analysis, and research on sports betting and casino play — written to stand on their own, with no operator recommendations.";
 
 export const metadata: Metadata = {
-  title: "Articles — WagerBlogs",
-  description:
-    "Guides, analysis, and research on sports betting and casino play — written to stand on their own, with no operator recommendations.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/articles" }),
   alternates: { canonical: "/articles" },
 };
 
@@ -157,7 +162,6 @@ export default async function ArticlesIndexPage({
           )}
         </div>
       </EditorialSection>
-
     </PageShell>
   );
 }

@@ -9,6 +9,7 @@ import EditorialSection from "@/components/section/EditorialSection";
 import SelfAssessment from "@/components/section/SelfAssessment";
 import Prose from "@/components/section/Prose";
 import { selfAssessmentSource } from "@/lib/self-assessment";
+import { buildOpenGraph } from "@/lib/og";
 import {
   rgWarningSigns,
   rgTools,
@@ -18,10 +19,18 @@ import {
   helplineNumber,
 } from "@/lib/mock-data";
 
+const TITLE = "Responsible Gambling — WagerBlogs";
+const DESCRIPTION =
+  "How to keep betting in proportion: warning signs, a self-check, deposit and time limits, and where to get help.";
+
 export const metadata: Metadata = {
-  title: "Responsible Gambling — WagerBlogs",
-  description:
-    "How to keep betting in proportion: warning signs, a self-check, deposit and time limits, and where to get help.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({
+    title: TITLE,
+    description: DESCRIPTION,
+    path: "/responsible-gambling",
+  }),
   alternates: { canonical: "/responsible-gambling" },
 };
 

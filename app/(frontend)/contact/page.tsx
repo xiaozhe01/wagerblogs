@@ -4,10 +4,15 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import InfoCard from "@/components/rail/InfoCard";
 import EditorialSection from "@/components/section/EditorialSection";
 import Prose from "@/components/section/Prose";
+import { buildOpenGraph } from "@/lib/og";
+
+const TITLE = "Contact — WagerBlogs";
+const DESCRIPTION = "How to reach WagerBlogs about corrections, press, and partnerships.";
 
 export const metadata: Metadata = {
-  title: "Contact — WagerBlogs",
-  description: "How to reach WagerBlogs about corrections, press, and partnerships.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/contact" }),
   alternates: { canonical: "/contact" },
 };
 

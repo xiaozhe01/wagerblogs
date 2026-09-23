@@ -11,15 +11,20 @@ import config from "@payload-config";
 import { draftMode } from "next/headers";
 import { publishedFilter } from "@/lib/payload-queries";
 import { articleRow } from "@/lib/article-rows";
+import { buildOpenGraph } from "@/lib/og";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
 // skip the cache for that request only, so a preview never serves a stale page
 // and an ordinary visitor still gets the cached one.
 export const revalidate = 3600;
 
+const TITLE = "Betting Categories — WagerBlogs";
+const DESCRIPTION = "Browse every betting and casino vertical WagerBlogs covers.";
+
 export const metadata: Metadata = {
-  title: "Betting Categories — WagerBlogs",
-  description: "Browse every betting and casino vertical WagerBlogs covers.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/categories" }),
   alternates: { canonical: "/categories" },
 };
 

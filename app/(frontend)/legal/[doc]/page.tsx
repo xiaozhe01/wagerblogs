@@ -9,6 +9,7 @@ import AnchorList from "@/components/rail/AnchorList";
 import FilterChips from "@/components/controls/FilterChips";
 import { RichText } from "@/components/rich-text/RichText";
 import { formatDate } from "@/lib/utils";
+import { buildOpenGraph } from "@/lib/og";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
 // skip the cache for that request only.
@@ -63,6 +64,14 @@ export async function generateMetadata({
   return {
     title: meta.title,
     description: meta.description,
+    // article, not website: a legal document is editorial prose with its own
+    // revision history, not a section landing page.
+    openGraph: buildOpenGraph({
+      title: meta.title,
+      description: meta.description,
+      type: "article",
+      path: `/legal/${docSlug}`,
+    }),
     alternates: { canonical: `/legal/${docSlug}` },
   };
 }

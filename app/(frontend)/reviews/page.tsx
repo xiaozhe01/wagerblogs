@@ -12,15 +12,20 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import ReviewCard from "@/components/section/ReviewCard";
 import { formatDate } from "@/lib/utils";
+import { buildOpenGraph } from "@/lib/og";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
 // skip the cache for that request only, so a preview never serves a stale page
 // and an ordinary visitor still gets the cached one.
 export const revalidate = 3600;
 
+const TITLE = "Sportsbook & Casino Reviews — WagerBlogs";
+const DESCRIPTION = "Independent, tested reviews of legal sportsbooks and online casinos.";
+
 export const metadata: Metadata = {
-  title: "Sportsbook & Casino Reviews — WagerBlogs",
-  description: "Independent, tested reviews of legal sportsbooks and online casinos.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/reviews" }),
   alternates: { canonical: "/reviews" },
 };
 

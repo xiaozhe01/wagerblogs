@@ -11,14 +11,19 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import Prose from "@/components/section/Prose";
 import { storyRow } from "@/lib/news-rows";
+import { buildOpenGraph } from "@/lib/og";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
 // skip the cache for that request only.
 export const revalidate = 3600;
 
+const TITLE = "News — WagerBlogs";
+const DESCRIPTION = "Betting and casino industry news, regulation, and market coverage.";
+
 export const metadata: Metadata = {
-  title: "News — WagerBlogs",
-  description: "Betting and casino industry news, regulation, and market coverage.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/news" }),
   alternates: { canonical: "/news" },
 };
 
