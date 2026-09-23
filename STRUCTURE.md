@@ -354,6 +354,25 @@ A `pool.max` change only takes effect on process restart, and a stuck
 `idle in transaction` client clears the same way — restart the dev server after
 touching this block.
 
+## Dev workflow gotchas
+
+### Don't use a revalidating route as the boot probe
+
+When checking whether a change landed, the route you poll to decide the dev
+server is ready must not be one that exports `revalidate`. ISR caches the
+render produced while the server was still compiling, and every later request
+is served that stale copy until the window expires — which reads exactly like
+a fix that did not land.
+
+It cost a real debugging detour: after adding `openGraph.images` to
+`layout.tsx`, `/faq` was the only route of ten still missing `og:image`. The
+edit was correct; `/faq` exports `revalidate = 3600` and had been the readiness
+probe, so its pre-change render was cached. A restart returned it correctly.
+
+Poll a route with no `revalidate` — `/about` works — or force a fresh render
+with draft mode. The tell is one route disagreeing with its siblings for no
+structural reason: check `revalidate` on it before suspecting the change.
+
 ## Seeding a fresh environment
 
 `npm run seed` creates the 6 Verticals and 5 NewsSections that existing routes
