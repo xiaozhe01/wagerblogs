@@ -416,6 +416,11 @@ NOT NULL column to a table that already holds rows. Enabling drafts resolved
 it, because the drafts convention drops NOT NULL and moves required-ness to
 publish-time validation.
 
+Globals are a fourth case and also have no drafts: FAQ, LegalDocuments and
+MarketStats are edited in place. FAQ carries its own per-entry `status`
+(draft/published), which is a moderation flag on one row, not the `_status`
+lifecycle — Phase 4D-2's `/faq` route filters on it directly.
+
 **UGC collections are a third category and are not covered by this.**
 ReaderReviews, Comments, ForumThreads and ForumReplies carry their own `status`
 field with moderation semantics (`pending` / `approved` / `rejected` / `spam`).
@@ -448,6 +453,136 @@ One intermediate wart was accepted rather than pulled forward:
 route is lib-backed until Phase 4C. Nothing links to it — it is a stale URL
 that still answers, not a broken link — and it stops resolving when 4C lands.
 
+**Follow-up, 4E pre-work (2026-09-23).** The hazard outlived the routes. Three
+surfaces were never wired and still read `lib/` fixtures, so they now disagree
+with Payload:
+
+| Surface                 | Reads                                                                    |
+| ----------------------- | ------------------------------------------------------------------------ |
+| `app/sitemap.ts`        | `lib/blog`, `lib/categories`, `lib/news`, `lib/reviews`, `lib/mock-data` |
+| `app/llms.txt/route.ts` | the same set                                                             |
+| `lib/search.ts`         | the same set                                                             |
+
+Measured against the running app, the sitemap has 50 entries of which **six
+return 404**:
+
+- `/reviews/casinos`, `/reviews/casinos/crownline-coins`,
+  `/reviews/casinos/spinfrontier`, `/reviews/casinos/stakeharbor` — the
+  vertical was renamed `online-casinos` in Phase 4A
+- `/reviews/sportsbooks/peakwager` — the seed skipped the record
+  (`advantages: []` against `minRows: 1`)
+- `/authors/jane-placeholder` — the author slug was renamed to `jane`
+
+And these resolve 200 but are **absent from the sitemap entirely**:
+`/authors`, `/authors/jane`, `/authors/richard-reegan`,
+`/reviews/online-casinos` and its four reviews.
+
+`llms.txt` carries five of the same dead links, and `/search` returns
+`/reviews/casinos/crownline-coins` as a result. This is why no `lib/` file was
+deletable in 4E: the fixtures are not orphaned, they are load-bearing for three
+crawler-facing surfaces. Wiring them is **Phase 4F**.
+
+## Phase 4 complete — what is Payload-backed and what is not
+
+FW-1 Phase 4 wired every display route under `app/(frontend)/`. This section is
+a summary of the end state; the reasoning behind each call stays in the dated
+entries above and is not restated here.
+
+### Payload-backed
+
+| Sub-phase | Routes                                                                                             |
+| --------- | -------------------------------------------------------------------------------------------------- |
+| 4A        | `/categories/[slug]`, `/reviews`, `/reviews/[vertical]`                                            |
+| 4B        | `/categories`, `/news`, `/news/[section]`                                                          |
+| 4C        | `/articles/[slug]`, `/news/[section]/[story]`, `/reviews/[vertical]/[slug]`                        |
+| 4D-1      | `/authors`, `/authors/[slug]`                                                                      |
+| 4D-2      | `/legal/[doc]`, `/faq`, `/responsible-gambling/help-directory`                                     |
+| 4D-3      | `/articles`, `/` — plus `/not-found` and `/categories`, pulled in by shared-component prop changes |
+
+### Deliberately static, with the reason recorded
+
+- **`/responsible-gambling`** — the RG decision (2026-09-14, above). Verified
+  unchanged in 4D-4: every file in its dependency closure is byte-identical to
+  the pre-4B baseline, `helplineNumber` and `methodSteps` still `lib/`-sourced.
+- **`/about`, `/contact`, `/search`** — no collection backs them.
+- **`ComparisonCard`** — waiting on D2's operator-column keying half.
+- **`ReviewCard` (`methodSteps`), `BettingToolboxSection` (`toolboxItems`)** —
+  no Payload source exists for either.
+- **`LatestStoriesSection`** — the one section still reading `lib/` for its
+  rows rather than its thumbnails. It appears on `/not-found` and the news
+  story page, neither of which was in 4D-3's scope.
+
+### Not wired, and the reason it blocks cleanup
+
+`app/sitemap.ts`, `app/llms.txt/route.ts` and `lib/search.ts` — see the 4E
+follow-up under "Sequencing: a URL producer and its consumer are one unit".
+**Phase 4F.**
+
+## OG metadata
+
+Settled across the Phase 4 follow-ups. Every route emits its own
+`og:title`, `og:description`, `og:type`, `og:site_name`, `og:url` and an
+`og:image`; before this, all 20 shared the homepage's title and description,
+because routes set `title`/`description` only at the top level of `Metadata`
+and never touched `openGraph`.
+
+`lib/og.ts`'s `buildOpenGraph` composes the block. It exists because **Next
+replaces `openGraph` wholesale rather than merging it with the layout's** —
+verified against rendered tags. Anything the layout sets is lost on any route
+that emits its own, so `type`, `siteName` and the image fallback are restated
+in one helper instead of seven `generateMetadata` bodies.
+
+`type` is `article` on `/articles/[slug]`, `/news/[section]/[story]`,
+`/reviews/[vertical]/[slug]` and `/legal/[doc]`; `profile` on
+`/authors/[slug]`; `website` everywhere else.
+
+Two intentional exceptions:
+
+- **`/`** emits `og:title: "WagerBlogs"` — that is genuinely the homepage's
+  title, not a fallback leaking through.
+- **`layout.tsx`** keeps its own `openGraph` with `DEFAULT_OG_IMAGE`, covering
+  any future route that does not call `buildOpenGraph`. It cannot collide with
+  the wired routes precisely because they replace the block.
+
+`seo.ogImage` is populated on zero records, so every route currently serves
+`public/og-default.png` — a labelled 1200x630 placeholder, regenerated by
+`scripts/generate-og-default.ts`. A record with a real `ogImage` overrides it
+per route with no code change.
+
+## Rail composition
+
+Inventoried during the 4E-era audit. **No decision has been taken here** — this
+records the current state so a future rail refactor starts from fact.
+
+The rail is one `<aside>` in `PageShell`, `hidden wide:flex` (1370px), a fixed
+300px track, sticky and full-height with its own scroll, `BackToTop` pinned to
+its bottom. Below 1370px it is not rendered at all — it does not reflow under
+the content, so anything rail-only is invisible to phones and tablets.
+
+Building blocks: `AnchorList` (link list, owns a card when given a `title`),
+`InfoCard` (title + body + one CTA), `AtAGlanceCard` (label/value `dl`),
+`NewsRail` and `ReviewsRail` (async, self-fetching, with a `children` slot),
+`HomeRail`/`TrendingCard`.
+
+Four observations, all still true:
+
+1. **Six routes render the same "Editorial standards" card** with four
+   slightly different sentences, and five of those have a single-card rail —
+   300px of sticky viewport for one link to `/about`.
+2. **Two incompatible data patterns.** `NewsRail` and `ReviewsRail` fetch their
+   own list; every other rail is assembled in the page and passed as a prop.
+   The first cannot be reused outside its section, the second cannot be dropped
+   into a route without editing that route.
+3. **Three hand-rolled cards re-implement `AnchorList title=`** — "All
+   categories", "Other {noun}s compared", the legal "Change log".
+4. **The landmark convention is stated but not followed.** `InfoCard` documents
+   that rail cards are deliberately unnamed sections; four rail sections are
+   named via `aria-labelledby`. The a11y suite passes because they are unique,
+   not because they follow the rule.
+
+`OtherBooksCard` was part of this inventory and was deleted in 4E — no route
+imported it, and it still called the stale `reviewPath`.
+
 ## Known skeletons
 
 Sites that render a grey `placeholder-asset` block or an empty list **by
@@ -463,12 +598,12 @@ inventing a placeholder).
 
 ### Operator logo — 4 sites
 
-| Site | Surface |
-| --- | --- |
+| Site                                                | Surface                            |
+| --------------------------------------------------- | ---------------------------------- |
 | `app/(frontend)/reviews/[vertical]/[slug]/page.tsx` | operator mark on the review header |
-| `components/section/ReviewDirectorySection.tsx` | directory tile |
-| `components/section/RankedList.tsx` | ranked-list row |
-| `components/cards/BonusOfferCard.tsx` | bonus card |
+| `components/section/ReviewDirectorySection.tsx`     | directory tile                     |
+| `components/section/RankedList.tsx`                 | ranked-list row                    |
+| `components/cards/BonusOfferCard.tsx`               | bonus card                         |
 
 `Reviews` has no `logo` upload field, so there is nothing to render. One field
 covers all four: `BonusOffers.operator` is a relationship to `reviews`, so the
@@ -491,13 +626,21 @@ these stay skeletons and are **correct as-is**.
 This entry is about **media, not data sources**. The sections listed here take
 their rows from Payload; what stays skeleton is the thumbnail inside each row.
 
-`PostRow`, `BlogPostCard`, and the editor's-lead image on
-`app/(frontend)/categories/[slug]/page.tsx` render a grey block even where the
-record has a `heroImage`, because `PostTeaser` carries no thumbnail field and
-the adapters (`storyRow`, `articleRow`) have nowhere to put one. Every section
-built on them — `RecentPublishedSection`, `LatestNewsSection`, `BlogSection`,
-the category and news feeds — inherits that. Open, not deferred: it is the
-pass-through follow-up scheduled after 4D-4.
+**Closed 2026-09-21.** `PostTeaser` gained a `thumbnail`, `storyRow` and
+`articleRow` fill it from the record's `heroImage`, and `PostRow`,
+`BlogPostCard` and the editor's-lead image all branch on `resolveMedia`. No
+query needed a depth change — every call site already fetched at depth 1 or
+better. `sizes` was measured per surface rather than guessed.
+
+The grey block still renders everywhere, because `hero_image_id` is NULL on
+all three articles and all ten news stories. That is the honest empty state,
+not a missing wire: upload a hero to any article and it appears on `/articles`,
+the homepage `BlogSection`, and that article's category editor's-lead.
+
+The populated branch cannot be exercised in-process — `next/image` resolves to
+a module namespace outside Next's bundler, so `renderToStaticMarkup` rejects
+it. It is covered by testing `resolveMedia` directly plus the skeleton branch,
+and by the author photo, which is the same pair and does render live.
 
 `components/section/LatestStoriesSection.tsx` is the one section still reading
 `lib/` for its **rows** as well. It appears on the 404 page and the news story
@@ -505,12 +648,10 @@ page, neither of which was in 4D-3's scope.
 
 ### Not a skeleton: `seo.ogImage`
 
-Every collection with `seoFields` has an `ogImage` upload, and no
-`generateMetadata` reads it — there is no `openGraph.images` anywhere in the
-codebase, and `app/(frontend)/layout.tsx` still carries the
-`TODO(cms): per-route openGraph images` marker. Social cards fall back to the
-sitewide default. Invisible on-page, so it does not show up as a grey box, but
-it is the same class of gap.
+**Closed 2026-09-23** — see the "OG metadata" section above. `buildOpenGraph`
+reads `seo.ogImage` on every wired route and falls back to
+`public/og-default.png`. The field is still populated on zero records, so the
+placeholder is what ships; that is authoring work, not a wiring gap.
 
 ### Editor's pick surfacing — deferred schema question
 

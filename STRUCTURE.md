@@ -293,6 +293,11 @@ A route timing out under parallel load is worth checking against this before
 being written off as a flaky test: run it alone. If it is fast in isolation and
 slow in the suite, it is queueing, not flaking.
 
+**Pool tuning affects throughput, not just correctness.** The a11y suite went
+from **5.9m to 2.6m** once the queueing was gone — same tests, same machine.
+A slow suite is worth treating as a possible connection-budget symptom rather
+than an inevitable cost.
+
 **Why the worker count is pinned.** The default 7 workers x 2 = 14 fits under 15
 only on paper: it assumes the workers never all want a connection at once. That
 held while few routes queried Payload at collect time. FW-1 Phase 4D-2 added
