@@ -1,4 +1,7 @@
 import { ReactNode } from "react";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import { buildNavGroups } from "@/lib/nav";
 import BackToTop from "./BackToTop";
 import BackToTopFab from "./BackToTopFab";
 import SideNav from "./SideNav";
@@ -21,7 +24,7 @@ const MAIN_GAP = {
   comparison: "gap-6 lg:gap-7",
 } as const;
 
-export default function PageShell({
+export default async function PageShell({
   activeNavId,
   register = "comparison",
   rail,
@@ -32,6 +35,26 @@ export default function PageShell({
   rail?: ReactNode;
   children: ReactNode;
 }) {
+  const payload = await getPayload({ config });
+  // Both taxonomies are structural — no drafts, so no _status filter. The nav
+  // is built here rather than in SideNav/MobileNav because those are client
+  // components and cannot await. Sequential, as everywhere else.
+  const { docs: verticals } = await payload.find({
+    collection: "verticals",
+    sort: "order",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+  const { docs: newsSections } = await payload.find({
+    collection: "news-sections",
+    sort: "order",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+  const navGroups = buildNavGroups({ verticals, newsSections });
+
   return (
     <SearchDialogProvider>
       <div className="max-w-(--grid-max-width) mx-auto px-container-mobile md:px-container-tablet lg:px-container-desktop pt-container-mobile md:pt-container-tablet lg:pt-container-desktop">
@@ -44,9 +67,9 @@ export default function PageShell({
           Skip to content
         </a>
         <div className={`${shellTracks} wide:items-start`}>
-          <SideNav activeId={activeNavId} />
+          <SideNav activeId={activeNavId} groups={navGroups} />
           <div className="min-w-0">
-            <TopHeader activeNavId={activeNavId} />
+            <TopHeader activeNavId={activeNavId} navGroups={navGroups} />
             {/* tabIndex -1 so the skip link moves focus, not just scroll. */}
             <main id="main-content" tabIndex={-1} className={`flex flex-col ${MAIN_GAP[register]}`}>
               {children}

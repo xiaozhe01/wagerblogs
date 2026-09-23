@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Dialog } from "@base-ui/react/dialog";
 import { Menu, X, ChevronRight, CircleDot, Ellipsis, User } from "lucide-react";
-import { navGroups, type NavGroup } from "@/lib/nav";
+import type { NavGroup } from "@/lib/nav";
 import { navIcons, subNavIcons } from "./nav-icons";
 import { useFocusGuardAriaHiddenFix } from "@/hooks/use-focus-guard-fix";
 import { NAV_ICON_BUTTON, NAV_ROW as ROW } from "./nav-styles";
@@ -12,7 +12,7 @@ import { NAV_ICON_BUTTON, NAV_ROW as ROW } from "./nav-styles";
 /** The nav SideNav carries at wide:, for the widths where SideNav is hidden.
  * Groups are flattened rather than put behind dropdowns — a drawer has the room,
  * and a second tap to reach a section is a tap too many on a phone. */
-export default function MobileNav({ activeId }: { activeId?: string }) {
+export default function MobileNav({ activeId, groups }: { activeId?: string; groups: NavGroup[] }) {
   useFocusGuardAriaHiddenFix();
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
@@ -35,7 +35,7 @@ export default function MobileNav({ activeId }: { activeId?: string }) {
 
           <nav aria-label="Main">
             <ul role="list" className="flex flex-col gap-3">
-              {navGroups.map((group: NavGroup) => {
+              {groups.map((group: NavGroup) => {
                 const Icon = navIcons[group.id] ?? Ellipsis;
                 const current = group.id === activeId;
                 return (

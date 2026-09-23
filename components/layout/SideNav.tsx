@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { navGroups, type NavGroup } from "@/lib/nav";
+import type { NavGroup } from "@/lib/nav";
 import { Ellipsis, ChevronRight, CircleDot, User, type LucideIcon } from "lucide-react";
 import {
   NavigationMenu,
@@ -28,7 +28,7 @@ function NavIconLabel({ icon: Icon, label }: { icon: LucideIcon; label: string }
 
 // Desktop-only rail nav (lg+). Mobile/tablet uses TopHeader instead — see globals.css
 // breakpoint doc block: side-nav replaces top-header only at lg (1024px+).
-export default function SideNav({ activeId }: { activeId?: string }) {
+export default function SideNav({ activeId, groups }: { activeId?: string; groups: NavGroup[] }) {
   return (
     <section
       aria-label="Sidebar"
@@ -51,7 +51,7 @@ export default function SideNav({ activeId }: { activeId?: string }) {
         className="max-w-none flex-1 items-stretch justify-start"
       >
         <NavigationMenuList className="flex-col items-stretch justify-start gap-2">
-          {navGroups.map((g: NavGroup) => {
+          {groups.map((g: NavGroup) => {
             const expandable = g.subs.length > 0;
             const Icon = navIcons[g.id] ?? Ellipsis;
             return (
