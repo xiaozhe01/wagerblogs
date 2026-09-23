@@ -13,17 +13,23 @@ import FilterChips from "@/components/controls/FilterChips";
 import Prose from "@/components/section/Prose";
 import { ALL_REGIONS, REGION_PARAM } from "@/lib/site-data";
 import { helpRegionLabel, helpRegionValues, helpRegions } from "@/lib/help-regions";
+import { buildOpenGraph } from "@/lib/og";
 import { chipHref, formatDate, headingId, resolveChip } from "@/lib/utils";
 
 // No `revalidate`: this route reads searchParams for the region chip, so Next
 // renders it per request and the ISR window would never apply.
 
 // HelpDirectoryEntries carries no seo group — one page, stable copy.
+const TITLE = "Gambling-Help Directory — WagerBlogs";
+const DESCRIPTION =
+  "Free, confidential gambling-help organisations worldwide, listed by region with the contact routes each one offers.";
+const PATH = "/responsible-gambling/help-directory";
+
 export const metadata: Metadata = {
-  title: "Gambling-Help Directory — WagerBlogs",
-  description:
-    "Free, confidential gambling-help organisations worldwide, listed by region with the contact routes each one offers.",
-  alternates: { canonical: "/responsible-gambling/help-directory" },
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION, path: PATH }),
+  alternates: { canonical: PATH },
 };
 
 const DIRECTORY_ANCHOR = "directory";
