@@ -112,16 +112,21 @@ export default buildConfig({
   ],
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
-    // max caps the pool PER PROCESS, so the right value differs by environment.
-    // Build: Next prerenders with 7 workers, each opening its own pool, against
-    // a session pooler capped at 15 clients — 7 x 2 = 14 leaves one spare.
-    // Dev: a single process serving the admin panel, route renders and ad-hoc
+    // max caps the pool PER PROCESS, so the right value follows the process
+    // COUNT, not NODE_ENV — `next build` and `next start` are both production
+    // and want opposite caps.
+    // Build: 4 worker processes (experimental.cpus), each with its own pool,
+    // against a session pooler capped at 15 clients — 4 x 2 = 8, seven spare.
+    // Serve: one process handling every request at once. A cap of 2 starves it
+    // exactly as it starves dev, and pg then fails on connectionTimeoutMillis.
+    // Dev: one process serving the admin panel, route renders and ad-hoc
     // queries at once; a cap of 2 there deadlocks on one stuck client.
+    // Only the build workers set NEXT_PHASE, so it is the discriminator.
     // The timeouts make exhaustion fail loudly instead of hanging forever.
     // See STRUCTURE.md "Postgres connection budget".
     pool: {
       connectionString: process.env.DATABASE_URL || "",
-      max: process.env.NODE_ENV === "production" ? 2 : 10,
+      max: process.env.NEXT_PHASE === "phase-production-build" ? 2 : 10,
       connectionTimeoutMillis: 10_000,
       idleTimeoutMillis: 30_000,
     },

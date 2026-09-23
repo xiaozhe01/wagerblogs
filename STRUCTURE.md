@@ -247,20 +247,51 @@ must satisfy `workers x max < 15`. The worker count defaults to cores-1 (7 on
 this machine), which is **pinned to 4** by `experimental.cpus` in
 `next.config.ts` — see below.
 
-**Dev / runtime.** One process — but active use is the admin panel _and_ route
-rendering _and_ ad-hoc queries at the same time. A cap of 2 here deadlocks on
-any slow query or `idle in transaction` state.
+**Serve / dev.** One process — but it handles every request concurrently, and
+in dev the admin panel _and_ route renders _and_ ad-hoc queries at the same
+time. A cap of 2 here starves it: requests queue, then fail on
+`connectionTimeoutMillis`.
 
 Current setting, in `payload.config.ts`:
 
 ```ts
-max: process.env.NODE_ENV === "production" ? 2 : 10,
+max: process.env.NEXT_PHASE === "phase-production-build" ? 2 : 10,
 connectionTimeoutMillis: 10_000,
 idleTimeoutMillis: 30_000,
 ```
 
 - **Build:** 4 workers x 2 = 8, leaving 7 spare for scripts and `rls:check`.
+- **Serve (`next start`):** 1 process x 10, comfortably under 15.
 - **Dev:** 1 process x 10, comfortably under 15.
+
+**The discriminator is the phase, not `NODE_ENV`.** `next build` and
+`next start` are both `NODE_ENV=production` and want opposite caps — many
+processes wanting a few clients each, versus one process wanting many. Measured:
+
+| Context                   | Processes | `NEXT_PHASE`             | `NODE_ENV`    |
+| ------------------------- | --------- | ------------------------ | ------------- |
+| `next build` workers      | 4         | `phase-production-build` | `production`  |
+| `next start`              | 1         | unset                    | `production`  |
+| `next dev`                | 1         | unset                    | `development` |
+| scripts (`seed`, `rls:*`) | 1         | unset                    | unset         |
+
+Only the build workers set `NEXT_PHASE`, so it is the one signal that separates
+the two production cases.
+
+**What a `NODE_ENV`-based cap cost.** Under the old setting `next start` ran on
+2 clients, which was survivable while most routes were static. FW-1 Phase 4D-3
+made the homepage Payload-backed; six routes are now `ƒ` dynamic and query on
+every request. The a11y suite hammers them in parallel, so requests sat in the
+pool queue: desktop Home took **27–30s against a 30s Playwright timeout** for
+three runs, passing by luck, then failed — first one test, then twelve, all of
+them dynamic routes, with `timeout exceeded when trying to connect` in the
+server log and **zero** `EMAXCONNSESSION` (the cap being hit was ours, not the
+pooler's). Phase-based capping took Home to **6.8s** and the suite from 5.9m to
+3.1m.
+
+A route timing out under parallel load is worth checking against this before
+being written off as a flaky test: run it alone. If it is fast in isolation and
+slow in the suite, it is queueing, not flaking.
 
 **Why the worker count is pinned.** The default 7 workers x 2 = 14 fits under 15
 only on paper: it assumes the workers never all want a connection at once. That
@@ -289,7 +320,8 @@ core count, so a faster machine will not silently reintroduce the failure.
 
 The dev server (`max` 10) and a build (4 x 2 = 8) **cannot run at the same
 time** — combined they exceed the 15-client cap. Kill the dev server before
-`npm run build`, and restart it after.
+`npm run build`, and restart it after. The same applies to `npm run test:a11y`,
+which builds and then serves.
 
 **Diagnostic signature:** `EMAXCONNSESSION` during a build while the dev server
 is running.
