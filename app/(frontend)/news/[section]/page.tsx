@@ -14,6 +14,7 @@ import LinkTileGrid from "@/components/cards/LinkTileGrid";
 import { storyRow } from "@/lib/news-rows";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import { formatDate, headingId } from "@/lib/utils";
+import { buildOpenGraph } from "@/lib/og";
 import PageNav from "@/components/controls/PageNav";
 import Prose from "@/components/section/Prose";
 
@@ -57,6 +58,12 @@ export async function generateMetadata({
   return {
     title: section.seo?.metaTitle,
     description: section.seo?.metaDescription,
+    openGraph: buildOpenGraph({
+      title: section.seo?.metaTitle,
+      description: section.seo?.metaDescription,
+      ogImage: section.seo?.ogImage,
+      path: `/news/${section.slug}`,
+    }),
     alternates: { canonical: section.seo?.canonicalUrl || `/news/${section.slug}` },
   };
 }

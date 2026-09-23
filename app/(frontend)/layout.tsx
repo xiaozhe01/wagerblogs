@@ -9,8 +9,10 @@ export const metadata: Metadata = {
   title: "WagerBlogs",
   description: "Independent reviews, odds comparisons, and state-by-state legal betting guides.",
   alternates: { canonical: "/" },
-  // TODO(cms): per-route openGraph images once the asset pipeline is settled.
-  // Without og:type, share scrapers (and any script reading it) get null.
+  // The fallback for routes that emit no openGraph of their own. Routes that
+  // do — every generateMetadata calling buildOpenGraph — REPLACE this block
+  // wholesale rather than merging with it, which is why lib/og.ts restates
+  // type and siteName and carries its own image default.
   openGraph: {
     type: "website",
     siteName: "WagerBlogs",

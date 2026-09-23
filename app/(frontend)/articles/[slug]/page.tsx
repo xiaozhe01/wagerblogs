@@ -15,6 +15,7 @@ import { RichText } from "@/components/rich-text/RichText";
 import { publishedFilter } from "@/lib/payload-queries";
 import { deriveHeadings, readTime } from "@/lib/lexical";
 import { formatDate } from "@/lib/utils";
+import { buildOpenGraph } from "@/lib/og";
 import type { Article } from "@/payload-types";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
@@ -64,6 +65,13 @@ export async function generateMetadata({
   return {
     title: article.seo?.metaTitle,
     description: article.seo?.metaDescription,
+    openGraph: buildOpenGraph({
+      title: article.seo?.metaTitle,
+      description: article.seo?.metaDescription,
+      ogImage: article.seo?.ogImage,
+      type: "article",
+      path: `/articles/${article.slug}`,
+    }),
     alternates: { canonical: article.seo?.canonicalUrl || `/articles/${article.slug}` },
   };
 }

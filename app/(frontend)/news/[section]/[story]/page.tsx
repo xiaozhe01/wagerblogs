@@ -21,6 +21,7 @@ import { publishedFilter } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
 import { readTime } from "@/lib/lexical";
 import { formatDate } from "@/lib/utils";
+import { buildOpenGraph } from "@/lib/og";
 
 type StoryParams = { section: string; story: string };
 
@@ -93,6 +94,13 @@ export async function generateMetadata({
   return {
     title: story.seo?.metaTitle,
     description: story.seo?.metaDescription,
+    openGraph: buildOpenGraph({
+      title: story.seo?.metaTitle,
+      description: story.seo?.metaDescription,
+      ogImage: story.seo?.ogImage,
+      type: "article",
+      path: `/news/${sectionSlug}/${story.slug}`,
+    }),
     alternates: {
       canonical: story.seo?.canonicalUrl || `/news/${sectionSlug}/${story.slug}`,
     },

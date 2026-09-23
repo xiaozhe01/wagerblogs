@@ -16,6 +16,7 @@ import { publishedFilter } from "@/lib/payload-queries";
 import { readTime } from "@/lib/lexical";
 import { formatDate } from "@/lib/utils";
 import type { PostTeaser } from "@/lib/types";
+import { buildOpenGraph } from "@/lib/og";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
 // skip the cache for that request only.
@@ -62,6 +63,13 @@ export async function generateMetadata({
   return {
     title: author.seo?.metaTitle,
     description: author.seo?.metaDescription,
+    openGraph: buildOpenGraph({
+      title: author.seo?.metaTitle,
+      description: author.seo?.metaDescription,
+      ogImage: author.seo?.ogImage,
+      type: "profile",
+      path: `/authors/${author.slug}`,
+    }),
     alternates: { canonical: author.seo?.canonicalUrl || `/authors/${author.slug}` },
   };
 }

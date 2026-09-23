@@ -24,6 +24,7 @@ import { formatDate } from "@/lib/utils";
 // TODO Phase 4 hold — Reviews has no `related` relationship, so the
 // "Compare further" grid has no Payload source yet.
 import { reviewRelated } from "@/lib/mock-data";
+import { buildOpenGraph } from "@/lib/og";
 
 type ReviewParams = { vertical: string; slug: string };
 
@@ -92,6 +93,13 @@ export async function generateMetadata({
   return {
     title: review.seo?.metaTitle,
     description: review.seo?.metaDescription,
+    openGraph: buildOpenGraph({
+      title: review.seo?.metaTitle,
+      description: review.seo?.metaDescription,
+      ogImage: review.seo?.ogImage,
+      type: "article",
+      path: `/reviews/${verticalSlug}/${review.slug}`,
+    }),
     alternates: {
       canonical: review.seo?.canonicalUrl || `/reviews/${verticalSlug}/${review.slug}`,
     },

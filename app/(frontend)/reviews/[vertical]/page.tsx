@@ -13,6 +13,7 @@ import EmptyState from "@/components/section/EmptyState";
 import ReviewCard from "@/components/section/ReviewCard";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import { formatDate, headingId } from "@/lib/utils";
+import { buildOpenGraph } from "@/lib/og";
 import PageNav from "@/components/controls/PageNav";
 
 type VerticalParams = { vertical: string };
@@ -60,6 +61,12 @@ export async function generateMetadata({
   return {
     title: vertical.seo?.metaTitle,
     description: vertical.seo?.metaDescription,
+    openGraph: buildOpenGraph({
+      title: vertical.seo?.metaTitle,
+      description: vertical.seo?.metaDescription,
+      ogImage: vertical.seo?.ogImage,
+      path: `/reviews/${vertical.slug}`,
+    }),
     alternates: { canonical: vertical.seo?.canonicalUrl || `/reviews/${vertical.slug}` },
   };
 }

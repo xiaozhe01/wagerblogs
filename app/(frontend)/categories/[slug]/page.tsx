@@ -21,6 +21,7 @@ import { readTime } from "@/lib/lexical";
 import { articleRow } from "@/lib/article-rows";
 import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
+import { buildOpenGraph } from "@/lib/og";
 import PageNav from "@/components/controls/PageNav";
 import type { Article } from "@/payload-types";
 
@@ -70,6 +71,12 @@ export async function generateMetadata({
   return {
     title: vertical.seo?.metaTitle,
     description: vertical.seo?.metaDescription,
+    openGraph: buildOpenGraph({
+      title: vertical.seo?.metaTitle,
+      description: vertical.seo?.metaDescription,
+      ogImage: vertical.seo?.ogImage,
+      path: `/categories/${vertical.slug}`,
+    }),
     alternates: { canonical: vertical.seo?.canonicalUrl || `/categories/${vertical.slug}` },
   };
 }
