@@ -1,23 +1,122 @@
+import { getPayload } from "payload";
+import config from "@payload-config";
 import { siteUrl } from "@/lib/schema";
-import { newsSections } from "@/lib/news";
-import { reviewGroups } from "@/lib/reviews";
-import { categories } from "@/lib/categories";
-import { blogPosts } from "@/lib/blog";
-import { legalDocs } from "@/lib/mock-data";
+import { publishedFilter } from "@/lib/payload-queries";
+import {
+  articleUrl,
+  authorUrl,
+  categoryUrl,
+  legalUrl,
+  newsUrl,
+  reviewIndexUrl,
+  reviewUrl,
+  sectionUrl,
+} from "@/lib/urls";
 
 // llmstxt.org convention: a markdown site map for language models. A proposed
 // convention, not a standard. A route handler rather than a static
-// public/llms.txt so it reads the same registries and cannot list a dead URL.
+// public/llms.txt so it reads the same records the routes resolve from and
+// cannot list a dead URL. It previously read lib/ fixtures and carried five
+// dead links. See MIGRATION.md.
 export const dynamic = "force-static";
+export const revalidate = 3600;
+
+const MAX_NOTE = 200;
+
+/** Descriptions come from editor-written fields of unbounded length. Trim on a
+ * word boundary — a note cut mid-word is worth less than a shorter whole one. */
+function note(text: string | null | undefined): string {
+  const clean = (text ?? "").replace(/\s+/g, " ").trim();
+  if (clean.length <= MAX_NOTE) return clean;
+  const cut = clean.slice(0, MAX_NOTE);
+  return `${cut.slice(0, cut.lastIndexOf(" "))}…`;
+}
 
 function section(heading: string, lines: string[]) {
   return lines.length ? `## ${heading}\n\n${lines.join("\n")}\n` : "";
 }
 
-const link = (path: string, label: string, note: string) =>
-  `- [${label}](${siteUrl}${path}): ${note}`;
+const link = (path: string, label: string, text: string | null | undefined) => {
+  const description = note(text);
+  return `- [${label}](${siteUrl}${path})${description ? `: ${description}` : ""}`;
+};
 
-export function GET() {
+/** Stable-sorts by a secondary key applied over an already-sorted list. */
+const byKey =
+  <T>(key: (item: T) => string) =>
+  (a: T, b: T) =>
+    key(a).localeCompare(key(b));
+
+const verticalName = (record: { vertical: number | { name: string } }) =>
+  typeof record.vertical === "object" ? record.vertical.name : "";
+
+const sectionName = (record: { section: number | { name: string } }) =>
+  typeof record.section === "object" ? record.section.name : "";
+
+export async function GET() {
+  const payload = await getPayload({ config });
+
+  // Sequential, as everywhere else — this renders once per revalidation
+  // window, not in a user's request path.
+
+  // Structural taxonomies: no drafts, so no _status filter.
+  const { docs: verticals } = await payload.find({
+    collection: "verticals",
+    sort: "order",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+  const { docs: newsSections } = await payload.find({
+    collection: "news-sections",
+    sort: "order",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+
+  // Editorial collections: published only. No draftMode — llms.txt is a
+  // crawler surface, which never carries the bypass cookie.
+  // depth 1 on reviews and news populates the relationship their URL needs.
+  const { docs: reviews } = await payload.find({
+    collection: "reviews",
+    ...publishedFilter(false),
+    sort: "name",
+    limit: 1000,
+    depth: 1,
+    overrideAccess: false,
+  });
+  const { docs: stories } = await payload.find({
+    collection: "news",
+    ...publishedFilter(false),
+    sort: "-publishedAt",
+    limit: 1000,
+    depth: 1,
+    overrideAccess: false,
+  });
+  const { docs: articles } = await payload.find({
+    collection: "articles",
+    ...publishedFilter(false),
+    sort: "-publishedAt",
+    limit: 1000,
+    depth: 0,
+    overrideAccess: false,
+  });
+  const { docs: authors } = await payload.find({
+    collection: "authors",
+    ...publishedFilter(false),
+    sort: "name",
+    limit: 1000,
+    depth: 0,
+    overrideAccess: false,
+  });
+
+  const legal = await payload.findGlobal({
+    slug: "legal-documents",
+    depth: 0,
+    overrideAccess: false,
+  });
+
   const body = [
     "# WagerBlogs",
     "",
@@ -49,34 +148,51 @@ export function GET() {
       ),
     ]),
     section("Reviews", [
-      ...reviewGroups.map((g) =>
-        link(g.href, g.title, `every ${g.noun} reviewed on the same criteria`),
-      ),
-      ...reviewGroups.flatMap((g) =>
-        g.operators.map((o) =>
-          link(`${g.href}/${o.slug}`, `${o.name} review`, `tested ${g.noun} review`),
+      ...verticals
+        .filter((vertical) => vertical.hasReviews)
+        .map((vertical) =>
+          link(
+            reviewIndexUrl(vertical),
+            `${vertical.name} reviews`,
+            `every ${vertical.noun} reviewed on the same criteria`,
+          ),
         ),
-      ),
+      ...[...reviews].sort(byKey(verticalName)).flatMap((review) => {
+        const path = reviewUrl(review);
+        return path ? [link(path, `${review.name} review`, review.seo?.metaDescription)] : [];
+      }),
     ]),
     section("News", [
       link("/news", "News index", "every section of the newsroom"),
-      ...newsSections.map((s) =>
-        link(s.href, `${s.category} news`, `${s.category.toLowerCase()} coverage`),
+      ...newsSections.map((newsSection) =>
+        link(
+          sectionUrl(newsSection),
+          `${newsSection.name} news`,
+          `${newsSection.name.toLowerCase()} coverage`,
+        ),
       ),
+      ...[...stories].sort(byKey(sectionName)).flatMap((story) => {
+        const path = newsUrl(story);
+        return path ? [link(path, story.title, story.excerpt)] : [];
+      }),
     ]),
     section("Guides", [
       link("/articles", "Articles", "explainers and strategy"),
-      ...blogPosts.map((p) => link(p.href, p.title, p.kicker)),
+      ...articles.map((article) => link(articleUrl(article), article.title, article.excerpt)),
     ]),
     section("Categories", [
       link("/categories", "All categories", "the betting verticals covered"),
-      ...categories.map((c) => link(c.href, c.name, c.desc)),
+      ...verticals.map((vertical) =>
+        link(categoryUrl(vertical), vertical.name, vertical.description),
+      ),
+    ]),
+    section("Authors", [
+      link("/authors", "All authors", "who writes and reviews here, and what qualifies them"),
+      ...authors.map((author) => link(authorUrl(author), author.name, author.credentialLine)),
     ]),
     section(
       "Legal",
-      Object.entries(legalDocs).map(([slug, d]) =>
-        link(`/legal/${slug}`, d.title, "binding policy text"),
-      ),
+      (legal.documents ?? []).map((doc) => link(legalUrl(doc), doc.title, doc.summary)),
     ),
   ].join("\n");
 
