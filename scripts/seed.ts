@@ -2,7 +2,7 @@ import { getPayload } from "payload";
 import config from "../payload.config";
 import { applyRls } from "./rls";
 import { categories, newsCategories } from "../lib/site-data";
-import { reviewGroups } from "../lib/reviews";
+import { reviewGroups } from "./fixtures/reviews";
 import { chipSlug } from "../lib/utils";
 
 // Bootstrap the two taxonomy collections that existing routes depend on:
@@ -50,7 +50,7 @@ function buildVerticals(): SeedRecord[] {
     if (groupSlug && !group) {
       throw new Error(
         `Seed aborted: REVIEW_GROUP_BY_VERTICAL maps "${slug}" to reviewGroup "${groupSlug}", ` +
-          `which does not exist in lib/reviews.ts. The mapping is stale.`,
+          `which does not exist in scripts/fixtures/reviews.ts. The mapping is stale.`,
       );
     }
 

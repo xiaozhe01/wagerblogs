@@ -5,7 +5,7 @@ import { revalidateSearch } from './hooks/revalidate-search'
 // is exactly one /faq page (SCHEMA-INVENTORY.md §8) and the FAQ isn't
 // per-record content — it's a curated sitewide list.
 //
-// The lib/faq.ts:12 TODO says "one FAQ collection, so answer and source
+// The scripts/fixtures/faq.ts:12 TODO says "one FAQ collection, so answer and source
 // cannot drift apart" — this global with a linked source content record
 // per entry is the fix. faqPageJsonLd (lib/schema.tsx:96) filters
 // bracketed placeholders — status: 'published' vs 'draft' makes that

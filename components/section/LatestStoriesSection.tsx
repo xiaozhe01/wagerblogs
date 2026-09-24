@@ -1,6 +1,6 @@
 import PostRow from "@/components/cards/PostRow";
 import EditorialSection from "./EditorialSection";
-import { newsSections, storyRow } from "@/lib/news";
+import { newsSections, storyRow } from "@/scripts/fixtures/news";
 
 /** The newest story from each section, kickered so the sport is legible when
  * the rows are read out of their own section. */

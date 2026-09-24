@@ -4,7 +4,7 @@ import { revalidateSearch } from './hooks/revalidate-search'
 
 // News stories. Distinct from Articles per the frontend evidence:
 // separate routes (/news/, /news/[slug]/, /news/[slug]/[story]/),
-// separate registry (lib/news.ts), separate search scope, separate
+// separate registry (scripts/fixtures/news.ts), separate search scope, separate
 // sitemap presence. Section/story hierarchy matches the two-level route
 // structure.
 //

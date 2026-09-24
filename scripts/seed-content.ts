@@ -12,9 +12,9 @@ import {
   mockRankedSportsbooks,
   newsStoryAuthor,
 } from "../lib/mock-data";
-import { blogPosts } from "../lib/blog";
-import { newsSections } from "../lib/news";
-import { siteFaqs } from "../lib/faq";
+import { blogPosts } from "./fixtures/blog";
+import { newsSections } from "./fixtures/news";
+import { siteFaqs } from "./fixtures/faq";
 import type { Operator } from "../lib/types";
 
 // Seeds the editorial content that lib/ has been standing in for, so wired
