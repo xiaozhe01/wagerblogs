@@ -10,6 +10,7 @@ import {
   UnorderedListFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { revalidateSearch } from './hooks/revalidate-search'
 
 // Legal documents (privacy policy, terms of service, affiliate
 // disclosure, cookie policy). There are exactly four per
@@ -24,6 +25,9 @@ export const LegalDocuments: GlobalConfig = {
   slug: 'legal-documents',
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: revalidateSearch,
   },
   fields: [
     {

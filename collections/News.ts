@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { seoFields } from './fields/seo'
+import { revalidateSearch } from './hooks/revalidate-search'
 
 // News stories. Distinct from Articles per the frontend evidence:
 // separate routes (/news/, /news/[slug]/, /news/[slug]/[story]/),
@@ -29,6 +30,10 @@ export const News: CollectionConfig = {
     drafts: {
       autosave: false,
     },
+  },
+  hooks: {
+    afterChange: revalidateSearch,
+    afterDelete: revalidateSearch,
   },
   fields: [
     {

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { seoFields } from './fields/seo'
+import { revalidateSearch } from './hooks/revalidate-search'
 
 // Real author records. The frontend currently has TWO separate author
 // objects (mockAuthor at mock-data.ts:20 and newsStoryAuthor at :940) with
@@ -26,6 +27,10 @@ export const Authors: CollectionConfig = {
     drafts: {
       autosave: false,
     },
+  },
+  hooks: {
+    afterChange: revalidateSearch,
+    afterDelete: revalidateSearch,
   },
   fields: [
     {

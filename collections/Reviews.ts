@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { seoFields } from "./fields/seo";
+import { revalidateSearch } from "./hooks/revalidate-search";
 
 // Operator reviews. Renders on /reviews/[vertical-slug]/[review-slug]/.
 // Vertical relationship replaces the ReviewGroup wrapper — the group
@@ -34,6 +35,10 @@ export const Reviews: CollectionConfig = {
     drafts: {
       autosave: false,
     },
+  },
+  hooks: {
+    afterChange: revalidateSearch,
+    afterDelete: revalidateSearch,
   },
   fields: [
     {

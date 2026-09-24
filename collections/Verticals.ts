@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { seoFields } from './fields/seo'
+import { revalidateSearch } from './hooks/revalidate-search'
 
 // The domain axis: what a piece of content is *about*. Sportsbooks,
 // Online Casinos, Esports Betting, Fantasy Sports, Sweepstakes Casinos,
@@ -23,6 +24,10 @@ export const Verticals: CollectionConfig = {
   access: {
     // Placeholder — real group-based rules in a later security handoff.
     read: () => true,
+  },
+  hooks: {
+    afterChange: revalidateSearch,
+    afterDelete: revalidateSearch,
   },
   fields: [
     {

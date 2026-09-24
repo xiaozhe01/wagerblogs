@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { revalidateSearch } from './hooks/revalidate-search'
 
 // One FAQ, sitewide, as a Payload global rather than a collection. There
 // is exactly one /faq page (SCHEMA-INVENTORY.md §8) and the FAQ isn't
@@ -14,6 +15,9 @@ export const FAQ: GlobalConfig = {
   slug: 'faq',
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: revalidateSearch,
   },
   fields: [
     {

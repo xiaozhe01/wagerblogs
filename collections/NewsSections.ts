@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { seoFields } from './fields/seo'
+import { revalidateSearch } from './hooks/revalidate-search'
 
 // The /news/[section] route level. Each section groups a set of News
 // stories. Kept minimal — sections don't have their own bodies, they're
@@ -14,6 +15,10 @@ export const NewsSections: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: revalidateSearch,
+    afterDelete: revalidateSearch,
   },
   fields: [
     {
