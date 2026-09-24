@@ -252,6 +252,11 @@ in dev the admin panel _and_ route renders _and_ ad-hoc queries at the same
 time. A cap of 2 here starves it: requests queue, then fail on
 `connectionTimeoutMillis`.
 
+**Search is not part of this budget.** `/search` and `/api/search` score
+in-memory against a cached corpus and issue no query per request. The corpus
+rebuild — six concurrent queries — runs at most once an hour, or on a write to
+a searchable collection. See MIGRATION.md, "Phase 4F complete".
+
 Current setting, in `payload.config.ts`:
 
 ```ts
@@ -384,6 +389,17 @@ structural reason: check `revalidate` on it before suspecting the change.
 need in order to have backing data. Run it once on a fresh clone or new
 database; it skips records that already exist and never updates them. Not part
 of the build or CI — it is a manual bootstrap step.
+
+Both seeds read their source data from `scripts/fixtures/`. Those files are not
+dead render-path code — they are the input a rebuild reads, which is why they
+live beside the scripts that consume them rather than in `lib/`. See
+MIGRATION.md, "Fixture vs render-path".
+
+**Only run a seed against a database you are willing to have records added to.**
+"Already exists" is decided by slug or name, so a record renamed in the admin is
+invisible to the check and gets re-created alongside the rename. Re-seeding a
+hand-edited database produces duplicates, not a no-op. MIGRATION.md records the
+case that found this.
 
 ## Code style — collections/
 

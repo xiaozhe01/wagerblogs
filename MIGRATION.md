@@ -508,15 +508,80 @@ entries above and is not restated here.
 - **`ComparisonCard`** — waiting on D2's operator-column keying half.
 - **`ReviewCard` (`methodSteps`), `BettingToolboxSection` (`toolboxItems`)** —
   no Payload source exists for either.
-- **`LatestStoriesSection`** — the one section still reading `lib/` for its
+- **`LatestStoriesSection`** — the one section still reading a fixture for its
   rows rather than its thumbnails. It appears on `/not-found` and the news
-  story page, neither of which was in 4D-3's scope.
+  story page, neither of which was in 4D-3's scope. Still true after 4F: its
+  import moved to `scripts/fixtures/news`, which is deliberately awkward — the
+  awkwardness is the marker for the one render-path fixture read left.
 
 ### Not wired, and the reason it blocks cleanup
 
 `app/sitemap.ts`, `app/llms.txt/route.ts` and `lib/search.ts` — see the 4E
 follow-up under "Sequencing: a URL producer and its consumer are one unit".
-**Phase 4F.**
+**Resolved in Phase 4F, below.**
+
+## Phase 4F complete — the crawler and navigation surfaces
+
+The four surfaces that built their own URLs from their own fixtures, and so
+drifted from the routes, now read Payload directly.
+
+| Sub-phase | Surface                 | What it had wrong                                                |
+| --------- | ----------------------- | ---------------------------------------------------------------- |
+| 4F-0      | `lib/nav.ts`            | Reviews dropdown emitted `/reviews/casinos`, a 404 on every page |
+| 4F-1      | `app/sitemap.ts`        | six dead entries, eight live routes missing                      |
+| 4F-2      | `app/llms.txt/route.ts` | five dead links, no authors, no news stories                     |
+| 4F-3      | `lib/search.ts`         | `/reviews/casinos/crownline-coins` as a live hit                 |
+
+Every dead URL identified in the 4E pre-work is gone, and the live routes the
+fixtures never knew about are present. The search corpus went from 46 documents
+to 53 — the fixtures under-represented Payload by four FAQ entries, two authors
+and one review index.
+
+Two structural results worth keeping:
+
+- **`lib/urls.ts` is the single URL derivation**, shared by all three crawler
+  surfaces. Each previously built its own paths, which is precisely how the
+  three drifted apart.
+- **Search costs zero queries per request.** The corpus is built behind
+  `unstable_cache` with a one-hour TTL and dropped on write by an `afterChange`
+  hook on each searchable collection. A cache miss issues six concurrent
+  queries; a user's search issues none.
+
+### Fixture vs render-path
+
+Seed fixtures in `scripts/fixtures/` are ongoing source data for `npm run seed`
+and `npm run seed:content`, not orphaned render-path code. Their consumption
+pattern differs from render-path fixtures: seed reads them once per DB rebuild,
+never at runtime. The path documents the role.
+
+4F-4 acted on that distinction rather than the assumption that anything still
+importing a fixture was an unfinished migration:
+
+- **`lib/categories.ts` deleted** — genuinely orphaned, zero consumers.
+- **`lib/blog.ts`, `lib/news.ts`, `lib/reviews.ts`, `lib/faq.ts` moved to
+  `scripts/fixtures/`** — each is the input a seed script reads. Deleting them
+  would have broken the ability to rebuild the database from scratch.
+
+`lib/` now holds no fixture files. The one exception that proves the rule is
+`LatestStoriesSection`, which reaches into `scripts/fixtures/news` from a
+component; see the note above.
+
+### Seed idempotency is keyed on slug, and renames defeat it
+
+Found by running both seeds to verify 4F-4. `seed:content` decides a record
+already exists by its slug or name. When a record is renamed in the admin, the
+seed no longer recognises it and creates its original version alongside the
+renamed one.
+
+Renaming the author `jane-placeholder` to `jane` and re-running the seed
+restores `/authors/jane-placeholder` as a second, live author record — one of
+the exact dead URLs 4F-1 was written to remove. The same happened to six
+`help-directory-entries` renamed from their seeded placeholder names.
+
+This is a seed defect, not a wiring one, and it is worth noting that the
+sitemap surfacing the duplicate is the new behaviour working correctly: it
+reports what is in the database. The old fixture-driven sitemap listed
+`jane-placeholder` whether or not any such record existed.
 
 ## OG metadata
 
