@@ -539,6 +539,53 @@ entries above and is not restated here.
 follow-up under "Sequencing: a URL producer and its consumer are one unit".
 **Resolved in Phase 4F, below.**
 
+## Defense in depth on access rules — 2026-09-24
+
+Found while verifying Phase 5's preview wiring. Every collection shipped
+`read: () => true`. Payload does not filter `_status` or a moderation field on
+its own, so `/api/<slug>` served drafts and unmoderated content to anonymous
+callers — two draft reviews, one of them an unreleased review of the primary
+domain, and one draft author.
+
+**`publishedFilter` was never a security boundary.** It guards at the query
+layer, in the frontend routes, one hand-written call at a time. It cannot guard
+a request that never reaches those routes, and a direct call to the REST API is
+exactly that. The frontend looked correct throughout, because it was.
+
+The two layers now do different jobs:
+
+| Layer | Guard                      | Scope                            |
+| ----- | -------------------------- | -------------------------------- |
+| Data  | collection `access.read`   | every read, including `/api/*`   |
+| Query | `publishedFilter(isDraft)` | the frontend routes that call it |
+
+Either alone protects the site. Both together is honest defense in depth, and
+the query-layer calls stay for that reason — redundancy here is deliberate, not
+leftover.
+
+One rule per visibility model rather than one uniform rule, because the schema
+does not share a vocabulary: `ForumThreads` has no `approved` value and the
+uniform filter errored on the invalid enum; `Comments` treats `edited`
+(Approved with Edits) as public; `ForumReplies` has no status field and is
+visible until flagged. See `collections/access/read-rules.ts`.
+
+Editor identity keys off `req.user.collection === "users"` — the slug
+`AdminUsers` declares. That survives site-user auth landing without needing a
+role model, and fails closed: an unrecognised session falls through to the
+anonymous filter and sees less, never more.
+
+### Consequence for Live Preview, unresolved
+
+Frontend routes call `payload.find({ overrideAccess: false })` and never pass a
+user — 51 call sites. With the access rules in place, a draft-mode request that
+carries no Payload session now resolves against the anonymous filter, so the
+draft is filtered out at the data layer even though `publishedFilter(true)`
+asked for it. Preview inside the admin may still work, since that request does
+carry the session cookie; a preview opened outside it will not.
+
+This is the interaction to settle before FW-1 Phase 5 resumes. It is not a
+reason to weaken the access rules.
+
 ## Phase 4F complete — the crawler and navigation surfaces
 
 The four surfaces that built their own URLs from their own fixtures, and so

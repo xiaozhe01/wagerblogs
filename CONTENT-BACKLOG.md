@@ -157,3 +157,39 @@ duplicating the six real organisations region for region:
 They do **not** render — the help-directory page filters them out — so this is
 database noise rather than a live content defect. Delete via the admin, or via
 a small correction script.
+
+## Follow-ups from the access-rule fix — `dc38e2d`
+
+The leak itself is closed. These are the loose ends it exposed.
+
+### Frontend queries pass no user, which breaks preview outside the admin
+
+**Blocks FW-1 Phase 5.** All 51 `overrideAccess: false` call sites in
+`app/(frontend)/` call `payload.find` without a user, so a draft-mode request
+carrying no Payload session is filtered to published at the data layer — even
+though `publishedFilter(true)` asked for the draft.
+
+Settle before Phase 5 resumes. Options: authenticate in the route and pass
+`user` through, or accept that preview only works from inside the admin.
+Weakening the access rules is not one of them.
+
+### UGC visibility models are not unified
+
+`ForumReplies` uses a `flagged` checkbox where `Comments`, `ReaderReviews` and
+`ForumThreads` use a `status` select — and those three do not agree with each
+other either (`approved`/`edited`, `approved`, `open`/`locked`). Each rule is
+correct for its own schema; whether the schemas should agree is a consistency
+question for a future schema pass, not a security one.
+
+### Notifications need per-user scoping
+
+Currently editors-only, which is right for today because no site user can
+authenticate. When site-user auth lands, the rule needs
+`user: { equals: req.user.id }` so a reader sees their own notifications and
+nobody else's.
+
+### site-users needs a public projection
+
+Anonymous read is denied outright because the record carries `email` and
+`username`. When public profiles are built, they need a dedicated projection
+exposing display fields only — not a loosened rule on the raw collection.
