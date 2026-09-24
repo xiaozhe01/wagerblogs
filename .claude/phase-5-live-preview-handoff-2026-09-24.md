@@ -12,10 +12,10 @@ Tree clean, `develop`.
 | `docs/04-claude-code-implementation-brief.md:149`     | **Auth + UGC (Clerk)** — login, comments, moderation |
 | FW-1, the frontend-wiring handoff MIGRATION.md tracks | **Live Preview**                                     |
 
-CLAUDE.md instructs reading `docs/` in numeric order and following the build
-order "in sequence", which points at the Clerk phase. The FW-1 sequence is a
-separate track that reached its own Phase 5. Anyone told "do Phase 5" without
-this note has even odds of building the wrong thing.
+CLAUDE.md now carries a "Which track is live" section naming FW-1 as the live
+track, and MIGRATION.md's header states that its "Phase N" always means FW-1's.
+Before that reconciliation, CLAUDE.md pointed only at `docs/04`, so anyone told
+"do Phase 5" had even odds of building Clerk instead.
 
 This document covers **FW-1 Phase 5, Live Preview**. It does not cover Clerk.
 
@@ -106,17 +106,48 @@ an open preview iframe, which holds a long-lived render loop.
 
 ## Verification
 
-The draft path being untested is the substance of this phase. Suggested order:
+**Treat this as the work, not as a checkbox after the config lands.** Adding
+the config is the small part; it makes 14 untested branches execute for the
+first time. Anything that renders wrong in preview is a bug in a previously
+unreachable code path, not a preview misconfiguration. Budget accordingly.
 
-1. Create a draft of a record in each of the four collections.
+Outer loop:
+
+1. Create a draft of one Review, one Article, one News story and one Author —
+   in the admin, not via a seed.
 2. Confirm each is absent from its index route, its detail route (404),
    `sitemap.xml`, `llms.txt` and `/api/search` — the published-only guarantee.
-3. Enter preview, confirm each renders, and confirm the detail route resolves.
+3. Open preview for each and work the checklist below.
 4. Exit preview, confirm every surface returns to the step-2 state.
 5. `npm run build && npm run test:a11y && npm run test:unit && npm run rls:check`.
 
-Step 2 is already known-good: it was verified end-to-end during 4F-3 with a
-draft review, on search, the route, sitemap and llms.txt.
+Step 2 is already known-good: verified end-to-end during 4F-3 with a draft
+review, across search, the route, sitemap and llms.txt.
+
+### Per-draft checklist, inside the preview iframe
+
+- **Body content renders.** The draft's Lexical `body` through the rich-text
+  converters. Drafts and published records store the same shape, so a failure
+  here points at the query, not the editor.
+- **Depth-populated relationships render.** Vertical name on a review, section
+  on a news story, author on all three. This is the likeliest failure: the
+  published queries set `depth` deliberately per route, and a draft query that
+  loses depth degrades quietly rather than erroring.
+- **Internal links in the draft body resolve.** Requires cross-linking one
+  draft to another, since the seeded example is a published record. Watch
+  specifically for `internalDocToHref`'s depth message — _"link was not
+  populated deeply enough to expose a slug"_
+  (`components/rich-text/converters/link.tsx:83`). It renders a visibly broken
+  href rather than a silent `#`, so a depth regression in the draft path
+  announces itself instead of hiding.
+- **`generateMetadata` resolves for the draft.** Every detail route reads
+  `draftMode()` inside `generateMetadata` as well as in the page body — two
+  separate call sites per route, and only one of them is visible on screen.
+  Check the SEO fields, including the `[TO WRITE]` placeholders, which should
+  appear verbatim.
+- **`seo.ogImage` renders where populated.** Currently populated on zero
+  records, so this needs one set by hand to be a real test. Otherwise every
+  route falls back to `public/og-default.png` and the assertion is vacuous.
 
 **Do not run `npm run seed` or `npm run seed:content` to create fixtures for
 this.** Both are non-idempotent against a hand-edited database — see

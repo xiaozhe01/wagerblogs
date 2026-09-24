@@ -20,6 +20,22 @@ modifying any code:
 5. `04-claude-code-implementation-brief.md` — the phased build order.
    Follow it in sequence; each phase depends on the last.
 
+## Which track is live
+
+Two phase sequences run in this repo and they number independently. Confirm
+which one a task belongs to before starting.
+
+- **`docs/04`** — the overall build order. Its Phase 5 is **Auth + UGC
+  (Clerk)**, Phase 6 is trust pages.
+- **FW-1** — wiring the frontend onto PayloadCMS, recorded in `MIGRATION.md`.
+  Its Phase 5 is **Live Preview**. Unrelated to Clerk.
+
+**FW-1 is the live track.** Phases 1–4F are complete; Live Preview is the only
+one left — see `.claude/phase-5-live-preview-handoff-2026-09-24.md`. A bare
+"Phase 5" is ambiguous, so ask which is meant rather than assuming.
+
+Pre-launch work that belongs to no phase is in `CONTENT-BACKLOG.md`.
+
 ## Non-negotiable rules (do not violate even if not re-stated in a prompt)
 
 1. **Tier 1 content never links to the primary domain.** The

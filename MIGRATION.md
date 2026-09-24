@@ -1,8 +1,22 @@
-# Collection wiring — comprehension inventory and divergence report
+# FW-1 — frontend wiring: inventory, divergence report and phase record
 
-Step 1 is complete. Step 2 is partially complete and blocked — see the note at
-the head of that section. No frontend file was modified; this was a reading
-pass only.
+**Track:** FW-1, wiring the frontend onto PayloadCMS. This is a sub-track of
+the build order in `docs/04-claude-code-implementation-brief.md` and numbers
+its phases independently of it. Where the two collide, this file's "Phase N"
+always means FW-1's.
+
+**Position as of 2026-09-24:** Phases 1 through 4F complete. One phase remains,
+**FW-1 Live Preview** — see `.claude/phase-5-live-preview-handoff-2026-09-24.md`.
+Deferred work that is not part of any FW-1 phase lives in CONTENT-BACKLOG.md.
+
+The sections below are a running record and are **not** rewritten as the state
+moves on: an entry describing what was true in Phase 2 stays as written, with
+later entries marking what resolved it. Read the phase-completion sections for
+current state, and the dated entries for why something is the way it is.
+
+The opening inventory dates from the first reading pass, when no frontend file
+had yet been modified. It is preserved as the baseline the divergence report
+was written against.
 
 ## Handoff assumptions that do not match this repo
 
@@ -373,16 +387,21 @@ Phase 2 scope.
 Every blockquote, list and heading on the site today is hand-classed at its
 call site, so there is no existing rule set for `<RichText>` to reproduce.
 
-### Rich-text internal links do not resolve yet
+### Rich-text internal links — resolved in FW-1 Phase 4
 
-`internalDocToHref` (`components/rich-text/converters/link.tsx`) is a stub. A
-Lexical link with `linkType: 'internal'` carries a document reference, and
-turning that into a URL needs the route names Phase 3 settles. Until then the
-stub **throws in development** and returns `/#internal-link-not-resolved` in
-production, rather than Payload's default of logging and rendering `#`.
+`internalDocToHref` (`components/rich-text/converters/link.tsx:77`) was a stub
+while the route names were unsettled: a Lexical link with `linkType: 'internal'`
+carries a document reference, and turning that into a URL needed the names
+Phase 3 settled.
 
-Phase 4 implements it. Until it does, authors should use custom URLs for
-internal links, not the internal-document picker.
+It is now implemented for articles, authors, verticals, reviews and news.
+Anything it cannot resolve still becomes a visibly broken href rather than a
+silent `#`, so a bad link is findable instead of merely inert — including the
+case where a query's `depth` is too shallow to expose the target's slug, which
+reports itself by name.
+
+The advice to prefer custom URLs over the internal-document picker no longer
+applies.
 
 ### Drafts: editorial collections have a lifecycle, structural ones do not
 
