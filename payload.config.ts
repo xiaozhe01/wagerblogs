@@ -37,6 +37,7 @@ import { ReaderReviews } from "./collections/ReaderReviews";
 import { Reviews } from "./collections/Reviews";
 import { Users } from "./collections/Users";
 import { Verticals } from "./collections/Verticals";
+import { previewBaseUrl, previewPath, toPreviewUrl } from "./lib/preview";
 
 // Relative imports, not "@/": Payload's CLI loads this config outside Next's
 // resolver, where the tsconfig alias is not applied.
@@ -71,6 +72,26 @@ const editorFeatures = [
 ];
 
 export default buildConfig({
+  admin: {
+    // Breakpoints are this site's own layout states, not generic device sizes.
+    // 1280 earns its place: lg: has fired but --breakpoint-wide (1370px) has
+    // not, so the rail is still hidden — a layout the other three never show.
+    livePreview: {
+      breakpoints: [
+        { name: "mobile", label: "Mobile", width: 375, height: 667 },
+        { name: "tablet", label: "Tablet", width: 834, height: 1112 },
+        { name: "laptop", label: "Laptop", width: 1280, height: 800 },
+        { name: "desktop", label: "Desktop", width: 1440, height: 900 },
+      ],
+      collections: ["reviews", "articles", "news", "authors"],
+      url: async ({ data, collectionConfig, req }) => {
+        const path = collectionConfig
+          ? await previewPath(collectionConfig.slug, data, req)
+          : undefined;
+        return path ? toPreviewUrl(path) : previewBaseUrl();
+      },
+    },
+  },
   // Authors.bio inherits this set. It intentionally excludes UploadFeature, so
   // bios cannot embed images — no per-field override needed to achieve that.
   editor: lexicalEditor({ features: editorFeatures }),
