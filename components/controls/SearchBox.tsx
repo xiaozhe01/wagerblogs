@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Form from "next/form";
 import { Autocomplete } from "@base-ui/react/autocomplete";
 import { Search, CornerDownLeft } from "lucide-react";
-import { SCOPE_PARAM, SEARCH_PARAM, type SearchScope } from "@/lib/search";
+import { SCOPE_PARAM, SEARCH_PARAM, type SearchScope } from "@/lib/search-shared";
 
 type Hit = { title: string; excerpt: string; kicker: string; href: string; scope: SearchScope };
 

@@ -49,7 +49,7 @@ export default async function SearchPage({
   const scope = resolveScope(params[SCOPE_PARAM]);
   // Searched once, then split: the chips need every scope's count, and a chip
   // leading to a blank page is a trap rather than a filter.
-  const allHits = search(query, "all");
+  const allHits = await search(query, "all");
   const hits = scope === "all" ? allHits : allHits.filter((hit) => hit.scope === scope);
   const counts = allHits.reduce<Partial<Record<SearchScope, number>>>((acc, hit) => {
     acc[hit.scope] = (acc[hit.scope] ?? 0) + 1;

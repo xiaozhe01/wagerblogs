@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { searchScopes, type SearchHit, type SearchScope } from "@/lib/search";
+import { searchScopes, type SearchHit, type SearchScope } from "@/lib/search-shared";
 import { headingId } from "@/lib/utils";
 
 // Not a feed: PostRow's 16:9 thumbnail and 217px height are wasted on a FAQ
