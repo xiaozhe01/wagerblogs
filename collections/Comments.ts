@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { readPublicComments } from './access/read-rules'
 
 // Threaded discussion comments. Distinct from ReaderReviews — comments
 // are conversation about the content, reader reviews are evaluative.
@@ -20,7 +21,7 @@ export const Comments: CollectionConfig = {
     defaultColumns: ["author", "targetType", "status", "createdAt"],
   },
   access: {
-    read: () => true,
+    read: readPublicComments,
   },
   fields: [
     {

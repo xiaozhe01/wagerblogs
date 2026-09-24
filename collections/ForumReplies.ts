@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { readUnflagged } from './access/read-rules'
 
 export const ForumReplies: CollectionConfig = {
   slug: 'forum-replies',
@@ -8,7 +9,7 @@ export const ForumReplies: CollectionConfig = {
     defaultColumns: ['thread', 'author', 'createdAt', 'flagged'],
   },
   access: {
-    read: () => true,
+    read: readUnflagged,
   },
   fields: [
     {

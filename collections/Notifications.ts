@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { readEditorsOnly } from './access/read-rules'
 
 // In-app notification inbox. One doc per notification per user.
 // Currently 0 frontend consumers (SCHEMA-INVENTORY.md §13) — designed
@@ -17,7 +18,7 @@ export const Notifications: CollectionConfig = {
     defaultColumns: ['recipient', 'type', 'title', 'read', 'createdAt'],
   },
   access: {
-    read: () => true,
+    read: readEditorsOnly,
   },
   fields: [
     {

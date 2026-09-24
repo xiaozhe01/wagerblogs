@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { seoFields } from './fields/seo'
 import { revalidateSearch } from './hooks/revalidate-search'
+import { readPublished } from './access/read-rules'
 
 // Editorial content: blog posts, guides, analysis, research. One
 // collection with a type field, per the decision to consolidate rather
@@ -27,7 +28,7 @@ export const Articles: CollectionConfig = {
     defaultColumns: ['title', 'type', 'vertical', 'author', 'publishedAt'],
   },
   access: {
-    read: () => true,
+    read: readPublished,
   },
   versions: {
     drafts: {

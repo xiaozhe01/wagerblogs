@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { readOpenThreads } from './access/read-rules'
 
 // Forum threads. Currently 0 frontend consumers (SCHEMA-INVENTORY.md
 // §12). Designed now so the data model is ready when a forum route is
@@ -16,7 +17,7 @@ export const ForumThreads: CollectionConfig = {
     defaultColumns: ['title', 'author', 'replyCount', 'lastActivityAt', 'status'],
   },
   access: {
-    read: () => true,
+    read: readOpenThreads,
   },
   fields: [
     {

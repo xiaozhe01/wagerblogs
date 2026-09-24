@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { seoFields } from './fields/seo'
 import { revalidateSearch } from './hooks/revalidate-search'
+import { readPublished } from './access/read-rules'
 
 // News stories. Distinct from Articles per the frontend evidence:
 // separate routes (/news/, /news/[slug]/, /news/[slug]/[story]/),
@@ -24,7 +25,7 @@ export const News: CollectionConfig = {
     defaultColumns: ['title', 'section', 'beat', 'author', 'publishedAt'],
   },
   access: {
-    read: () => true,
+    read: readPublished,
   },
   versions: {
     drafts: {

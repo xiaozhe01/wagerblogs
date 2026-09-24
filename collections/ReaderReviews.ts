@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { readApproved } from './access/read-rules'
 
 // Reader-submitted reviews of operators. Distinct from Comments (which
 // are threaded discussion on the review page) — reader reviews are
@@ -28,7 +29,7 @@ export const ReaderReviews: CollectionConfig = {
     defaultColumns: ["author", "operator", "rating", "status", "createdAt"],
   },
   access: {
-    read: () => true,
+    read: readApproved,
   },
   fields: [
     {

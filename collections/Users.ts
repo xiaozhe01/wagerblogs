@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { readEditorsOnly } from './access/read-rules'
 
 // Site users. Referenced by Comments (§3), ReaderReviews (§2), and
 // Notifications (§13). Currently the frontend stores author identity as
@@ -21,7 +22,7 @@ export const Users: CollectionConfig = {
     defaultColumns: ['username', 'name', 'email', 'moderationStatus'],
   },
   access: {
-    read: () => true,
+    read: readEditorsOnly,
   },
   fields: [
     {

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { seoFields } from './fields/seo'
 import { revalidateSearch } from './hooks/revalidate-search'
+import { readPublished } from './access/read-rules'
 
 // Real author records. The frontend currently has TWO separate author
 // objects (mockAuthor at mock-data.ts:20 and newsStoryAuthor at :940) with
@@ -21,7 +22,7 @@ export const Authors: CollectionConfig = {
     defaultColumns: ['name', 'credentialLine', 'active'],
   },
   access: {
-    read: () => true,
+    read: readPublished,
   },
   versions: {
     drafts: {
