@@ -1,7 +1,12 @@
 export const PAGE_PARAM = "page";
 
-/** TODO(cms): the real page size comes from the collection config. */
+/** Single-column lists. TODO(cms): the real page size comes from the
+ * collection config. */
 export const PAGE_SIZE = 3;
+
+/** Two-column grids. Must stay a multiple of the column count — an odd page
+ * size leaves an empty cell in the last row of every page. */
+export const GRID_PAGE_SIZE = 4;
 
 /** Clamps to the available range, so a hand-typed ?page=99 lands on the last
  * page rather than an empty list. */

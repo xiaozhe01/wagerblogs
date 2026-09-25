@@ -12,7 +12,7 @@ import ReviewDirectorySection, {
 } from "@/components/section/ReviewDirectorySection";
 import EmptyState from "@/components/section/EmptyState";
 import ReviewCard from "@/components/section/ReviewCard";
-import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
+import { GRID_PAGE_SIZE, PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import { formatDate, headingId } from "@/lib/utils";
 import { buildOpenGraph } from "@/lib/og";
 import PageNav from "@/components/controls/PageNav";
@@ -116,7 +116,7 @@ export default async function ReviewGroupPage({
 
   const href = `/reviews/${vertical.slug}`;
   const sectionTitle = `All ${vertical.noun} reviews`;
-  const reviewPage = paginate(tiles, query[PAGE_PARAM]);
+  const reviewPage = paginate(tiles, query[PAGE_PARAM], GRID_PAGE_SIZE);
 
   return (
     <PageShell activeNavId="reviews" rail={<ReviewsRail currentSlug={vertical.slug} />}>

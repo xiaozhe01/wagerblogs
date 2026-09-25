@@ -14,7 +14,7 @@ import PageNav from "@/components/controls/PageNav";
 import { resolveMedia } from "@/components/cards/MediaImage";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
-import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
+import { GRID_PAGE_SIZE, PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import { readTime } from "@/lib/lexical";
 import { chipHref, chipMatches, formatDate, headingId } from "@/lib/utils";
 import { buildOpenGraph } from "@/lib/og";
@@ -77,7 +77,7 @@ export default async function ArticlesIndexPage({
       });
 
   // Changing the chip drops the page param, so a filter always opens on page 1.
-  const postPage = paginate(articles, query[PAGE_PARAM]);
+  const postPage = paginate(articles, query[PAGE_PARAM], GRID_PAGE_SIZE);
   // The LCP candidate is the first card that actually has a thumbnail, not
   // simply the first card — a leading card with no image never paints large.
   const lcpIndex = postPage.items.findIndex((post) => resolveMedia(post.heroImage));
