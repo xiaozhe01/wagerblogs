@@ -12,9 +12,11 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
+import PageNav from "@/components/controls/PageNav";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
+import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import { readTime } from "@/lib/lexical";
-import { formatDate } from "@/lib/utils";
+import { formatDate, headingId } from "@/lib/utils";
 import type { PostTeaser } from "@/lib/types";
 import { buildOpenGraph } from "@/lib/og";
 import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
@@ -74,8 +76,18 @@ export async function generateMetadata({
   };
 }
 
-export default async function AuthorPage({ params }: { params: Promise<{ slug: string }> }) {
+const RECENT_WORK = "Recent work";
+const RECENT_PER_PAGE = 5;
+
+export default async function AuthorPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const { slug } = await params;
+  const query = await searchParams;
   const { isEnabled: isDraft } = await draftMode();
   const previewUser = isDraft ? await resolvePreviewUser() : null;
   const author = await findAuthor(slug, isDraft);
@@ -92,7 +104,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
     collection: "articles",
     ...publishedFilter(isDraft, byAuthor, previewUser),
     sort: "-publishedAt",
-    limit: 10,
+    limit: 500,
     depth: 1,
     overrideAccess: false,
   });
@@ -100,7 +112,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
     collection: "news",
     ...publishedFilter(isDraft, byAuthor, previewUser),
     sort: "-publishedAt",
-    limit: 10,
+    limit: 500,
     depth: 1,
     overrideAccess: false,
   });
@@ -108,7 +120,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
     collection: "reviews",
     ...publishedFilter(isDraft, byAuthor, previewUser),
     sort: "-lastVerified",
-    limit: 10,
+    limit: 500,
     depth: 1,
     overrideAccess: false,
   });
@@ -122,6 +134,8 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
     .filter((entry): entry is string => Boolean(entry));
   const sameAs = (author.sameAs ?? []).filter((entry) => entry.url);
 
+  // Concatenated by collection, not interleaved by date — see the ordering
+  // note in the section below.
   const recent: PostTeaser[] = [
     ...articles.docs.map((doc) => ({
       kicker: doc.type,
@@ -151,6 +165,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
         typeof doc.vertical === "object" ? `/reviews/${doc.vertical.slug}/${doc.slug}` : `/reviews`,
     })),
   ];
+  const recentPage = paginate(recent, query[PAGE_PARAM], RECENT_PER_PAGE);
 
   const rail = (
     <>
@@ -210,20 +225,34 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
         </div>
       </header>
 
-      <EditorialSection title="Recent work" register="editorial">
+      <EditorialSection title={RECENT_WORK} register="editorial">
         {recent.length === 0 ? (
           <EmptyState
             title={`Nothing published by ${author.name} yet`}
             body="Articles, news and reviews credited to this author appear here once published."
           />
         ) : (
-          <ul role="list" className="flex flex-col gap-3">
-            {recent.map((post) => (
-              <li key={post.href}>
-                <PostRow post={post} />
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul role="list" className="flex flex-col gap-3">
+              {recentPage.items.map((post) => (
+                <li key={post.href}>
+                  <PostRow post={post} />
+                </li>
+              ))}
+            </ul>
+            <PageNav
+              page={recentPage.page}
+              totalPages={recentPage.totalPages}
+              label={RECENT_WORK}
+              hrefFor={(n) =>
+                pageHref({
+                  basePath: `/authors/${author.slug}`,
+                  page: n,
+                  anchor: headingId("section", RECENT_WORK),
+                })
+              }
+            />
+          </>
         )}
       </EditorialSection>
 
