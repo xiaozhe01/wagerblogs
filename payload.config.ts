@@ -73,9 +73,9 @@ const editorFeatures = [
 
 export default buildConfig({
   admin: {
-    // Breakpoints are this site's own layout states, not generic device sizes.
-    // 1280 earns its place: lg: has fired but --breakpoint-wide (1370px) has
-    // not, so the rail is still hidden — a layout the other three never show.
+    // This site's layout states, not generic device sizes. 1280 earns its
+    // place: lg: has fired but --breakpoint-wide (1370px) has not, so the rail
+    // is still hidden.
     livePreview: {
       breakpoints: [
         { name: "mobile", label: "Mobile", width: 375, height: 667 },
