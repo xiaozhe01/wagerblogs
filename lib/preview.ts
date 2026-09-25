@@ -2,42 +2,42 @@ import type { PayloadRequest } from "payload";
 import type { Article, Author, News, Review } from "@/payload-types";
 import { articleUrl, authorUrl, newsUrl, reviewUrl } from "@/lib/urls";
 
-// Where the admin panel sends an editor to see a draft. Separate from `siteUrl`
-// in lib/schema.tsx, which stays pinned to the production domain because the
-// sitemap, llms.txt and JSON-LD must emit absolute production URLs wherever
-// they are generated. This one has to follow the environment or the preview
-// iframe loads the live site instead of the branch under review.
-// `||`, not `??`: a present-but-blank NEXT_PUBLIC_SERVER_URL is an empty
-// string rather than undefined, and `??` hands that straight through. An empty
-// origin throws in postMessage.
+// `||`, not `??`: a present-but-blank env var is an empty string, and an empty
+// origin throws in postMessage. Separate from siteUrl in lib/schema.tsx, which
+// stays pinned to production for the sitemap, llms.txt and JSON-LD.
 export const previewBaseUrl = () => process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
 
-/** Wraps a frontend path in the draft-mode entry route, which is what actually
- * sets the cookie. Pointing the iframe straight at the path would render the
- * published record, or a 404 for a record that has never been published. */
+/** Wraps a path in the draft-mode entry route, which is what sets the cookie. */
 export const toPreviewUrl = (path: string) =>
   `${previewBaseUrl()}/next/preview?path=${encodeURIComponent(path)}`;
 
-/** Reviews and news live under a two-level route, so their URL needs the
- * related record's slug. The admin does not guarantee the relationship is
- * populated — it may hand over a bare id — so fetch it when it is not. */
+/** The admin may hand over a bare id instead of a populated relationship.
+ * findByID throws on a missing record, so a dangling reference resolves to
+ * undefined and the caller drops the URL rather than the button erroring. */
 async function populate<T extends object>(
   req: PayloadRequest,
   collection: "verticals" | "news-sections",
   value: number | T,
 ): Promise<T | undefined> {
   if (typeof value === "object") return value;
-  const doc = await req.payload.findByID({ collection, id: value, depth: 0 });
-  return doc as T | undefined;
+  try {
+    return (await req.payload.findByID({ collection, id: value, depth: 0 })) as T;
+  } catch {
+    return undefined;
+  }
 }
 
 /** Frontend path for a document, or undefined when it cannot be derived.
- * Derivation itself stays in lib/urls.ts — the single place a path is built. */
+ * Derivation stays in lib/urls.ts. */
 export async function previewPath(
   collection: string,
   doc: Record<string, unknown>,
   req: PayloadRequest,
 ): Promise<string | undefined> {
+  // A document being created has no slug yet; without this the URL is
+  // "/articles/undefined" rather than absent.
+  if (!doc.slug) return undefined;
+
   switch (collection) {
     case "articles":
       return articleUrl(doc as unknown as Article);
@@ -58,10 +58,7 @@ export async function previewPath(
   }
 }
 
-/** Ready-made `admin.preview` for a collection. Returns the draft-mode entry
- * route rather than the path itself, so the cookie is set before the frontend
- * renders — otherwise the button lands on the published record, or a 404 for
- * one that has never been published. */
+/** `admin.preview` for a collection. */
 export const previewFor =
   (collection: string) =>
   async (doc: Record<string, unknown>, { req }: { req: PayloadRequest }) => {
