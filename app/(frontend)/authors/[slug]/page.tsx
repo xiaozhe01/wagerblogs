@@ -207,7 +207,7 @@ export default async function AuthorPage({
       />
 
       <header className="flex flex-col gap-4 md:gap-5 max-w-header border-t border-border-divider border-b py-4 md:py-5">
-        <div className="flex flex-col md:flex-row items-start gap-4 md:gap-5">
+        <div className="flex flex-row items-start gap-4 md:gap-5">
           {/* No photo on the record keeps the existing skeleton shape rather
               than rendering a broken or invented image. */}
           {photo ? (
