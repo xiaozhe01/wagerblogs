@@ -166,6 +166,8 @@ export default async function AuthorPage({
     })),
   ];
   const recentPage = paginate(recent, query[PAGE_PARAM], RECENT_PER_PAGE);
+  // The LCP candidate is the first row that actually has a thumbnail.
+  const lcpIndex = recentPage.items.findIndex((post) => resolveMedia(post.thumbnail));
 
   const rail = (
     <>
@@ -234,9 +236,9 @@ export default async function AuthorPage({
         ) : (
           <>
             <ul role="list" className="flex flex-col gap-3">
-              {recentPage.items.map((post) => (
+              {recentPage.items.map((post, i) => (
                 <li key={post.href}>
-                  <PostRow post={post} />
+                  <PostRow post={post} priority={i === lcpIndex} />
                 </li>
               ))}
             </ul>

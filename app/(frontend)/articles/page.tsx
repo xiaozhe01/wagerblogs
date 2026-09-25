@@ -11,6 +11,7 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import FilterChips from "@/components/controls/FilterChips";
 import PageNav from "@/components/controls/PageNav";
+import { resolveMedia } from "@/components/cards/MediaImage";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
@@ -77,6 +78,9 @@ export default async function ArticlesIndexPage({
 
   // Changing the chip drops the page param, so a filter always opens on page 1.
   const postPage = paginate(articles, query[PAGE_PARAM]);
+  // The LCP candidate is the first card that actually has a thumbnail, not
+  // simply the first card — a leading card with no image never paints large.
+  const lcpIndex = postPage.items.findIndex((post) => resolveMedia(post.heroImage));
 
   const rail = (
     <InfoCard
@@ -127,7 +131,7 @@ export default async function ArticlesIndexPage({
           ) : (
             <>
               <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-legacy-4 md:gap-3">
-                {postPage.items.map((post) => {
+                {postPage.items.map((post, i) => {
                   const author = typeof post.author === "object" ? post.author : undefined;
                   const published = post.publishedAt ? formatDate(post.publishedAt) : undefined;
                   return (
@@ -145,6 +149,7 @@ export default async function ArticlesIndexPage({
                           .filter(Boolean)
                           .join(" · ")}
                         thumbnail={post.heroImage}
+                        priority={i === lcpIndex}
                       />
                     </li>
                   );

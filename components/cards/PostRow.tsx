@@ -12,6 +12,9 @@ const BLEED = {
 type PostRowProps = {
   post: PostTeaser;
   bleed?: keyof typeof BLEED;
+  /** Set on the first row of an above-the-fold list: its thumbnail is the
+   * LCP candidate, and lazy-loading it delays the largest paint. */
+  priority?: boolean;
 };
 
 const wrapperClassName =
@@ -26,7 +29,7 @@ const thumbnailClassName =
 // Measured: 275px at 390, 224px at md (w-56), 296px at lg (w-74).
 const thumbnailSizes = "(min-width: 1024px) 296px, (min-width: 768px) 224px, 100vw";
 
-export default function PostRow({ post, bleed = "column" }: PostRowProps) {
+export default function PostRow({ post, bleed = "column", priority }: PostRowProps) {
   const shell = `${wrapperClassName} ${BLEED[bleed]}`;
   const content = (
     <>
@@ -38,6 +41,7 @@ export default function PostRow({ post, bleed = "column" }: PostRowProps) {
             fill
             sizes={thumbnailSizes}
             className="object-cover"
+            priority={priority}
           />
         </div>
       ) : (

@@ -8,6 +8,9 @@ type BlogPostCardProps = {
   excerpt?: string;
   byline?: string;
   thumbnail?: MediaRef;
+  /** Set on the first card of an above-the-fold list: its thumbnail is the
+   * LCP candidate, and lazy-loading it delays the largest paint. */
+  priority?: boolean;
 };
 
 // Measured: 325px at 390, and at md+ 367px in the two-column feed / 296px in
@@ -22,6 +25,7 @@ export default function BlogPostCard({
   excerpt,
   byline,
   thumbnail,
+  priority,
 }: BlogPostCardProps) {
   return (
     // flex/h-full/grow keep the card matching its grid row's height.
@@ -33,7 +37,13 @@ export default function BlogPostCard({
         {/* No heroImage on the record keeps the skeleton shape. */}
         {resolveMedia(thumbnail) ? (
           <div className="aspect-video w-full rounded-md overflow-hidden relative mb-3">
-            <MediaImage media={thumbnail} fill sizes={thumbnailSizes} className="object-cover" />
+            <MediaImage
+              media={thumbnail}
+              fill
+              sizes={thumbnailSizes}
+              className="object-cover"
+              priority={priority}
+            />
           </div>
         ) : (
           <div
