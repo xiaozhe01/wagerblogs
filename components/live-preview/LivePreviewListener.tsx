@@ -14,5 +14,10 @@ import { previewBaseUrl } from "@/lib/preview";
 // single-record edit targets.
 export default function LivePreviewListener() {
   const router = useRouter();
-  return <RefreshRouteOnSave refresh={() => router.refresh()} serverURL={previewBaseUrl()} />;
+  // The listener only accepts messages whose origin matches serverURL, and the
+  // admin posting them is this same origin. Reading it from the document is
+  // more reliable than an env var that can be present but blank — which is how
+  // an empty target origin reached postMessage the first time.
+  const serverURL = typeof window === "undefined" ? previewBaseUrl() : window.location.origin;
+  return <RefreshRouteOnSave refresh={() => router.refresh()} serverURL={serverURL} />;
 }

@@ -7,7 +7,10 @@ import { articleUrl, authorUrl, newsUrl, reviewUrl } from "@/lib/urls";
 // sitemap, llms.txt and JSON-LD must emit absolute production URLs wherever
 // they are generated. This one has to follow the environment or the preview
 // iframe loads the live site instead of the branch under review.
-export const previewBaseUrl = () => process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3000";
+// `||`, not `??`: a present-but-blank NEXT_PUBLIC_SERVER_URL is an empty
+// string rather than undefined, and `??` hands that straight through. An empty
+// origin throws in postMessage.
+export const previewBaseUrl = () => process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
 
 /** Wraps a frontend path in the draft-mode entry route, which is what actually
  * sets the cookie. Pointing the iframe straight at the path would render the
