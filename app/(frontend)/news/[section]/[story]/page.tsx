@@ -48,20 +48,15 @@ async function findStory(sectionSlug: string, storySlug: string, isDraft: boolea
   if (!section) return undefined;
   const payload = await getPayload({ config });
   const previewUser = isDraft ? await resolvePreviewUser() : null;
-  const { where, draft } = publishedFilter(
-    isDraft,
-    {
-      slug: { equals: storySlug },
-      section: { equals: section.id },
-    },
-    previewUser,
-  );
   // depth 2: author for the byline, plus enough to resolve rich-text internal
   // links that point at another news story or a review.
   const { docs } = await payload.find({
     collection: "news",
-    where,
-    draft,
+    ...publishedFilter(
+      isDraft,
+      { slug: { equals: storySlug }, section: { equals: section.id } },
+      previewUser,
+    ),
     limit: 1,
     depth: 2,
     overrideAccess: false,
@@ -123,18 +118,13 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
   const { section, story } = found;
 
   const payload = await getPayload({ config });
-  const { where, draft } = publishedFilter(
-    isDraft,
-    {
-      section: { equals: section.id },
-      id: { not_equals: story.id },
-    },
-    previewUser,
-  );
   const { docs: siblings } = await payload.find({
     collection: "news",
-    where,
-    draft,
+    ...publishedFilter(
+      isDraft,
+      { section: { equals: section.id }, id: { not_equals: story.id } },
+      previewUser,
+    ),
     sort: "-publishedAt",
     limit: 20,
     depth: 1,

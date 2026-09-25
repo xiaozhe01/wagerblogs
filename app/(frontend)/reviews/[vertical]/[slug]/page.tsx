@@ -47,20 +47,15 @@ async function findReview(verticalSlug: string, reviewSlug: string, isDraft: boo
   const vertical = verticals[0];
   if (!vertical) return undefined;
 
-  const { where, draft } = publishedFilter(
-    isDraft,
-    {
-      slug: { equals: reviewSlug },
-      vertical: { equals: vertical.id },
-    },
-    previewUser,
-  );
   // depth 2: vertical and author populated, plus enough for rich-text internal
   // links to resolve their own parent relationships.
   const { docs } = await payload.find({
     collection: "reviews",
-    where,
-    draft,
+    ...publishedFilter(
+      isDraft,
+      { slug: { equals: reviewSlug }, vertical: { equals: vertical.id } },
+      previewUser,
+    ),
     limit: 1,
     depth: 2,
     overrideAccess: false,
@@ -139,18 +134,13 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
   });
 
   // Sibling reviews in the same vertical, for the rail.
-  const { where: siblingWhere, draft: siblingDraft } = publishedFilter(
-    isDraft,
-    {
-      vertical: { equals: vertical.id },
-      id: { not_equals: review.id },
-    },
-    previewUser,
-  );
   const { docs: siblings } = await payload.find({
     collection: "reviews",
-    where: siblingWhere,
-    draft: siblingDraft,
+    ...publishedFilter(
+      isDraft,
+      { vertical: { equals: vertical.id }, id: { not_equals: review.id } },
+      previewUser,
+    ),
     sort: "-score",
     limit: 20,
     depth: 0,

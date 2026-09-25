@@ -26,13 +26,11 @@ export const revalidate = 3600;
 async function findArticle(slug: string, isDraft: boolean) {
   const payload = await getPayload({ config });
   const previewUser = isDraft ? await resolvePreviewUser() : null;
-  const { where, draft } = publishedFilter(isDraft, { slug: { equals: slug } }, previewUser);
   // depth 2: the author for the byline, and enough to resolve rich-text
   // internal links that point at a news story or review.
   const { docs } = await payload.find({
     collection: "articles",
-    where,
-    draft,
+    ...publishedFilter(isDraft, { slug: { equals: slug } }, previewUser),
     limit: 1,
     depth: 2,
     overrideAccess: false,

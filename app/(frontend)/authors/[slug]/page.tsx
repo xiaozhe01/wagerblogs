@@ -26,11 +26,9 @@ export const revalidate = 3600;
 async function findAuthor(slug: string, isDraft: boolean) {
   const payload = await getPayload({ config });
   const previewUser = isDraft ? await resolvePreviewUser() : null;
-  const { where, draft } = publishedFilter(isDraft, { slug: { equals: slug } }, previewUser);
   const { docs } = await payload.find({
     collection: "authors",
-    where,
-    draft,
+    ...publishedFilter(isDraft, { slug: { equals: slug } }, previewUser),
     limit: 1,
     depth: 1,
     overrideAccess: false,
