@@ -54,3 +54,14 @@ export async function previewPath(
       return undefined;
   }
 }
+
+/** Ready-made `admin.preview` for a collection. Returns the draft-mode entry
+ * route rather than the path itself, so the cookie is set before the frontend
+ * renders — otherwise the button lands on the published record, or a 404 for
+ * one that has never been published. */
+export const previewFor =
+  (collection: string) =>
+  async (doc: Record<string, unknown>, { req }: { req: PayloadRequest }) => {
+    const path = await previewPath(collection, doc, req);
+    return path ? toPreviewUrl(path) : null;
+  };

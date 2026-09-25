@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { seoFields } from "./fields/seo";
 import { revalidateSearch } from "./hooks/revalidate-search";
 import { readPublished } from "./access/read-rules";
+import { previewFor } from "../lib/preview";
 
 // Operator reviews. Renders on /reviews/[vertical-slug]/[review-slug]/.
 // Vertical relationship replaces the ReviewGroup wrapper — the group
@@ -28,6 +29,7 @@ export const Reviews: CollectionConfig = {
     group: "Editorial",
     useAsTitle: "name",
     defaultColumns: ["name", "vertical", "score", "needsReverification", "lastVerified"],
+    preview: previewFor("reviews"),
   },
   access: {
     read: readPublished,

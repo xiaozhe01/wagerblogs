@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { seoFields } from './fields/seo'
 import { revalidateSearch } from './hooks/revalidate-search'
 import { readPublished } from './access/read-rules'
+import { previewFor } from '../lib/preview'
 
 // Editorial content: blog posts, guides, analysis, research. One
 // collection with a type field, per the decision to consolidate rather
@@ -26,6 +27,7 @@ export const Articles: CollectionConfig = {
     group: 'Editorial',
     useAsTitle: 'title',
     defaultColumns: ['title', 'type', 'vertical', 'author', 'publishedAt'],
+    preview: previewFor('articles'),
   },
   access: {
     read: readPublished,
