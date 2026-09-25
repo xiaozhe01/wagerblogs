@@ -25,6 +25,7 @@ import { formatDate } from "@/lib/utils";
 // "Compare further" grid has no Payload source yet.
 import { reviewRelated } from "@/lib/mock-data";
 import { buildOpenGraph } from "@/lib/og";
+import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
 
 type ReviewParams = { vertical: string; slug: string };
 
@@ -213,6 +214,7 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
 
   return (
     <PageShell activeNavId="reviews" rail={rail}>
+      {isDraft && <LivePreviewListener />}
       {/* Register: Comparison · Tier 3 — direct reference */}
       {/* The trail mirrors the route: /reviews/<vertical>/<slug>. */}
       <Breadcrumbs

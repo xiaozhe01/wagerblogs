@@ -22,6 +22,7 @@ import { storyRow } from "@/lib/news-rows";
 import { readTime } from "@/lib/lexical";
 import { formatDate } from "@/lib/utils";
 import { buildOpenGraph } from "@/lib/og";
+import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
 
 type StoryParams = { section: string; story: string };
 
@@ -168,6 +169,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
 
   return (
     <PageShell activeNavId="news" register="editorial" rail={rail}>
+      {isDraft && <LivePreviewListener />}
       {/* Register: Editorial · Tier 1 — reporting, no outbound operator links */}
       <Breadcrumbs
         currentPath={href}

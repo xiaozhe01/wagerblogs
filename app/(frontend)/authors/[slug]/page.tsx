@@ -17,6 +17,7 @@ import { readTime } from "@/lib/lexical";
 import { formatDate } from "@/lib/utils";
 import type { PostTeaser } from "@/lib/types";
 import { buildOpenGraph } from "@/lib/og";
+import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
 // skip the cache for that request only.
@@ -183,6 +184,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
 
   return (
     <PageShell activeNavId="more" register="editorial" rail={rail}>
+      {isDraft && <LivePreviewListener />}
       {/* Register: Editorial · Tier 1 — author identity surface, no outbound operator links */}
       <Breadcrumbs
         currentPath={`/authors/${author.slug}`}
