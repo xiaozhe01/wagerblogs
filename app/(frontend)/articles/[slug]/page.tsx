@@ -12,7 +12,7 @@ import EditorialSection from "@/components/section/EditorialSection";
 import KeyTakeaways from "@/components/section/KeyTakeaways";
 import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
-import { publishedFilter } from "@/lib/payload-queries";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { deriveHeadings, readTime } from "@/lib/lexical";
 import { formatDate } from "@/lib/utils";
 import { buildOpenGraph } from "@/lib/og";
@@ -24,7 +24,8 @@ export const revalidate = 3600;
 
 async function findArticle(slug: string, isDraft: boolean) {
   const payload = await getPayload({ config });
-  const { where, draft } = publishedFilter(isDraft, { slug: { equals: slug } });
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
+  const { where, draft } = publishedFilter(isDraft, { slug: { equals: slug } }, previewUser);
   // depth 2: the author for the byline, and enough to resolve rich-text
   // internal links that point at a news story or review.
   const { docs } = await payload.find({

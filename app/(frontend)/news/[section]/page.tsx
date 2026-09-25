@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { draftMode } from "next/headers";
-import { getPayload, type Where } from "payload";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
+import { getPayload } from "payload";
 import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
@@ -78,19 +79,17 @@ export default async function NewsSectionPage({
   const { section: sectionSlug } = await params;
   const query = await searchParams;
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
 
   const section = await findSection(sectionSlug);
   // A sport outside the taxonomy is a genuine 404, not an empty section page.
   if (!section) notFound();
 
   const payload = await getPayload({ config });
-  const published: Where = isDraft ? {} : { _status: { equals: "published" } };
-
   // news filters _status — editorial (drafts enabled).
   const { docs: stories } = await payload.find({
     collection: "news",
-    where: { section: { equals: section.id }, ...published },
-    draft: isDraft,
+    ...publishedFilter(isDraft, { section: { equals: section.id } }, previewUser),
     sort: "-publishedAt",
     limit: 500,
     depth: 1,
@@ -115,8 +114,7 @@ export default async function NewsSectionPage({
       others.map(async (entry) => {
         const { docs } = await payload.find({
           collection: "news",
-          where: { section: { equals: entry.id }, ...published },
-          draft: isDraft,
+          ...publishedFilter(isDraft, { section: { equals: entry.id } }, previewUser),
           sort: "-publishedAt",
           limit: 1,
           depth: 1,

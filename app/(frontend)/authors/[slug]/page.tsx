@@ -12,7 +12,7 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
-import { publishedFilter } from "@/lib/payload-queries";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { readTime } from "@/lib/lexical";
 import { formatDate } from "@/lib/utils";
 import type { PostTeaser } from "@/lib/types";
@@ -24,7 +24,8 @@ export const revalidate = 3600;
 
 async function findAuthor(slug: string, isDraft: boolean) {
   const payload = await getPayload({ config });
-  const { where, draft } = publishedFilter(isDraft, { slug: { equals: slug } });
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
+  const { where, draft } = publishedFilter(isDraft, { slug: { equals: slug } }, previewUser);
   const { docs } = await payload.find({
     collection: "authors",
     where,
@@ -77,6 +78,7 @@ export async function generateMetadata({
 export default async function AuthorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const author = await findAuthor(slug, isDraft);
   // No Person record is a genuine 404 — this page never renders with a
   // placeholder name, stock headshot, or invented credential.
@@ -89,7 +91,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
   // documented in STRUCTURE.md.
   const articles = await payload.find({
     collection: "articles",
-    ...publishedFilter(isDraft, byAuthor),
+    ...publishedFilter(isDraft, byAuthor, previewUser),
     sort: "-publishedAt",
     limit: 10,
     depth: 1,
@@ -97,7 +99,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
   });
   const news = await payload.find({
     collection: "news",
-    ...publishedFilter(isDraft, byAuthor),
+    ...publishedFilter(isDraft, byAuthor, previewUser),
     sort: "-publishedAt",
     limit: 10,
     depth: 1,
@@ -105,7 +107,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
   });
   const reviews = await payload.find({
     collection: "reviews",
-    ...publishedFilter(isDraft, byAuthor),
+    ...publishedFilter(isDraft, byAuthor, previewUser),
     sort: "-lastVerified",
     limit: 10,
     depth: 1,

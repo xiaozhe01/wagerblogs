@@ -9,7 +9,7 @@ import RecentPublishedSection from "@/components/section/RecentPublishedSection"
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { draftMode } from "next/headers";
-import { publishedFilter } from "@/lib/payload-queries";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { articleRow } from "@/lib/article-rows";
 import { buildOpenGraph } from "@/lib/og";
 
@@ -32,6 +32,7 @@ export const metadata: Metadata = {
 // pages live at /categories/[slug].
 export default async function CategoriesIndexPage() {
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const payload = await getPayload({ config });
   // Verticals is structural taxonomy: no drafts, so no _status filter.
   const { docs: verticals } = await payload.find({
@@ -45,7 +46,7 @@ export default async function CategoriesIndexPage() {
   // articles filters _status — editorial. depth 1 resolves the author byline.
   const { docs: recent } = await payload.find({
     collection: "articles",
-    ...publishedFilter(isDraft),
+    ...publishedFilter(isDraft, {}, previewUser),
     sort: "-publishedAt",
     limit: 3,
     depth: 1,

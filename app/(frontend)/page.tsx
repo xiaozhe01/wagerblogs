@@ -17,7 +17,7 @@ import LatestNewsSection, { ALL_NEWS, NEWS_PARAM } from "@/components/section/La
 import BlogSection, { type ArticleTeaser } from "@/components/section/BlogSection";
 import BettingToolboxSection from "@/components/section/BettingToolboxSection";
 import TopHeroSection from "@/components/section/TopHeroSection";
-import { publishedFilter } from "@/lib/payload-queries";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
 import { readTime } from "@/lib/lexical";
 import { formatDate, resolveChip } from "@/lib/utils";
@@ -71,6 +71,7 @@ export default async function Home({
 }) {
   const params = await searchParams;
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const payload = await getPayload({ config });
 
   // Sequential, never Promise.all: each await returns its client to the pool
@@ -94,7 +95,7 @@ export default async function Home({
   const { docs: rankedSportsbooks } = sportsbooks
     ? await payload.find({
         collection: "reviews",
-        ...publishedFilter(isDraft, { vertical: { equals: sportsbooks.id } }),
+        ...publishedFilter(isDraft, { vertical: { equals: sportsbooks.id } }, previewUser),
         sort: "-score",
         limit: RANKED_LIMIT,
         depth: 0,
@@ -105,7 +106,7 @@ export default async function Home({
   const { docs: rankedCasinos } = casinos
     ? await payload.find({
         collection: "reviews",
-        ...publishedFilter(isDraft, { vertical: { equals: casinos.id } }),
+        ...publishedFilter(isDraft, { vertical: { equals: casinos.id } }, previewUser),
         sort: "-score",
         limit: RANKED_LIMIT,
         depth: 0,
@@ -125,7 +126,7 @@ export default async function Home({
   // 5. articles — editorial. depth 1 resolves the author for the byline.
   const { docs: articles } = await payload.find({
     collection: "articles",
-    ...publishedFilter(isDraft),
+    ...publishedFilter(isDraft, {}, previewUser),
     sort: "-publishedAt",
     limit: ARTICLE_TEASER_LIMIT,
     depth: 1,
@@ -152,7 +153,7 @@ export default async function Home({
   // result so the two cannot show the same story twice.
   const { docs: stories } = await payload.find({
     collection: "news",
-    ...publishedFilter(isDraft, selected ? { section: { equals: selected.id } } : {}),
+    ...publishedFilter(isDraft, selected ? { section: { equals: selected.id } } : {}, previewUser),
     sort: "-publishedAt",
     limit: 500,
     depth: 1,

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { draftMode } from "next/headers";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { getPayload, type Where } from "payload";
 import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
@@ -95,6 +96,7 @@ export default async function CategoryPage({
 
   const query = await searchParams;
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const payload = await getPayload({ config });
 
   const activeType = resolveChip(categoryFilters, query[TYPE_PARAM], ALL_TYPES);
@@ -108,16 +110,17 @@ export default async function CategoryPage({
 
   // articles filters _status — editorial (drafts enabled). depth 1 resolves the
   // author relationship for the byline.
-  const forVertical: Where = isDraft
-    ? { vertical: { equals: vertical.id } }
-    : { vertical: { equals: vertical.id }, _status: { equals: "published" } };
+  const forVertical: Where = { vertical: { equals: vertical.id } };
 
   const { docs: articles } = chipHasNoType
     ? { docs: [] as Article[] }
     : await payload.find({
         collection: "articles",
-        where: matchedType ? { ...forVertical, type: { equals: matchedType } } : forVertical,
-        draft: isDraft,
+        ...publishedFilter(
+          isDraft,
+          matchedType ? { ...forVertical, type: { equals: matchedType } } : forVertical,
+          previewUser,
+        ),
         sort: "-publishedAt",
         limit: 500,
         depth: 1,
@@ -128,8 +131,7 @@ export default async function CategoryPage({
   // fallback — if the vertical has nothing, the section is absent entirely.
   const { docs: leadDocs } = await payload.find({
     collection: "articles",
-    where: forVertical,
-    draft: isDraft,
+    ...publishedFilter(isDraft, forVertical, previewUser),
     sort: "-publishedAt",
     limit: 1,
     depth: 1,
@@ -139,8 +141,7 @@ export default async function CategoryPage({
 
   const { totalDocs: guideCount } = await payload.find({
     collection: "articles",
-    where: { ...forVertical, type: { equals: "guide" } },
-    draft: isDraft,
+    ...publishedFilter(isDraft, { ...forVertical, type: { equals: "guide" } }, previewUser),
     limit: 0,
     depth: 0,
     overrideAccess: false,

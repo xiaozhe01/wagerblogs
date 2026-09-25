@@ -574,17 +574,53 @@ Editor identity keys off `req.user.collection === "users"` — the slug
 role model, and fails closed: an unrecognised session falls through to the
 anonymous filter and sees less, never more.
 
-### Consequence for Live Preview, unresolved
+### Consequence for Live Preview — resolved
 
-Frontend routes call `payload.find({ overrideAccess: false })` and never pass a
-user — 51 call sites. With the access rules in place, a draft-mode request that
-carries no Payload session now resolves against the anonymous filter, so the
-draft is filtered out at the data layer even though `publishedFilter(true)`
-asked for it. Preview inside the admin may still work, since that request does
-carry the session cookie; a preview opened outside it will not.
+Frontend routes called `payload.find({ overrideAccess: false })` and never
+passed a user. With the access rules in place, a draft-mode request resolved
+against the anonymous filter, so the draft was filtered out at the data layer
+even though `publishedFilter(true)` asked for it.
 
-This is the interaction to settle before FW-1 Phase 5 resumes. It is not a
-reason to weaken the access rules.
+Measured against the live database, the same query either side of the change:
+
+```
+draft mode, NO session   ->  9 docs, 0 draft
+draft mode, WITH session -> 10 docs, 1 draft
+```
+
+Fixed by propagating the editor rather than by weakening the rules.
+`resolvePreviewUser()` resolves the session through `payload.auth()` and
+`publishedFilter` carries it into `payload.find`. It runs only when draft mode
+is on, so the published path costs nothing and never touches `headers()` —
+which matters, because `generateStaticParams` has no request to read.
+
+## Divergence from Payload's canonical Live Preview
+
+Payload's website template uses `overrideAccess: draft` in draft-mode queries.
+That works for the template because its collections ship `read: () => true` —
+there are no access rules to selectively evaluate, so bypassing access control
+is the only lever available.
+
+After the access-rule fix above, our editorial collections have real rules.
+`overrideAccess: true` would bypass them and reopen the `/api/*` leak that fix
+just closed.
+
+Ours propagates the authenticated user through the query layer instead. The
+access rules run, return true for an editor, and drafts render in Live Preview
+without anything being bypassed.
+
+The failure modes are what separate them:
+
+| Approach                           | On a missing session                             |
+| ---------------------------------- | ------------------------------------------------ |
+| Canonical, `overrideAccess: draft` | **Fails open** — a draft cookie reads everything |
+| Ours, propagate user               | **Fails closed** — filters to published-only     |
+
+The divergence is earned by having access rules worth respecting. Do not
+"fix" it by matching the canonical template: that template solves a different
+problem.
+
+## Phase 4F complete — the crawler and navigation surfaces
 
 ## Phase 4F complete — the crawler and navigation surfaces
 

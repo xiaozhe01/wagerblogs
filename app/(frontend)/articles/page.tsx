@@ -11,7 +11,7 @@ import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import FilterChips from "@/components/controls/FilterChips";
 import PageNav from "@/components/controls/PageNav";
-import { publishedFilter } from "@/lib/payload-queries";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { ALL_TYPES, TYPE_PARAM, categoryFilters } from "@/lib/site-data";
 import { PAGE_PARAM, pageHref, paginate } from "@/lib/pagination";
 import { readTime } from "@/lib/lexical";
@@ -46,6 +46,7 @@ export default async function ArticlesIndexPage({
 }) {
   const query = await searchParams;
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const payload = await getPayload({ config });
 
   const activeType = resolveType(query[TYPE_PARAM]);
@@ -63,7 +64,11 @@ export default async function ArticlesIndexPage({
     ? { docs: [] as Article[] }
     : await payload.find({
         collection: "articles",
-        ...publishedFilter(isDraft, matchedType ? { type: { equals: matchedType } } : {}),
+        ...publishedFilter(
+          isDraft,
+          matchedType ? { type: { equals: matchedType } } : {},
+          previewUser,
+        ),
         sort: "-publishedAt",
         limit: 500,
         depth: 1,

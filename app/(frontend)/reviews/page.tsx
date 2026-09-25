@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { draftMode } from "next/headers";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
@@ -34,6 +35,7 @@ export const metadata: Metadata = {
 // the home page's job — the hub links inward and carries no operator CTAs.
 export default async function ReviewsIndexPage() {
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const payload = await getPayload({ config });
 
   // Verticals is structural taxonomy: no drafts, so no _status filter.
@@ -51,8 +53,7 @@ export default async function ReviewsIndexPage() {
   // per vertical.
   const { docs: reviews } = await payload.find({
     collection: "reviews",
-    where: isDraft ? {} : { _status: { equals: "published" } },
-    draft: isDraft,
+    ...publishedFilter(isDraft, {}, previewUser),
     sort: "-score",
     limit: 500,
     depth: 0,

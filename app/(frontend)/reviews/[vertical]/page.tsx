@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { draftMode } from "next/headers";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
@@ -81,6 +82,7 @@ export default async function ReviewGroupPage({
   const { vertical: verticalSlug } = await params;
   const query = await searchParams;
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
 
   const vertical = await findVertical(verticalSlug);
   // A vertical we don't cover, or one that carries no reviews, is a genuine
@@ -92,10 +94,7 @@ export default async function ReviewGroupPage({
   // request carries draft mode.
   const { docs: reviews } = await payload.find({
     collection: "reviews",
-    where: isDraft
-      ? { vertical: { equals: vertical.id } }
-      : { vertical: { equals: vertical.id }, _status: { equals: "published" } },
-    draft: isDraft,
+    ...publishedFilter(isDraft, { vertical: { equals: vertical.id } }, previewUser),
     sort: "-score",
     limit: 500,
     depth: 0,

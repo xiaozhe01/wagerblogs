@@ -9,7 +9,7 @@ import InfoCard from "@/components/rail/InfoCard";
 import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
 import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
-import { publishedFilter } from "@/lib/payload-queries";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { buildOpenGraph } from "@/lib/og";
 
 // ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
@@ -28,10 +28,11 @@ export const metadata: Metadata = {
 
 export default async function AuthorsIndexPage() {
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const payload = await getPayload({ config });
   const { docs: authors } = await payload.find({
     collection: "authors",
-    ...publishedFilter(isDraft),
+    ...publishedFilter(isDraft, {}, previewUser),
     sort: "name",
     limit: 200,
     depth: 1,

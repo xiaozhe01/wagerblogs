@@ -17,7 +17,7 @@ import EmptyState from "@/components/section/EmptyState";
 import Prose from "@/components/section/Prose";
 import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
-import { publishedFilter } from "@/lib/payload-queries";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
 import { readTime } from "@/lib/lexical";
 import { formatDate } from "@/lib/utils";
@@ -46,10 +46,15 @@ async function findStory(sectionSlug: string, storySlug: string, isDraft: boolea
   const section = await findSection(sectionSlug);
   if (!section) return undefined;
   const payload = await getPayload({ config });
-  const { where, draft } = publishedFilter(isDraft, {
-    slug: { equals: storySlug },
-    section: { equals: section.id },
-  });
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
+  const { where, draft } = publishedFilter(
+    isDraft,
+    {
+      slug: { equals: storySlug },
+      section: { equals: section.id },
+    },
+    previewUser,
+  );
   // depth 2: author for the byline, plus enough to resolve rich-text internal
   // links that point at another news story or a review.
   const { docs } = await payload.find({
@@ -110,16 +115,21 @@ export async function generateMetadata({
 export default async function NewsStoryPage({ params }: { params: Promise<StoryParams> }) {
   const { section: sectionSlug, story: storySlug } = await params;
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const found = await findStory(sectionSlug, storySlug, isDraft);
   // A headline outside the section is a genuine 404, not a soft one.
   if (!found) notFound();
   const { section, story } = found;
 
   const payload = await getPayload({ config });
-  const { where, draft } = publishedFilter(isDraft, {
-    section: { equals: section.id },
-    id: { not_equals: story.id },
-  });
+  const { where, draft } = publishedFilter(
+    isDraft,
+    {
+      section: { equals: section.id },
+      id: { not_equals: story.id },
+    },
+    previewUser,
+  );
   const { docs: siblings } = await payload.find({
     collection: "news",
     where,

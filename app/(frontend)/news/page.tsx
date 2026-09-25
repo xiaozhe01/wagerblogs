@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { draftMode } from "next/headers";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
@@ -32,6 +33,7 @@ const PER_SECTION = 4;
 
 export default async function NewsIndexPage() {
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const payload = await getPayload({ config });
 
   // news-sections has no _status — structural (no lifecycle).
@@ -48,8 +50,7 @@ export default async function NewsIndexPage() {
   // five round-trips for the same rows.
   const { docs: stories } = await payload.find({
     collection: "news",
-    where: isDraft ? {} : { _status: { equals: "published" } },
-    draft: isDraft,
+    ...publishedFilter(isDraft, {}, previewUser),
     sort: "-publishedAt",
     limit: 500,
     depth: 1,

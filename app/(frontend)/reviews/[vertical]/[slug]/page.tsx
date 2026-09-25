@@ -19,7 +19,7 @@ import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink"
 import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
 import { ReviewJsonLd } from "@/lib/schema";
-import { publishedFilter } from "@/lib/payload-queries";
+import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { formatDate } from "@/lib/utils";
 // TODO Phase 4 hold — Reviews has no `related` relationship, so the
 // "Compare further" grid has no Payload source yet.
@@ -34,6 +34,7 @@ export const revalidate = 3600;
 
 async function findReview(verticalSlug: string, reviewSlug: string, isDraft: boolean) {
   const payload = await getPayload({ config });
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   // verticals has no _status — structural (no lifecycle).
   const { docs: verticals } = await payload.find({
     collection: "verticals",
@@ -45,10 +46,14 @@ async function findReview(verticalSlug: string, reviewSlug: string, isDraft: boo
   const vertical = verticals[0];
   if (!vertical) return undefined;
 
-  const { where, draft } = publishedFilter(isDraft, {
-    slug: { equals: reviewSlug },
-    vertical: { equals: vertical.id },
-  });
+  const { where, draft } = publishedFilter(
+    isDraft,
+    {
+      slug: { equals: reviewSlug },
+      vertical: { equals: vertical.id },
+    },
+    previewUser,
+  );
   // depth 2: vertical and author populated, plus enough for rich-text internal
   // links to resolve their own parent relationships.
   const { docs } = await payload.find({
@@ -109,6 +114,7 @@ export async function generateMetadata({
 export default async function OperatorReviewPage({ params }: { params: Promise<ReviewParams> }) {
   const { vertical: verticalSlug, slug } = await params;
   const { isEnabled: isDraft } = await draftMode();
+  const previewUser = isDraft ? await resolvePreviewUser() : null;
   const found = await findReview(verticalSlug, slug, isDraft);
   // An operator we haven't reviewed — or one filed under another vertical — is
   // a genuine 404, not a template on empty data.
@@ -132,10 +138,14 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
   });
 
   // Sibling reviews in the same vertical, for the rail.
-  const { where: siblingWhere, draft: siblingDraft } = publishedFilter(isDraft, {
-    vertical: { equals: vertical.id },
-    id: { not_equals: review.id },
-  });
+  const { where: siblingWhere, draft: siblingDraft } = publishedFilter(
+    isDraft,
+    {
+      vertical: { equals: vertical.id },
+      id: { not_equals: review.id },
+    },
+    previewUser,
+  );
   const { docs: siblings } = await payload.find({
     collection: "reviews",
     where: siblingWhere,
