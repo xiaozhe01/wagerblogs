@@ -17,7 +17,7 @@ import { readEditorsOnly } from './access/read-rules'
 export const Users: CollectionConfig = {
   slug: 'site-users',
   admin: {
-    group: 'People',
+    group: 'Access',
     useAsTitle: 'username',
     defaultColumns: ['username', 'name', 'email', 'moderationStatus'],
   },

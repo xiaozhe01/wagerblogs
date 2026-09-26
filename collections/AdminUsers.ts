@@ -13,7 +13,7 @@ import type { CollectionConfig } from "payload";
 export const AdminUsers: CollectionConfig = {
   slug: "users",
   admin: {
-    group: "Admin",
+    group: "Access",
     useAsTitle: "email",
   },
   auth: {

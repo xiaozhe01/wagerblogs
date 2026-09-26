@@ -69,19 +69,19 @@ export interface Config {
   collections: {
     articles: Article;
     news: News;
-    'news-sections': NewsSection;
     reviews: Review;
-    verticals: Vertical;
-    'bonus-offers': BonusOffer;
-    'help-directory-entries': HelpDirectoryEntry;
     authors: Author;
-    'site-users': SiteUser;
+    verticals: Vertical;
+    'news-sections': NewsSection;
     comments: Comment;
     'reader-reviews': ReaderReview;
     'forum-threads': ForumThread;
     'forum-replies': ForumReply;
     notifications: Notification;
+    'bonus-offers': BonusOffer;
+    'help-directory-entries': HelpDirectoryEntry;
     media: Media;
+    'site-users': SiteUser;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -92,19 +92,19 @@ export interface Config {
   collectionsSelect: {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     news: NewsSelect<false> | NewsSelect<true>;
-    'news-sections': NewsSectionsSelect<false> | NewsSectionsSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
-    verticals: VerticalsSelect<false> | VerticalsSelect<true>;
-    'bonus-offers': BonusOffersSelect<false> | BonusOffersSelect<true>;
-    'help-directory-entries': HelpDirectoryEntriesSelect<false> | HelpDirectoryEntriesSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
-    'site-users': SiteUsersSelect<false> | SiteUsersSelect<true>;
+    verticals: VerticalsSelect<false> | VerticalsSelect<true>;
+    'news-sections': NewsSectionsSelect<false> | NewsSectionsSelect<true>;
     comments: CommentsSelect<false> | CommentsSelect<true>;
     'reader-reviews': ReaderReviewsSelect<false> | ReaderReviewsSelect<true>;
     'forum-threads': ForumThreadsSelect<false> | ForumThreadsSelect<true>;
     'forum-replies': ForumRepliesSelect<false> | ForumRepliesSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    'bonus-offers': BonusOffersSelect<false> | BonusOffersSelect<true>;
+    'help-directory-entries': HelpDirectoryEntriesSelect<false> | HelpDirectoryEntriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'site-users': SiteUsersSelect<false> | SiteUsersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -663,142 +663,6 @@ export interface Review {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "bonus-offers".
- */
-export interface BonusOffer {
-  id: number;
-  /**
-   * Internal name for the offer, e.g. "Peak Wager welcome bonus June 2026".
-   */
-  name: string;
-  /**
-   * The operator this offer belongs to. Optional only if isPrimaryDomain is true (sitewide primary domain offer).
-   */
-  operator?: (number | null) | Review;
-  /**
-   * When true, this is the primary domain offer. Only one should be active at a time — enforce at render, not schema.
-   */
-  isPrimaryDomain?: boolean | null;
-  /**
-   * Short display headline for the offer, e.g. "100% match up to $500".
-   */
-  headline: string;
-  /**
-   * Promo code, if any. Optional.
-   */
-  code?: string | null;
-  /**
-   * Optional benefit bullets displayed under the offer.
-   */
-  benefits?:
-    | {
-        benefit: string;
-        id?: string | null;
-      }[]
-    | null;
-  primaryDomainLink?: {
-    anchorText: string;
-    url: string;
-    relAttribute: 'nofollow' | 'sponsored' | 'dofollow';
-  };
-  /**
-   * No relAttribute — forced to nofollow sponsored at render. Structural safety, same as Reviews.
-   */
-  operatorLink?: {
-    anchorText: string;
-    url: string;
-  };
-  validFrom?: string | null;
-  /**
-   * When the offer expires. Frontend should hide expired offers automatically — flag for the frontend audit.
-   */
-  validUntil?: string | null;
-  /**
-   * Manual on/off. When false, the offer is hidden regardless of validUntil.
-   */
-  active?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "help-directory-entries".
- */
-export interface HelpDirectoryEntry {
-  id: number;
-  /**
-   * The organisation name.
-   */
-  name: string;
-  /**
-   * ISO 3166-1 alpha-2 code, e.g. "IE", "US", "GB".
-   */
-  country: string;
-  /**
-   * Region grouping for the directory listing. Kept as enum rather than a separate Regions collection — regions rarely change and don't carry their own content.
-   */
-  region: 'north-america' | 'uk-ireland' | 'europe' | 'asia-pacific' | 'latin-america' | 'middle-east-africa';
-  description: string;
-  /**
-   * Contact routes. At least one must be present — enforced at hook level.
-   */
-  contacts?: {
-    phone?: string | null;
-    website?: string | null;
-    /**
-     * URL to a chat/messaging service, e.g. text line, WhatsApp, live chat.
-     */
-    chat?: string | null;
-  };
-  /**
-   * Set to true only after manually verifying the organisation is real and its contact routes are current. CLAUDE.md rule 3: unverified entries render as "coming soon" placeholders, not as if they were real.
-   */
-  verified: boolean;
-  /**
-   * When this entry was last verified. Should be re-verified periodically. If old, treat as suspect.
-   */
-  verifiedAt?: string | null;
-  /**
-   * Only settable when verified is true (enforced by hook). Crisis lines are treated specially — they must never render as a placeholder or unverified, because the surface promises real crisis support.
-   */
-  isCrisisLine?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-users".
- */
-export interface SiteUser {
-  id: number;
-  email: string;
-  username: string;
-  /**
-   * Display name. Optional — username is required, name is the "as it appears in real life" version.
-   */
-  name?: string | null;
-  /**
-   * Per-user commenting reputation. Trusted bypasses the moderation queue after enough clean history. Banned blocks new submissions.
-   */
-  moderationStatus: 'normal' | 'trusted' | 'flagged' | 'banned';
-  /**
-   * Auto-maintained by hooks on Comments and ReaderReviews.
-   */
-  moderationHistory?: {
-    commentsApproved?: number | null;
-    commentsRejected?: number | null;
-    readerReviewsApproved?: number | null;
-    readerReviewsRejected?: number | null;
-  };
-  /**
-   * Populated once auth is wired. When using Clerk, this is the Clerk user ID. When using Payload built-in auth, this stays null and Payload handles identity directly. Keeping this field means the auth decision does not require a schema migration later.
-   */
-  externalId?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "comments".
  */
 export interface Comment {
@@ -838,6 +702,38 @@ export interface Comment {
     internalNotes?: string | null;
   };
   notificationSentAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-users".
+ */
+export interface SiteUser {
+  id: number;
+  email: string;
+  username: string;
+  /**
+   * Display name. Optional — username is required, name is the "as it appears in real life" version.
+   */
+  name?: string | null;
+  /**
+   * Per-user commenting reputation. Trusted bypasses the moderation queue after enough clean history. Banned blocks new submissions.
+   */
+  moderationStatus: 'normal' | 'trusted' | 'flagged' | 'banned';
+  /**
+   * Auto-maintained by hooks on Comments and ReaderReviews.
+   */
+  moderationHistory?: {
+    commentsApproved?: number | null;
+    commentsRejected?: number | null;
+    readerReviewsApproved?: number | null;
+    readerReviewsRejected?: number | null;
+  };
+  /**
+   * Populated once auth is wired. When using Clerk, this is the Clerk user ID. When using Payload built-in auth, this stays null and Payload handles identity directly. Keeping this field means the auth decision does not require a schema migration later.
+   */
+  externalId?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -947,6 +843,110 @@ export interface Notification {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bonus-offers".
+ */
+export interface BonusOffer {
+  id: number;
+  /**
+   * Internal name for the offer, e.g. "Peak Wager welcome bonus June 2026".
+   */
+  name: string;
+  /**
+   * The operator this offer belongs to. Optional only if isPrimaryDomain is true (sitewide primary domain offer).
+   */
+  operator?: (number | null) | Review;
+  /**
+   * When true, this is the primary domain offer. Only one should be active at a time — enforce at render, not schema.
+   */
+  isPrimaryDomain?: boolean | null;
+  /**
+   * Short display headline for the offer, e.g. "100% match up to $500".
+   */
+  headline: string;
+  /**
+   * Promo code, if any. Optional.
+   */
+  code?: string | null;
+  /**
+   * Optional benefit bullets displayed under the offer.
+   */
+  benefits?:
+    | {
+        benefit: string;
+        id?: string | null;
+      }[]
+    | null;
+  primaryDomainLink?: {
+    anchorText: string;
+    url: string;
+    relAttribute: 'nofollow' | 'sponsored' | 'dofollow';
+  };
+  /**
+   * No relAttribute — forced to nofollow sponsored at render. Structural safety, same as Reviews.
+   */
+  operatorLink?: {
+    anchorText: string;
+    url: string;
+  };
+  validFrom?: string | null;
+  /**
+   * When the offer expires. Frontend should hide expired offers automatically — flag for the frontend audit.
+   */
+  validUntil?: string | null;
+  /**
+   * Manual on/off. When false, the offer is hidden regardless of validUntil.
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "help-directory-entries".
+ */
+export interface HelpDirectoryEntry {
+  id: number;
+  /**
+   * The organisation name.
+   */
+  name: string;
+  /**
+   * ISO 3166-1 alpha-2 code, e.g. "IE", "US", "GB".
+   */
+  country: string;
+  /**
+   * Region grouping for the directory listing. Kept as enum rather than a separate Regions collection — regions rarely change and don't carry their own content.
+   */
+  region: 'north-america' | 'uk-ireland' | 'europe' | 'asia-pacific' | 'latin-america' | 'middle-east-africa';
+  description: string;
+  /**
+   * Contact routes. At least one must be present — enforced at hook level.
+   */
+  contacts?: {
+    phone?: string | null;
+    website?: string | null;
+    /**
+     * URL to a chat/messaging service, e.g. text line, WhatsApp, live chat.
+     */
+    chat?: string | null;
+  };
+  /**
+   * Set to true only after manually verifying the organisation is real and its contact routes are current. CLAUDE.md rule 3: unverified entries render as "coming soon" placeholders, not as if they were real.
+   */
+  verified: boolean;
+  /**
+   * When this entry was last verified. Should be re-verified periodically. If old, treat as suspect.
+   */
+  verifiedAt?: string | null;
+  /**
+   * Only settable when verified is true (enforced by hook). Crisis lines are treated specially — they must never render as a placeholder or unverified, because the surface promises real crisis support.
+   */
+  isCrisisLine?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -1003,32 +1003,20 @@ export interface PayloadLockedDocument {
         value: number | News;
       } | null)
     | ({
-        relationTo: 'news-sections';
-        value: number | NewsSection;
-      } | null)
-    | ({
         relationTo: 'reviews';
         value: number | Review;
-      } | null)
-    | ({
-        relationTo: 'verticals';
-        value: number | Vertical;
-      } | null)
-    | ({
-        relationTo: 'bonus-offers';
-        value: number | BonusOffer;
-      } | null)
-    | ({
-        relationTo: 'help-directory-entries';
-        value: number | HelpDirectoryEntry;
       } | null)
     | ({
         relationTo: 'authors';
         value: number | Author;
       } | null)
     | ({
-        relationTo: 'site-users';
-        value: number | SiteUser;
+        relationTo: 'verticals';
+        value: number | Vertical;
+      } | null)
+    | ({
+        relationTo: 'news-sections';
+        value: number | NewsSection;
       } | null)
     | ({
         relationTo: 'comments';
@@ -1051,8 +1039,20 @@ export interface PayloadLockedDocument {
         value: number | Notification;
       } | null)
     | ({
+        relationTo: 'bonus-offers';
+        value: number | BonusOffer;
+      } | null)
+    | ({
+        relationTo: 'help-directory-entries';
+        value: number | HelpDirectoryEntry;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'site-users';
+        value: number | SiteUser;
       } | null)
     | ({
         relationTo: 'users';
@@ -1176,26 +1176,6 @@ export interface NewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "news-sections_select".
- */
-export interface NewsSectionsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  description?: T;
-  order?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalUrl?: T;
-        ogImage?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reviews_select".
  */
 export interface ReviewsSelect<T extends boolean = true> {
@@ -1269,86 +1249,6 @@ export interface ReviewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "verticals_select".
- */
-export interface VerticalsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  noun?: T;
-  crumb?: T;
-  description?: T;
-  hasReviews?: T;
-  order?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        canonicalUrl?: T;
-        ogImage?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "bonus-offers_select".
- */
-export interface BonusOffersSelect<T extends boolean = true> {
-  name?: T;
-  operator?: T;
-  isPrimaryDomain?: T;
-  headline?: T;
-  code?: T;
-  benefits?:
-    | T
-    | {
-        benefit?: T;
-        id?: T;
-      };
-  primaryDomainLink?:
-    | T
-    | {
-        anchorText?: T;
-        url?: T;
-        relAttribute?: T;
-      };
-  operatorLink?:
-    | T
-    | {
-        anchorText?: T;
-        url?: T;
-      };
-  validFrom?: T;
-  validUntil?: T;
-  active?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "help-directory-entries_select".
- */
-export interface HelpDirectoryEntriesSelect<T extends boolean = true> {
-  name?: T;
-  country?: T;
-  region?: T;
-  description?: T;
-  contacts?:
-    | T
-    | {
-        phone?: T;
-        website?: T;
-        chat?: T;
-      };
-  verified?: T;
-  verifiedAt?: T;
-  isCrisisLine?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "authors_select".
  */
 export interface AuthorsSelect<T extends boolean = true> {
@@ -1391,22 +1291,44 @@ export interface AuthorsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-users_select".
+ * via the `definition` "verticals_select".
  */
-export interface SiteUsersSelect<T extends boolean = true> {
-  email?: T;
-  username?: T;
+export interface VerticalsSelect<T extends boolean = true> {
   name?: T;
-  moderationStatus?: T;
-  moderationHistory?:
+  slug?: T;
+  noun?: T;
+  crumb?: T;
+  description?: T;
+  hasReviews?: T;
+  order?: T;
+  seo?:
     | T
     | {
-        commentsApproved?: T;
-        commentsRejected?: T;
-        readerReviewsApproved?: T;
-        readerReviewsRejected?: T;
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalUrl?: T;
+        ogImage?: T;
       };
-  externalId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-sections_select".
+ */
+export interface NewsSectionsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  order?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonicalUrl?: T;
+        ogImage?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1503,6 +1425,63 @@ export interface NotificationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bonus-offers_select".
+ */
+export interface BonusOffersSelect<T extends boolean = true> {
+  name?: T;
+  operator?: T;
+  isPrimaryDomain?: T;
+  headline?: T;
+  code?: T;
+  benefits?:
+    | T
+    | {
+        benefit?: T;
+        id?: T;
+      };
+  primaryDomainLink?:
+    | T
+    | {
+        anchorText?: T;
+        url?: T;
+        relAttribute?: T;
+      };
+  operatorLink?:
+    | T
+    | {
+        anchorText?: T;
+        url?: T;
+      };
+  validFrom?: T;
+  validUntil?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "help-directory-entries_select".
+ */
+export interface HelpDirectoryEntriesSelect<T extends boolean = true> {
+  name?: T;
+  country?: T;
+  region?: T;
+  description?: T;
+  contacts?:
+    | T
+    | {
+        phone?: T;
+        website?: T;
+        chat?: T;
+      };
+  verified?: T;
+  verifiedAt?: T;
+  isCrisisLine?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -1520,6 +1499,27 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-users_select".
+ */
+export interface SiteUsersSelect<T extends boolean = true> {
+  email?: T;
+  username?: T;
+  name?: T;
+  moderationStatus?: T;
+  moderationHistory?:
+    | T
+    | {
+        commentsApproved?: T;
+        commentsRejected?: T;
+        readerReviewsApproved?: T;
+        readerReviewsRejected?: T;
+      };
+  externalId?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

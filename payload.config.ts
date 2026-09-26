@@ -95,22 +95,29 @@ export default buildConfig({
   // Authors.bio inherits this set. It intentionally excludes UploadFeature, so
   // bios cannot embed images — no per-field override needed to achieve that.
   editor: lexicalEditor({ features: editorFeatures }),
+  // Order matters: the sidebar groups appear in the order their first
+  // collection does, so daily editorial work leads and accounts trail.
   collections: [
+    // Editorial
     Articles,
     News,
-    NewsSections,
     Reviews,
-    Verticals,
-    BonusOffers,
-    HelpDirectoryEntries,
     Authors,
-    Users,
+    // Taxonomy
+    Verticals,
+    NewsSections,
+    // Community
     Comments,
     ReaderReviews,
     ForumThreads,
     ForumReplies,
     Notifications,
+    // Reference
+    BonusOffers,
+    HelpDirectoryEntries,
     Media,
+    // Access
+    Users,
     AdminUsers,
   ],
   globals: [FAQ, LegalDocuments, MarketStats],

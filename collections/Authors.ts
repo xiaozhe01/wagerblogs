@@ -18,7 +18,7 @@ import { previewFor } from '../lib/preview'
 export const Authors: CollectionConfig = {
   slug: 'authors',
   admin: {
-    group: 'Editorial Team',
+    group: 'Editorial',
     useAsTitle: 'name',
     defaultColumns: ['name', 'credentialLine', 'active'],
     preview: previewFor('authors'),

@@ -23,6 +23,9 @@ import { revalidateSearch } from './hooks/revalidate-search'
 
 export const LegalDocuments: GlobalConfig = {
   slug: 'legal-documents',
+  admin: {
+    group: 'Site',
+  },
   access: {
     read: () => true,
   },

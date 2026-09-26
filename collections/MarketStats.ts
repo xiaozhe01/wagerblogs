@@ -12,6 +12,9 @@ import type { GlobalConfig } from 'payload'
 
 export const MarketStats: GlobalConfig = {
   slug: 'market-stats',
+  admin: {
+    group: 'Site',
+  },
   access: {
     read: () => true,
   },

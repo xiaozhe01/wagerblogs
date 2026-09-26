@@ -13,6 +13,10 @@ import { revalidateSearch } from './hooks/revalidate-search'
 
 export const FAQ: GlobalConfig = {
   slug: 'faq',
+  label: 'FAQ',
+  admin: {
+    group: 'Site',
+  },
   access: {
     read: () => true,
   },

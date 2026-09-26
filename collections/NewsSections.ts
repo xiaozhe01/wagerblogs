@@ -9,7 +9,7 @@ import { revalidateSearch } from './hooks/revalidate-search'
 export const NewsSections: CollectionConfig = {
   slug: 'news-sections',
   admin: {
-    group: 'Editorial',
+    group: 'Taxonomy',
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'order'],
   },
