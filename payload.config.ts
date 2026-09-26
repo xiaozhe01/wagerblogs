@@ -94,6 +94,9 @@ export default buildConfig({
     // panel is pinned light rather than offering a theme the site cannot match.
     theme: "light",
     components: {
+      views: {
+        dashboard: { Component: "/components/admin/Dashboard#default" },
+      },
       graphics: {
         Logo: "/components/admin/Logo#default",
         Icon: "/components/admin/Icon#default",
