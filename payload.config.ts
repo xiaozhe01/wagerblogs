@@ -73,6 +73,21 @@ const editorFeatures = [
 
 export default buildConfig({
   admin: {
+    // White-label: the panel is an internal tool for this publication, not a
+    // Payload demo. Without these the login screen carries Payload's logo and
+    // every tab title reads "- Payload".
+    meta: {
+      titleSuffix: " · WagerBlogs",
+    },
+    // The site has no dark mode — globals.css declares no dark block — so the
+    // panel is pinned light rather than offering a theme the site cannot match.
+    theme: "light",
+    components: {
+      graphics: {
+        Logo: "/components/admin/Logo#default",
+        Icon: "/components/admin/Icon#default",
+      },
+    },
     // This site's layout states, not generic device sizes. 1280 earns its
     // place: lg: has fired but --breakpoint-wide (1370px) has not, so the rail
     // is still hidden.
