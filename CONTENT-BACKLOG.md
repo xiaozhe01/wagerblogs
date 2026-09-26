@@ -162,16 +162,16 @@ a small correction script.
 
 The leak itself is closed. These are the loose ends it exposed.
 
-### Frontend queries pass no user, which breaks preview outside the admin
+### ~~Frontend queries pass no user~~ — resolved in `b0aa561`
 
-**Blocks FW-1 Phase 5.** All 51 `overrideAccess: false` call sites in
-`app/(frontend)/` call `payload.find` without a user, so a draft-mode request
-carrying no Payload session is filtered to published at the data layer — even
-though `publishedFilter(true)` asked for the draft.
+Draft-mode queries passed no user, so the access rules filtered drafts out at
+the data layer and Live Preview showed published content. Fixed by resolving
+the editor through `payload.auth` and carrying it into `payload.find`; the
+access rules were not weakened and `overrideAccess: false` stands. Verified in
+the browser: a draft news story renders in the preview iframe.
 
-Settle before Phase 5 resumes. Options: authenticate in the route and pass
-`user` through, or accept that preview only works from inside the admin.
-Weakening the access rules is not one of them.
+Kept here because the shape recurs — a destructured `publishedFilter` result
+silently drops `user`. `tests/draft-auth-propagation.test.ts` guards it.
 
 ### UGC visibility models are not unified
 
@@ -193,3 +193,46 @@ nobody else's.
 Anonymous read is denied outright because the record carries `email` and
 `username`. When public profiles are built, they need a dedicated projection
 exposing display fields only — not a loosened rule on the raw collection.
+
+## Editor attribution and an activity log — parked on cost
+
+Raised while building the admin dashboard: the "Recently edited" panel cannot
+show **who** edited a record, and there is no per-user operation history.
+
+**Nothing records it today.** Measured, not assumed:
+
+|                                  | State                                                                  |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| `updatedBy` on documents         | does not exist                                                         |
+| User column on `_<collection>_v` | does not exist — versions store content only                           |
+| `payload_locked_documents`       | exists, but only says who has a record open **right now**              |
+| Role field on `users`            | does not exist — columns are `email`, `salt`, `hash`, login throttling |
+| Admin accounts                   | 1                                                                      |
+
+So the dashboard shows no editor because the data was never captured, not
+because the panel omits it. Displaying a guess would be a fabricated trust
+signal.
+
+**Parked deliberately.** An activity log writes a row for every create,
+update, publish and delete across the editorial collections — permanent write
+amplification and unbounded growth, carried forever, for a team small enough
+that "who changed this" is usually answerable by asking. The overhead is not
+worth it at current size.
+
+**Revisit when** the team is large enough that attribution stops being
+answerable in person, or when an external requirement (a compliance ask, a
+dispute over a published change) makes the history load-bearing.
+
+If it is picked up, the order matters:
+
+1. **A role field on `users` first.** Access rules currently key off
+   `req.user.collection === "users"`, which is a stand-in for a role model.
+   Without roles there is no "super admin" to restrict a log view to.
+2. **`activity-log` collection plus `afterChange`/`afterDelete` hooks** — the
+   same hook shape `revalidateSearch` already uses. The record title must be
+   **denormalised into the log row**: a deleted document cannot be
+   dereferenced afterwards, which is exactly when the log matters.
+3. **Retention decided before it ships**, not after it is large.
+4. **"Recently edited" then reads the log** rather than needing its own
+   `lastEditedBy` column — which is why adding that column alone is not worth
+   doing as a shortcut.

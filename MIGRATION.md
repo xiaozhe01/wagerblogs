@@ -5,9 +5,14 @@ the build order in `docs/04-claude-code-implementation-brief.md` and numbers
 its phases independently of it. Where the two collide, this file's "Phase N"
 always means FW-1's.
 
-**Position as of 2026-09-24:** Phases 1 through 4F complete. One phase remains,
-**FW-1 Live Preview** — see `.claude/phase-5-live-preview-handoff-2026-09-24.md`.
+**Position as of 2026-09-25: FW-1 is complete.** Phases 1 through 5 are done.
+Live Preview was verified end-to-end in the browser — a draft news story renders
+inside the admin's preview iframe with its byline and relationships resolved.
+
 Deferred work that is not part of any FW-1 phase lives in CONTENT-BACKLOG.md.
+The Phase 5 brief is kept at `.claude/phase-5-live-preview-handoff-2026-09-24.md`
+for the reasoning behind its sequencing; `.claude/handover-2026-09-25.md` is the
+resume point.
 
 The sections below are a running record and are **not** rewritten as the state
 moves on: an entry describing what was true in Phase 2 stays as written, with
@@ -622,8 +627,6 @@ problem.
 
 ## Phase 4F complete — the crawler and navigation surfaces
 
-## Phase 4F complete — the crawler and navigation surfaces
-
 The four surfaces that built their own URLs from their own fixtures, and so
 drifted from the routes, now read Payload directly.
 
@@ -684,6 +687,59 @@ This is a seed defect, not a wiring one, and it is worth noting that the
 sitemap surfacing the duplicate is the new behaviour working correctly: it
 reports what is in the database. The old fixture-driven sitemap listed
 `jane-placeholder` whether or not any such record existed.
+
+## Phase 5 complete — Live Preview, and FW-1 closed
+
+Editors see a draft rendered by the real frontend, inside the admin.
+
+| Sub-phase | Commit    | What landed                                                              |
+| --------- | --------- | ------------------------------------------------------------------------ |
+| 5A        | `78cd384` | authenticated draft-mode entry and exit routes                           |
+| 5B        | `175584c` | `admin.livePreview`, four breakpoints matching this site's layout states |
+| 5C        | `edc2652` | `admin.preview` on the four editorial collections                        |
+| 5D        | `9ff521d` | `LivePreviewListener` on the four editorial detail routes                |
+
+Half the phase already existed: thirteen routes read `draftMode()` and threaded
+it into `publishedFilter` long before anything could turn draft mode on. That
+branch had therefore **never executed**, which is where the phase's real work
+turned out to be — not the plumbing.
+
+Four defects surfaced only once it ran:
+
+| Commit    | Defect                                                                    |
+| --------- | ------------------------------------------------------------------------- |
+| `b0aa561` | draft queries passed no user, so the access rules filtered drafts out     |
+| `30ec0e7` | six call sites destructured `publishedFilter` and dropped `user` silently |
+| `d5b9555` | a present-but-blank env var gave `postMessage` an empty target origin     |
+| `3e192ac` | `/\evil.com` and `/..//evil.com` escaped the site — open redirect         |
+
+Two smaller ones followed: `findByID` **throws** rather than returning undefined
+(`042c8ea`), and the editor was being authenticated twice per request
+(`54e786d`).
+
+`LivePreviewListener` is mounted **per detail route, not in the layout**. The
+event it listens for carries no document id — `isDocumentEvent` checks only the
+origin and the event type — so a listener in the layout would refresh every
+route on every save.
+
+### Still fixture-backed, deliberately
+
+`LatestStoriesSection` reads `scripts/fixtures/news` and renders on
+`/not-found` and the news story page. It is the last render-path fixture read in
+the codebase. The import is deliberately awkward; the awkwardness is the marker,
+and it disappears when that section is wired.
+
+### Left undone on purpose
+
+- **Update-as-you-type preview.** What shipped is Payload's _server-side_ Live
+  Preview: `RefreshRouteOnSave` refreshes on **save**. Updating on every
+  keystroke is the client-side variant (`useLivePreview`), which requires the
+  detail routes to become client components fed serialised data. On a site whose
+  product is server-rendered HTML for crawlers, that is a bad trade for editor
+  convenience. Payload's own template makes the same call.
+- **The `search-corpus` hook has never been observed firing.** It typechecks and
+  is registered on all eight collections and globals, but every attempt to watch
+  it had a rebuild or a restart in between, which invalidates the cache anyway.
 
 ## OG metadata
 
