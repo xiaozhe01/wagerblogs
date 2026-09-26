@@ -1,0 +1,201 @@
+/*
+ * Admin theme. Payload resolves every --theme-elevation-* from one
+ * --color-base-* ramp, so overriding that ramp repaints the panel without
+ * touching a component or owning any of Payload's markup.
+ *
+ * Luminance-matched, not eyeballed. Each step holds the OKLab lightness of the
+ * grey it replaces and moves only hue (87.5deg) and chroma (0.012), so every
+ * contrast ratio Payload designed against survives — measured within 0.5% of
+ * the original at every step. Anchoring on our own token values instead is
+ * what washed the panel out on the first attempt: our borders and muted text
+ * sit lighter than the greys Payload assumes.
+ *
+ * The extremes stay pure white and pure black; tinting those shifts every
+ * surface and every piece of inverted text at once.
+ */
+
+:root {
+  --color-base-0: #ffffff;
+  --color-base-50: #f9f5ec;
+  --color-base-100: #eeebe2;
+  --color-base-150: #e0ddd4;
+  --color-base-200: #d3d0c8;
+  --color-base-250: #c6c3bb;
+  --color-base-300: #b8b5ad;
+  --color-base-350: #aba8a0;
+  --color-base-400: #9d9a92;
+  --color-base-450: #908d85;
+  --color-base-500: #838078;
+  --color-base-550: #75726a;
+  --color-base-600: #68655e;
+  --color-base-650: #5a5750;
+  --color-base-700: #4d4a43;
+  --color-base-750: #3f3c35;
+  --color-base-800: #322f28;
+  --color-base-850: #24221c;
+  --color-base-900: #16140e;
+  --color-base-950: #090703;
+  --color-base-1000: #000000;
+
+  /* Page ground only. Cards and inputs stay on elevation-0 so they lift off it,
+     which is what makes a dense form scannable. */
+  --theme-bg: #fbf8f1;
+}
+
+/* Sidebar group headings ship at elevation-400, which is 2.65:1 on the nav
+   ground — Payload's own value, and below the 4.5:1 AA threshold. 600 reads at
+   5.48:1 while still sitting far below the nav links at 12.59:1, so the
+   hierarchy survives. */
+.nav-group__toggle {
+  color: var(--theme-elevation-600);
+}
+
+/* Sidebar links underline on hover (.nav__link:hover), while the dashboard
+   rows tint. Two affordances for the same gesture in one panel reads as a
+   seam, so the nav adopts the tint too. */
+.nav__link:hover,
+.nav a.nav__link:focus-visible {
+  text-decoration: none;
+}
+
+.nav__link {
+  border-radius: 3px;
+  padding-inline-start: 6px;
+  margin-inline-start: -6px;
+  transition:
+    background-color 100ms ease,
+    color 100ms ease;
+}
+
+.nav__link:hover {
+  background: var(--theme-elevation-100);
+  color: var(--theme-elevation-1000);
+}
+
+.nav a.nav__link:focus-visible {
+  outline: 2px solid var(--theme-elevation-800);
+  outline-offset: 1px;
+}
+
+/* Dashboard. Payload underlines every anchor, which turns a dense row list
+   into stripes. The row is the hit target, so it carries the hover instead —
+   the affordance moves from the text to the thing you are actually clicking. */
+.wb-dash a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.wb-dash a:hover,
+.wb-dash a:focus-visible {
+  color: var(--theme-elevation-1000);
+  text-decoration: none;
+}
+
+/* Layout lives here, not in inline styles: the two-column split needs a media
+   query, and auto-fit alone fans out to four columns on a wide screen. */
+.wb-dash__stats {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  margin-top: 1.25rem;
+}
+
+.wb-dash__main {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  align-items: start;
+}
+
+/* Columns stack until there is genuinely room for two, so the short panel
+   never leaves a hole beside a tall one on a narrow screen. */
+@media (min-width: 64rem) {
+  .wb-dash__main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
+}
+
+.wb-dash__stack {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.wb-dash__cards {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  padding: 0 1rem 1rem;
+}
+
+.wb-dash__row {
+  transition: background-color 100ms ease;
+}
+
+.wb-dash__row:hover {
+  background: var(--theme-elevation-50);
+}
+
+/* Collection views. Same rule as the nav and the dashboard: nothing underlines,
+   the row is what responds.
+   The list table's record links are a Next <Link> carrying no stable class, so
+   the underline is the browser default rather than a Payload rule — targeting
+   .default-cell__first-cell misses them entirely. Scope to the table instead,
+   which survives Payload renaming its internals. */
+.table a,
+.default-cell__first-cell,
+.status__action {
+  text-decoration: none;
+}
+
+.table a:hover,
+.table a:focus-visible {
+  text-decoration: none;
+  color: var(--theme-elevation-1000);
+}
+
+.table tbody tr {
+  transition: background-color 100ms ease;
+}
+
+.table tbody tr:hover {
+  background: var(--theme-elevation-50);
+}
+
+/* Column headers ship at elevation-400 — 2.65:1, the same failing value the
+   nav group headings had. */
+.table thead {
+  color: var(--theme-elevation-600);
+}
+
+.table thead th {
+  font-weight: 600;
+}
+
+/* The remaining underline-on-hover controls: breadcrumbs, per-page, and the
+   array/blocks row actions. Colour carries the state instead. */
+.step-nav a:hover,
+.step-nav a:focus-visible,
+.per-page__button:hover,
+.per-page__button:focus-visible,
+.file-meta__url a:hover,
+.file-meta__url a:focus-visible,
+.file-details__toggle-more-info:hover,
+.file-details__toggle-more-info:focus-visible,
+.array-field__header-action:hover,
+.array-field__header-action:focus-visible,
+.blocks-field__header-action:hover,
+.blocks-field__header-action:focus-visible,
+.localizer-button button:hover,
+.localizer-button button:focus-visible {
+  text-decoration: none;
+  color: var(--theme-elevation-1000);
+}
+
+/* Keyboard users get the outline the hover state cannot give them. */
+.wb-dash a:focus-visible {
+  outline: 2px solid var(--theme-elevation-800);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+

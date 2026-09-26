@@ -2,6 +2,9 @@
 /* DO NOT MODIFY IT BECAUSE IT COULD BE REWRITTEN AT ANY TIME. */
 import config from "@payload-config";
 import "@payloadcms/next/css";
+// Ours, after Payload's, so the --color-base-* ramp wins. This import is the
+// one edit to this generated file; Payload only rewrites it if it is deleted.
+import "./custom.css";
 import type { ServerFunctionClient } from "payload";
 import { handleServerFunctions, RootLayout } from "@payloadcms/next/layouts";
 import React from "react";
