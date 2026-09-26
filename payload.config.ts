@@ -88,7 +88,7 @@ export default buildConfig({
         const path = collectionConfig
           ? await previewPath(collectionConfig.slug, data, req)
           : undefined;
-        return path ? toPreviewUrl(path) : previewBaseUrl();
+        return path ? toPreviewUrl(path, req) : previewBaseUrl(req);
       },
     },
   },
