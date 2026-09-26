@@ -17,6 +17,8 @@ import {
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
+import { en } from "@payloadcms/translations/languages/en";
+import { zh } from "@payloadcms/translations/languages/zh";
 
 import { AdminUsers } from "./collections/AdminUsers";
 import { Articles } from "./collections/Articles";
@@ -37,6 +39,7 @@ import { ReaderReviews } from "./collections/ReaderReviews";
 import { Reviews } from "./collections/Reviews";
 import { Users } from "./collections/Users";
 import { Verticals } from "./collections/Verticals";
+import { localise } from "./collections/i18n-labels";
 import { previewBaseUrl, previewPath, toPreviewUrl } from "./lib/preview";
 
 // Relative imports, not "@/": Payload's CLI loads this config outside Next's
@@ -72,6 +75,14 @@ const editorFeatures = [
 ];
 
 export default buildConfig({
+  // Admin-panel chrome only — labels, buttons, validation messages. Content
+  // stays English; translating records is `localization`, a schema change this
+  // is not. Restricted to two so the language picker is a real choice rather
+  // than a list of thirty.
+  i18n: {
+    fallbackLanguage: "en",
+    supportedLanguages: { en, zh },
+  },
   admin: {
     // White-label: the panel is an internal tool for this publication, not a
     // Payload demo. Without these the login screen carries Payload's logo and
@@ -114,28 +125,28 @@ export default buildConfig({
   // collection does, so daily editorial work leads and accounts trail.
   collections: [
     // Editorial
-    Articles,
-    News,
-    Reviews,
-    Authors,
+    localise(Articles),
+    localise(News),
+    localise(Reviews),
+    localise(Authors),
     // Taxonomy
-    Verticals,
-    NewsSections,
+    localise(Verticals),
+    localise(NewsSections),
     // Community
-    Comments,
-    ReaderReviews,
-    ForumThreads,
-    ForumReplies,
-    Notifications,
+    localise(Comments),
+    localise(ReaderReviews),
+    localise(ForumThreads),
+    localise(ForumReplies),
+    localise(Notifications),
     // Reference
-    BonusOffers,
-    HelpDirectoryEntries,
-    Media,
+    localise(BonusOffers),
+    localise(HelpDirectoryEntries),
+    localise(Media),
     // Access
-    Users,
-    AdminUsers,
+    localise(Users),
+    localise(AdminUsers),
   ],
-  globals: [FAQ, LegalDocuments, MarketStats],
+  globals: [FAQ, LegalDocuments, MarketStats].map(localise),
   plugins: [
     // forcePathStyle is required by Supabase Storage — without it the SDK builds
     // virtual-host URLs that the endpoint does not serve.
