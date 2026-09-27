@@ -210,7 +210,7 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
   );
 
   return (
-    <PageShell activeNavId="reviews" rail={rail}>
+    <PageShell activeNavId="reviews" measure="reading" rail={rail}>
       {isDraft && <LivePreviewListener />}
       {/* Register: Comparison · Tier 3 — direct reference */}
       {/* The trail mirrors the route: /reviews/<vertical>/<slug>. */}

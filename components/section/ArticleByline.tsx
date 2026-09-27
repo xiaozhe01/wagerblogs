@@ -25,7 +25,7 @@ export default function ArticleByline({
   const isoDate = /^\d{4}-\d{2}-\d{2}/.test(publishedAt) ? publishedAt : undefined;
 
   return (
-    <div className="flex items-center gap-3 py-3 border-t border-b border-border-divider max-w-full">
+    <div className="flex items-center gap-3 max-w-full">
       {/* No photo on the record keeps the skeleton shape. */}
       {resolveMedia(photo) ? (
         <div className="w-9 h-9 shrink-0 rounded-full overflow-hidden relative">

@@ -162,7 +162,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
   );
 
   return (
-    <PageShell activeNavId="news" register="editorial" rail={rail}>
+    <PageShell activeNavId="news" register="editorial" measure="reading" rail={rail}>
       {isDraft && <LivePreviewListener />}
       {/* Register: Editorial · Tier 1 — reporting, no outbound operator links */}
       <Breadcrumbs
@@ -195,22 +195,11 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
           </p>
         </header>
 
-        {author && (
-          <ArticleByline
-            name={author.name}
-            credential={author.credentialLine}
-            photo={author.photo}
-            profileHref={`/authors/${author.slug}`}
-            publishedAt={story.publishedAt ? formatDate(story.publishedAt) : ""}
-            readTime={readTime(story.body)}
-          />
-        )}
-
         <figure className="w-full">
           {/* No hero on the record keeps the existing skeleton shape. */}
           {hero ? (
             <>
-              <div className="relative w-full h-45 md:h-80 rounded-md overflow-hidden">
+              <div className="relative w-full aspect-video rounded-md overflow-hidden">
                 <MediaImage
                   media={hero}
                   fill

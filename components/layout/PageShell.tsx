@@ -24,14 +24,25 @@ const MAIN_GAP = {
   comparison: "gap-6 lg:gap-7",
 } as const;
 
+// `ch`, not px: the cap is a character count, and the typography pass is
+// size-led. A pixel cap tuned to today's 16px body drifts the moment that
+// moves; this one cannot. Not tied to `register` — the news and articles
+// indexes are editorial too, and they are card grids that want full width.
+const MAIN_MEASURE = {
+  full: "",
+  reading: "max-w-[78ch] md:mx-auto",
+} as const;
+
 export default async function PageShell({
   activeNavId,
   register = "comparison",
+  measure = "full",
   rail,
   children,
 }: {
   activeNavId?: string;
   register?: keyof typeof MAIN_GAP;
+  measure?: keyof typeof MAIN_MEASURE;
   rail?: ReactNode;
   children: ReactNode;
 }) {
@@ -71,7 +82,11 @@ export default async function PageShell({
           <div className="min-w-0">
             <TopHeader activeNavId={activeNavId} navGroups={navGroups} />
             {/* tabIndex -1 so the skip link moves focus, not just scroll. */}
-            <main id="main-content" tabIndex={-1} className={`flex flex-col ${MAIN_GAP[register]}`}>
+            <main
+              id="main-content"
+              tabIndex={-1}
+              className={`flex flex-col ${MAIN_GAP[register]} ${MAIN_MEASURE[measure]}`}
+            >
               {children}
             </main>
           </div>
