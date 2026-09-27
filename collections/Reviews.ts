@@ -60,6 +60,15 @@ export const Reviews: CollectionConfig = {
       index: true,
     },
     {
+      name: "logo",
+      type: "upload",
+      relationTo: "media",
+      admin: {
+        description:
+          "Operator logo, square, transparent background. Optional: an entry without one renders the placeholder block, never a stand-in image.",
+      },
+    },
+    {
       name: "vertical",
       type: "relationship",
       relationTo: "verticals",

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import MediaImage, { resolveMedia, type MediaRef } from "@/components/cards/MediaImage";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import { headingId } from "@/lib/utils";
 import { TIER_CLASSNAME } from "./heading-tiers";
@@ -15,6 +16,8 @@ export type ReviewTile = {
   lastVerified: string;
   lastVerifiedISO?: string;
   href: string;
+  /** Needs depth >= 1 on the query — a bare id cannot resolve to a file. */
+  logo?: MediaRef;
 };
 
 // The hub's tile grid — deliberately not the ranked rows on /: no rank, no
@@ -57,10 +60,21 @@ export default function ReviewDirectorySection({
                 className="card group grow flex flex-col gap-2.5 no-underline transition-colors hover:bg-bg-subtle active:bg-bg-subtle-active"
               >
                 <div className="flex items-center gap-2.5">
-                  <div
-                    aria-hidden="true"
-                    className="w-8 h-8 shrink-0 placeholder-asset rounded-md"
-                  />
+                  {resolveMedia(operator.logo) ? (
+                    <div className="w-8 h-8 shrink-0 rounded-md overflow-hidden relative">
+                      <MediaImage
+                        media={operator.logo}
+                        fill
+                        sizes="32px"
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      aria-hidden="true"
+                      className="w-8 h-8 shrink-0 placeholder-asset rounded-md"
+                    />
+                  )}
                   <h3 className="heading text-lg leading-snug min-w-0 flex-1 text-pretty">
                     {operator.name}
                   </h3>

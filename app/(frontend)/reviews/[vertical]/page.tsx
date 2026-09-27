@@ -97,7 +97,7 @@ export default async function ReviewGroupPage({
     ...publishedFilter(isDraft, { vertical: { equals: vertical.id } }, previewUser),
     sort: "-score",
     limit: 500,
-    depth: 0,
+    depth: 1,
     overrideAccess: false,
   });
 
@@ -112,6 +112,7 @@ export default async function ReviewGroupPage({
     lastVerified: formatDate(review.lastVerified),
     lastVerifiedISO: review.lastVerified,
     href: `/reviews/${vertical.slug}/${review.slug}`,
+    logo: review.logo,
   }));
 
   const href = `/reviews/${vertical.slug}`;

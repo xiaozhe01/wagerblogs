@@ -56,7 +56,7 @@ export default async function ReviewsIndexPage() {
     ...publishedFilter(isDraft, {}, previewUser),
     sort: "-score",
     limit: 500,
-    depth: 0,
+    depth: 1,
     overrideAccess: false,
   });
 
@@ -74,6 +74,7 @@ export default async function ReviewsIndexPage() {
       lastVerified: formatDate(review.lastVerified),
       lastVerifiedISO: review.lastVerified,
       href: `/reviews/${verticals.find((v) => v.id === verticalId)?.slug ?? ""}/${review.slug}`,
+      logo: review.logo,
     };
     tilesByVertical.set(verticalId, [...(tilesByVertical.get(verticalId) ?? []), tile]);
   }

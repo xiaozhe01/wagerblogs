@@ -535,6 +535,10 @@ export interface Review {
   name: string;
   slug: string;
   /**
+   * Operator logo, square, transparent background. Optional: an entry without one renders the placeholder block, never a stand-in image.
+   */
+  logo?: (number | null) | Media;
+  /**
    * Which vertical this operator belongs to. Only verticals with hasReviews: true should be selectable — enforce with a filterOptions callback.
    */
   vertical: number | Vertical;
@@ -855,6 +859,10 @@ export interface BonusOffer {
    * The operator this offer belongs to. Optional only if isPrimaryDomain is true (sitewide primary domain offer).
    */
   operator?: (number | null) | Review;
+  /**
+   * Operator logo for the offer card, square. Separate from the linked operator's own logo so a sitewide primary-domain offer — which has no operator record — can still carry one.
+   */
+  logo?: (number | null) | Media;
   /**
    * When true, this is the primary domain offer. Only one should be active at a time — enforce at render, not schema.
    */
@@ -1181,6 +1189,7 @@ export interface NewsSelect<T extends boolean = true> {
 export interface ReviewsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  logo?: T;
   vertical?: T;
   author?: T;
   needsReverification?: T;
@@ -1430,6 +1439,7 @@ export interface NotificationsSelect<T extends boolean = true> {
 export interface BonusOffersSelect<T extends boolean = true> {
   name?: T;
   operator?: T;
+  logo?: T;
   isPrimaryDomain?: T;
   headline?: T;
   code?: T;

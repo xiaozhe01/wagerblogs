@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import type { PrimaryDomainLinkData } from "@/lib/types";
 import PrimaryDomainLink from "@/components/controls/PrimaryDomainLink";
 import CopyCodeChip from "@/components/controls/CopyCodeChip";
+import MediaImage, { resolveMedia, type MediaRef } from "@/components/cards/MediaImage";
 
 /** A BonusOffers record, flattened for render. primaryDomainLink and
  * operatorLink are both optional because Payload stores them that way; an
@@ -15,6 +16,8 @@ export type BonusOfferCardData = {
   isPrimaryDomain: boolean;
   primaryDomainLink?: PrimaryDomainLinkData;
   operatorLink?: { anchorText: string; url: string };
+  /** Needs depth >= 1 on the query — a bare id cannot resolve to a file. */
+  logo?: MediaRef;
 };
 
 type BonusOfferCardProps = {
@@ -42,7 +45,13 @@ export default function BonusOfferCard({
   return (
     <article className="card flex flex-col gap-2 h-full">
       <div className="flex items-center gap-2.5 mb-2.5">
-        <div className="w-6 h-6 shrink-0 placeholder-asset rounded-md" />
+        {resolveMedia(offer.logo) ? (
+          <div className="w-6 h-6 shrink-0 rounded-md overflow-hidden relative">
+            <MediaImage media={offer.logo} fill sizes="24px" className="object-contain" />
+          </div>
+        ) : (
+          <div aria-hidden="true" className="w-6 h-6 shrink-0 placeholder-asset rounded-md" />
+        )}
         <span className="text-md font-semibold text-text-primary">{offer.name}</span>
       </div>
 

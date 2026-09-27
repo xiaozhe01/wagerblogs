@@ -202,6 +202,7 @@ export default async function Home({
   const bonusOffers: BonusOfferCardData[] = offers.map((offer) => ({
     name: offer.name,
     headline: offer.headline,
+    logo: offer.logo,
     code: offer.code ?? undefined,
     benefits: (offer.benefits ?? [])
       .map((entry) => entry.benefit)

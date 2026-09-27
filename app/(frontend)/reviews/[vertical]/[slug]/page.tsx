@@ -252,12 +252,18 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
           />
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5 min-w-0">
-              <div
-                aria-hidden="true"
-                className="w-14 h-14 shrink-0 placeholder-asset rounded-md text-2xs text-text-muted tabular-nums"
-              >
-                [logo]
-              </div>
+              {resolveMedia(review.logo) ? (
+                <div className="w-14 h-14 shrink-0 rounded-md overflow-hidden relative">
+                  <MediaImage media={review.logo} fill sizes="56px" className="object-contain" />
+                </div>
+              ) : (
+                <div
+                  aria-hidden="true"
+                  className="w-14 h-14 shrink-0 placeholder-asset rounded-md text-2xs text-text-muted tabular-nums"
+                >
+                  [logo]
+                </div>
+              )}
               <div className="min-w-0">
                 <h3 className="text-lg font-bold text-text-primary mb-1">{operatorName}</h3>
                 <p className="flex items-baseline gap-2">

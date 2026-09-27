@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig } from "payload";
 
 // Bonus offers. Currently in the frontend as a discriminated union
 // (lib/types.ts:30) with the same primary-domain vs operator asymmetry
@@ -14,137 +14,150 @@ import type { CollectionConfig } from 'payload'
 // offers are the ones with isPrimaryDomain: true.
 
 export const BonusOffers: CollectionConfig = {
-  slug: 'bonus-offers',
+  slug: "bonus-offers",
   admin: {
-    group: 'Reference',
-    useAsTitle: 'name',
-    defaultColumns: ['name', 'operator', 'isPrimaryDomain', 'active'],
+    group: "Reference",
+    useAsTitle: "name",
+    defaultColumns: ["name", "operator", "isPrimaryDomain", "active"],
   },
   access: {
     read: () => true,
   },
   fields: [
     {
-      name: 'name',
-      type: 'text',
+      name: "name",
+      type: "text",
       required: true,
       admin: {
         description: 'Internal name for the offer, e.g. "Peak Wager welcome bonus June 2026".',
       },
     },
     {
-      name: 'operator',
-      type: 'relationship',
-      relationTo: 'reviews',
+      name: "operator",
+      type: "relationship",
+      relationTo: "reviews",
       admin: {
-        description: 'The operator this offer belongs to. Optional only if isPrimaryDomain is true (sitewide primary domain offer).',
+        description:
+          "The operator this offer belongs to. Optional only if isPrimaryDomain is true (sitewide primary domain offer).",
       },
     },
     {
-      name: 'isPrimaryDomain',
-      type: 'checkbox',
+      name: "logo",
+      type: "upload",
+      relationTo: "media",
+      admin: {
+        description:
+          "Operator logo for the offer card, square. Separate from the linked operator's own logo so a sitewide primary-domain offer — which has no operator record — can still carry one.",
+      },
+    },
+    {
+      name: "isPrimaryDomain",
+      type: "checkbox",
       defaultValue: false,
       admin: {
-        description: 'When true, this is the primary domain offer. Only one should be active at a time — enforce at render, not schema.',
+        description:
+          "When true, this is the primary domain offer. Only one should be active at a time — enforce at render, not schema.",
       },
     },
     {
-      name: 'headline',
-      type: 'text',
+      name: "headline",
+      type: "text",
       required: true,
       admin: {
         description: 'Short display headline for the offer, e.g. "100% match up to $500".',
       },
     },
     {
-      name: 'code',
-      type: 'text',
+      name: "code",
+      type: "text",
       admin: {
-        description: 'Promo code, if any. Optional.',
+        description: "Promo code, if any. Optional.",
       },
     },
     {
-      name: 'benefits',
-      type: 'array',
+      name: "benefits",
+      type: "array",
       admin: {
-        description: 'Optional benefit bullets displayed under the offer.',
+        description: "Optional benefit bullets displayed under the offer.",
       },
       fields: [
         {
-          name: 'benefit',
-          type: 'text',
+          name: "benefit",
+          type: "text",
           required: true,
         },
       ],
     },
     {
-      name: 'primaryDomainLink',
-      type: 'group',
+      name: "primaryDomainLink",
+      type: "group",
       admin: {
         condition: (data) => data?.isPrimaryDomain === true,
       },
       fields: [
         {
-          name: 'anchorText',
-          type: 'text',
+          name: "anchorText",
+          type: "text",
           required: true,
         },
         {
-          name: 'url',
-          type: 'text',
+          name: "url",
+          type: "text",
           required: true,
         },
         {
-          name: 'relAttribute',
-          type: 'select',
+          name: "relAttribute",
+          type: "select",
           required: true,
-          defaultValue: 'nofollow',
+          defaultValue: "nofollow",
           options: [
-            { label: 'Nofollow', value: 'nofollow' },
-            { label: 'Sponsored', value: 'sponsored' },
-            { label: 'Dofollow (editorially earned)', value: 'dofollow' },
+            { label: "Nofollow", value: "nofollow" },
+            { label: "Sponsored", value: "sponsored" },
+            { label: "Dofollow (editorially earned)", value: "dofollow" },
           ],
         },
       ],
     },
     {
-      name: 'operatorLink',
-      type: 'group',
+      name: "operatorLink",
+      type: "group",
       admin: {
         condition: (data) => data?.isPrimaryDomain !== true,
-        description: 'No relAttribute — forced to nofollow sponsored at render. Structural safety, same as Reviews.',
+        description:
+          "No relAttribute — forced to nofollow sponsored at render. Structural safety, same as Reviews.",
       },
       fields: [
         {
-          name: 'anchorText',
-          type: 'text',
+          name: "anchorText",
+          type: "text",
           required: true,
         },
         {
-          name: 'url',
-          type: 'text',
+          name: "url",
+          type: "text",
           required: true,
         },
       ],
     },
     {
-      name: 'validFrom',
-      type: 'date',
+      name: "validFrom",
+      type: "date",
     },
     {
-      name: 'validUntil',
-      type: 'date',
+      name: "validUntil",
+      type: "date",
       admin: {
-        description: 'When the offer expires. Frontend should hide expired offers automatically — flag for the frontend audit.',
+        description:
+          "When the offer expires. Frontend should hide expired offers automatically — flag for the frontend audit.",
       },
     },
     {
-      name: 'active',
-      type: 'checkbox',
+      name: "active",
+      type: "checkbox",
       defaultValue: true,
       admin: {
-        description: 'Manual on/off. When false, the offer is hidden regardless of validUntil.',
+        description: "Manual on/off. When false, the offer is hidden regardless of validUntil.",
       },
     },
   ],
-}
+};
