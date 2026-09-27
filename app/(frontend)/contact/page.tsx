@@ -58,8 +58,8 @@ export default function ContactPage() {
           Contact
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — which enquiries go where, and what to expect back. Editorial and
-          commercial enquiries are handled by different people on purpose.]
+          Corrections, editorial questions and commercial enquiries go to different people. Anything
+          factual reaches someone who can change the page.
         </p>
       </header>
 
@@ -87,16 +87,21 @@ export default function ContactPage() {
           worse than an address the reader can copy. */}
       <EditorialSection title="Before you write" register="editorial">
         <Prose>
-          [Placeholder — what to include in a correction: the page, the claim, and a source we can
-          check. Corrections are recorded on the page they affect.]
+          For a correction, tell us three things: the page, the claim, and where the right
+          information comes from. That&apos;s usually enough to fix it the same day. The change is
+          recorded on the page it affects.
         </Prose>
       </EditorialSection>
 
       <EditorialSection title="What we can't help with" register="editorial">
         <Prose>
-          [Placeholder — WagerBlogs is a publisher, not an operator. We cannot access accounts,
-          resolve deposits or withdrawals, or intervene in a dispute with a sportsbook. For
-          gambling-harm support, use the helpline resources instead.]
+          We&apos;re a publisher, not an operator. We can&apos;t see your account, release a
+          withdrawal, or step into a dispute with a sportsbook — you&apos;ll need the
+          operator&apos;s own support, or the regulator that licenses them.
+        </Prose>
+        <Prose>
+          If gambling itself is the problem, the help directory lists free and confidential support
+          by region.
         </Prose>
       </EditorialSection>
     </PageShell>

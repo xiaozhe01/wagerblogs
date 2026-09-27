@@ -82,8 +82,7 @@ export default async function NewsIndexPage() {
           News
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — regulation, market moves, and industry reporting, written to be
-          useful whether or not you bet.]
+          Regulation, market moves and the business of betting. What changed, and who it affects.
         </p>
       </header>
 
@@ -121,8 +120,9 @@ export default async function NewsIndexPage() {
 
       <EditorialSection title="How we report" register="editorial">
         <Prose>
-          [Placeholder — sourcing policy: what we verify before publishing, how corrections are
-          handled, and why commercial partnerships never affect coverage.]
+          We source stories from regulators, company filings and people on the record. If a claim
+          rests on one source, we say so. Corrections go on the story itself. No commercial
+          relationship has ever decided whether we run something.
         </Prose>
       </EditorialSection>
     </PageShell>

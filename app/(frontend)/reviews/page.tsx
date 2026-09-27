@@ -88,8 +88,8 @@ export default async function ReviewsIndexPage() {
           Sportsbook & casino reviews
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — every operator we&apos;ve reviewed, what each was scored on, and
-          when the review was last re-verified.]
+          Every operator we&apos;ve reviewed, scored against the same criteria and dated when we
+          last checked it. Ordered by score, not by what anyone pays.
         </p>
       </header>
 

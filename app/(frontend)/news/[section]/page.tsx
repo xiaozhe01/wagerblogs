@@ -194,8 +194,9 @@ export default async function NewsSectionPage({
 
       <EditorialSection title="What this desk covers" register="editorial" tier="supporting">
         <Prose>
-          [Placeholder — the beat: which competitions and markets this desk follows, how often it
-          publishes, and what it deliberately leaves to the guides.]
+          This desk covers news: results, rulings, roster moves and the market reaction to them. It
+          publishes when something happens rather than on a schedule. How-to explainers and strategy
+          live in the guides instead.
         </Prose>
         <ArrowLink href="/news#section-how-we-report" className={`${sectionCtaClassName} w-fit`}>
           How we report

@@ -100,8 +100,8 @@ export default async function ArticlesIndexPage({
           Articles
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — guides, strategy, and research written to stand on their own,
-          with no operator recommendations anywhere in this section.]
+          Guides, analysis and research on how betting markets work. Useful whether or not you ever
+          place a bet. Nothing here recommends an operator.
         </p>
       </header>
 

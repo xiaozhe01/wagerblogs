@@ -264,7 +264,7 @@ export const reviewRelated: PostTeaser[] = [
   },
   {
     kicker: "Guide",
-    title: "[Placeholder] How we score payout speed",
+    title: "How we score payout speed",
     meta: "Article · Tier 1 surface",
     href: "/articles/parlays-vs-straight-bets",
   },
@@ -431,12 +431,12 @@ export const legalDocs = {
 
 // app/responsible-gambling/page.tsx content.
 export const rgWarningSigns = [
-  "[Placeholder] Betting more than planned, more often than planned",
-  "[Placeholder] Chasing losses with bigger stakes",
-  "[Placeholder] Hiding betting activity from people close to you",
-  "[Placeholder] Borrowing money or selling things to bet",
-  "[Placeholder] Feeling restless or irritable when not betting",
-  "[Placeholder] Betting to escape stress, low mood, or boredom",
+  "Betting more than you planned, more often than you planned",
+  "Chasing losses with bigger stakes",
+  "Hiding how much you bet from people close to you",
+  "Borrowing money or selling things to keep betting",
+  "Feeling restless or irritable when you cut back",
+  "Betting to escape stress, low mood or boredom",
 ];
 
 // Screening questions moved to lib/self-assessment.ts — they are now the real,
@@ -446,47 +446,27 @@ export const rgWarningSigns = [
 export const rgTools = [
   {
     title: "Deposit limits",
-    body: "[Placeholder] Every licensed operator must offer daily, weekly, and monthly deposit caps. How to set them and why lower is easier than you think.",
+    body: "A cap on what you can pay in per day, week or month. Every licensed operator has to offer them, and they take effect immediately. Increases are the ones that wait.",
   },
   {
     title: "Time-outs",
-    body: "[Placeholder] Short breaks from 24 hours to 30 days, applied instantly in account settings. What happens to open bets and balances.",
+    body: "A short break, usually 24 hours to 30 days, set from your account settings. Open bets stand and your balance stays put — you just can't stake again until it lifts.",
   },
   {
     title: "Self-exclusion",
-    body: "[Placeholder] Longer bars of one to five years, or permanent. How operator-level and state-level exclusion differ.",
+    body: "A longer bar, from one year to permanent. At operator level it covers one account; through the state register it covers every licensed site at once.",
   },
   {
     title: "Blocking software",
-    body: "[Placeholder] Device-level blockers that remove gambling sites and apps entirely. What they cover and what they miss.",
-  },
-];
-
-// TODO(cms): every contact detail here is a verification gate — do not publish a
-// row until the number/URL is confirmed against the organization's own site.
-export const rgResources = [
-  {
-    name: "[National problem gambling helpline]",
-    desc: "[Placeholder — free, confidential, 24/7 phone and text support; connects to state resources.]",
-    contact: "[phone — verify]",
-  },
-  {
-    name: "[Peer support fellowship]",
-    desc: "[Placeholder — local and online meetings for people who want to stop gambling.]",
-    contact: "[URL — verify]",
-  },
-  {
-    name: "[Crisis line]",
-    desc: "[Placeholder — immediate support for anyone in crisis, gambling-related or not.]",
-    contact: "[phone/text — verify]",
+    body: "Blockers that remove gambling sites and apps at the device level. They catch far more than willpower does, but they don't cover a phone you haven't installed them on.",
   },
 ];
 
 export const rgCommitments = [
-  "[Placeholder] Every page that lists an operator also carries a route to this page — no exceptions.",
-  "[Placeholder] We never target promotions at readers who arrive via responsible-gambling content.",
-  "[Placeholder] All content is written for readers 21+, and bonus copy always carries full terms.",
-  "[Placeholder] Commission never changes a score, and no operator can pay to soften this page.",
+  "Every page that lists an operator carries a route to this one. No exceptions.",
+  "We don't target promotions at anyone who arrives through responsible-gambling content.",
+  "Everything here is written for readers of legal gambling age, and bonus copy always carries the full terms.",
+  "Commission never changes a score, and no operator can pay to soften this page.",
 ];
 
 export const rgToc = [

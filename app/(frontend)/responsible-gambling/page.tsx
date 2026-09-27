@@ -100,9 +100,9 @@ export default async function ResponsibleGamblingPage() {
           Responsible gambling
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — why this page exists, what readers will find on it, and a plain
-          statement that WagerBlogs earns commission from operators and still wants readers to bet
-          less, not more, when it stops being entertainment.]
+          Warning signs, a self-check you can take in two minutes, the tools that actually limit
+          play, and where to get help. We earn commission from operators. We would still rather you
+          bet less than more.
         </p>
       </header>
 
@@ -219,15 +219,25 @@ export default async function ResponsibleGamblingPage() {
         register="editorial"
       >
         <Prose>
-          [Placeholder — most legal states run their own self-exclusion registers; enrolling bars
-          every licensed operator in that state at once.]
+          Most states with legal betting run their own self-exclusion register. Signing up bars you
+          from every licensed operator in that state at once, instead of one account at a time.
+        </Prose>
+        <Prose>
+          The register is run by the state regulator, not by the operators, so you enrol through the
+          regulator directly. Lengths vary: some states let you choose a term, others are permanent
+          and cannot be undone.
         </Prose>
       </EditorialSection>
 
       <EditorialSection title="If you're worried about someone else" register="editorial">
         <Prose>
-          [Placeholder — guidance for friends and family: what tends to help, what tends to
-          backfire, and where support exists for you as well as for them.]
+          Raising it as an accusation rarely works. What helps more is being specific about what
+          you&apos;ve noticed, and still being there afterwards. Paying off the debt usually buys
+          time rather than a change.
+        </Prose>
+        <Prose>
+          The organisations in the help directory support families too, not only the person betting.
+          You can call them about someone else.
         </Prose>
       </EditorialSection>
 

@@ -123,9 +123,9 @@ export default async function RGDirectoryPage({
           Worldwide Gambling-help organizations
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — every organization listed here offers free, confidential
-          support. Entries are checked against the organization&apos;s own published contact details
-          before they appear, and re-checked on a schedule.]
+          Every organization here offers free, confidential support. We check each contact detail
+          against the organization&apos;s own published information before it appears, and re-check
+          it on a schedule.
         </p>
       </header>
 
@@ -281,8 +281,13 @@ export default async function RGDirectoryPage({
 
       <EditorialSection title="Missing an organization?" register="editorial">
         <Prose>
-          [Placeholder — inclusion criteria: free to use, confidential, and operated by a non-profit
-          or public-health body. Commercial treatment providers are out of scope.]
+          To be listed here, an organization has to be free to use, confidential, and run by a
+          non-profit or a public health body. We don&apos;t list commercial treatment providers, and
+          no one can pay to appear.
+        </Prose>
+        <Prose>
+          Know one we&apos;ve missed? Send it over with a link to its own contact page and
+          we&apos;ll check it.
         </Prose>
         <ArrowLink href="/contact" className={`${sectionCtaClassName} min-h-11 w-fit`}>
           Suggest an addition

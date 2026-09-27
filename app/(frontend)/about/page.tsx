@@ -57,15 +57,24 @@ export default function AboutPage() {
           About WagerBlogs
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — who publishes this site, what it covers, and a plain statement
-          that it earns commission from operators while keeping rankings independent.]
+          WagerBlogs reviews sportsbooks and online casinos. We earn commission when someone signs
+          up through our links. That pays for the testing. It doesn&apos;t buy a better score.
         </p>
       </header>
 
       <EditorialSection id="who-we-are" title="Who we are" register="editorial">
         <Prose>
-          [Placeholder — the publisher, when it started, and the editorial remit. Named staff and
-          credentials appear here only once real people are attached to real records.]
+          WagerBlogs is an independent publisher. We&apos;re not an operator, we take no bets and we
+          hold no gambling licence. It makes no difference to us which site you pick.
+        </Prose>
+        <Prose>
+          We cover what we can check: licensed sportsbooks and casinos, the bonuses they advertise
+          and the terms attached. Every review runs against the same criteria. Scores come from
+          testing, not from an operator&apos;s press pack.
+        </Prose>
+        <Prose>
+          Bylines and credentials go here once there are real people attached to real records. Until
+          then it stays empty.
         </Prose>
       </EditorialSection>
 
@@ -88,8 +97,14 @@ export default function AboutPage() {
 
       <EditorialSection id="how-we-make-money" title="How we make money" register="editorial">
         <Prose>
-          [Placeholder — affiliate commission explained plainly: which links pay us, that commission
-          never affects a score or a ranking position, and how that is enforced editorially.]
+          Some operator links here are affiliate links. Follow one, open an account and deposit, and
+          the operator pays us — usually a cut of revenue or a flat fee. That&apos;s the whole
+          model, and it funds the accounts we deposit into to test withdrawals.
+        </Prose>
+        <Prose>
+          It doesn&apos;t move a score. Ranking order comes from the published criteria, and money
+          isn&apos;t one of them. Nobody can buy a position, a higher rating, or the removal of a
+          criticism.
         </Prose>
         <ArrowLink
           href="/legal/affiliate-disclosure"
@@ -101,8 +116,12 @@ export default function AboutPage() {
 
       <EditorialSection id="corrections" title="Corrections" register="editorial">
         <Prose>
-          [Placeholder — how to report an error, what we do with it, and how corrections are
-          recorded on the page they affect.]
+          Found a mistake? Send us the page and what&apos;s wrong. We fix factual errors and note
+          the change on the page itself.
+        </Prose>
+        <Prose>
+          Odds and bonus terms change often. Every review shows when it was last checked, and we
+          re-check or pull the ones that fall out of date.
         </Prose>
         <ArrowLink href="/contact" className={`${sectionCtaClassName} min-h-11 w-fit`}>
           Report an issue
