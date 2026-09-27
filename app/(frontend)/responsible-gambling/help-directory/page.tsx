@@ -13,6 +13,13 @@ import FilterChips from "@/components/controls/FilterChips";
 import Prose from "@/components/section/Prose";
 import { ALL_REGIONS, REGION_PARAM } from "@/lib/site-data";
 import { helpRegionLabel, helpRegionValues, helpRegions } from "@/lib/help-regions";
+import {
+  CONTACT_KINDS,
+  HELP_LINK_REL,
+  contactHref,
+  contactText,
+  displayContact,
+} from "@/lib/help-contacts";
 import { buildOpenGraph } from "@/lib/og";
 import { chipHref, formatDate, headingId, resolveChip } from "@/lib/utils";
 
@@ -33,10 +40,6 @@ export const metadata: Metadata = {
 };
 
 const DIRECTORY_ANCHOR = "directory";
-
-// The schema's contacts group, in render order. lib/types.ts calls the middle
-// one "site"; the collection calls it "website" and the collection wins.
-const CONTACT_KINDS = ["phone", "website", "chat"] as const;
 
 const regionHref = (region: string) =>
   chipHref({
@@ -231,21 +234,35 @@ export default async function RGDirectoryPage({
                       </p>
                       <dl className="flex flex-col gap-1.5 mb-3.5">
                         {CONTACT_KINDS.map((kind) => {
-                          const value = e.contacts?.[kind];
+                          const value = displayContact(e.contacts?.[kind]);
+                          const href = contactHref(kind, value);
                           return (
                             <div key={kind} className="flex gap-2.5 items-center">
                               <dt className="w-16 shrink-0 text-2xs font-semibold text-text-muted uppercase tracking-wide">
                                 {kind}
                               </dt>
-                              {value ? (
-                                <dd className="text-xs font-medium text-text-body tabular-nums border border-dashed border-border-placeholder rounded-sm px-2 py-1 min-w-0 flex-1">
-                                  {value}
-                                </dd>
-                              ) : (
-                                <dd className="text-xs font-medium text-text-muted border border-dashed border-border-placeholder rounded-sm px-2 py-1 min-w-0 flex-1">
-                                  Not offered by this service
-                                </dd>
-                              )}
+                              <dd className="text-xs font-medium tabular-nums border border-dashed border-border-placeholder rounded-sm px-2 py-1 min-w-0 flex-1 truncate">
+                                {!value ? (
+                                  <span className="text-text-muted">
+                                    Not offered by this service
+                                  </span>
+                                ) : href ? (
+                                  <a
+                                    href={href}
+                                    {...(href.startsWith("http")
+                                      ? { target: "_blank", rel: HELP_LINK_REL }
+                                      : {})}
+                                    className="text-text-body hover:text-brand"
+                                  >
+                                    {contactText(value, href)}
+                                    {href.startsWith("http") && (
+                                      <span className="sr-only"> (opens in a new tab)</span>
+                                    )}
+                                  </a>
+                                ) : (
+                                  <span className="text-text-body">{value}</span>
+                                )}
+                              </dd>
                             </div>
                           );
                         })}

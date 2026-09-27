@@ -10,14 +10,14 @@ import SelfAssessment from "@/components/section/SelfAssessment";
 import Prose from "@/components/section/Prose";
 import { selfAssessmentSource } from "@/lib/self-assessment";
 import { buildOpenGraph } from "@/lib/og";
-import {
-  rgWarningSigns,
-  rgTools,
-  rgResources,
-  rgCommitments,
-  rgToc,
-  helplineNumber,
-} from "@/lib/mock-data";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import EmptyState from "@/components/section/EmptyState";
+import { rgWarningSigns, rgTools, rgCommitments, rgToc, helplineNumber } from "@/lib/mock-data";
+
+import { HELP_LINK_REL, contactHref, contactText, displayContact } from "@/lib/help-contacts";
+
+export const revalidate = 3600;
 
 const TITLE = "Responsible Gambling — WagerBlogs";
 const DESCRIPTION =
@@ -34,7 +34,20 @@ export const metadata: Metadata = {
   alternates: { canonical: "/responsible-gambling" },
 };
 
-export default function ResponsibleGamblingPage() {
+export default async function ResponsibleGamblingPage() {
+  const payload = await getPayload({ config });
+  // isCrisisLine is only settable alongside verified (enforced by a hook on the
+  // collection), so this is the one subset that can promise crisis support.
+  // Everything else stays on the directory, which this section links to.
+  const { docs: crisisLines } = await payload.find({
+    collection: "help-directory-entries",
+    where: { verified: { equals: true }, isCrisisLine: { equals: true } },
+    sort: "name",
+    depth: 0,
+    pagination: false,
+    overrideAccess: false,
+  });
+
   const rail = (
     <>
       <AnchorList title="On this page" cardClassName="card" items={rgToc} />
@@ -140,22 +153,56 @@ export default function ResponsibleGamblingPage() {
       </EditorialSection>
 
       <EditorialSection id="get-help" title="Where to get help" register="editorial">
-        <ul role="list" className="flex flex-col">
-          {rgResources.map((r) => (
-            <li
-              key={r.name}
-              className="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center justify-between py-4 border-b border-border-hairline"
-            >
-              <div className="min-w-0">
-                <h3 className="text-lg font-semibold text-text-primary mb-1.5">{r.name}</h3>
-                <p className="text-xs text-text-muted leading-relaxed">{r.desc}</p>
-              </div>
-              <address className="text-sm not-italic text-text-muted tabular-nums border border-dashed border-border-placeholder rounded-sm px-3 py-2 whitespace-nowrap shrink-0">
-                {r.contact}
-              </address>
-            </li>
-          ))}
-        </ul>
+        {crisisLines.length === 0 ? (
+          <EmptyState
+            title="No crisis lines published yet"
+            body="An organisation appears here once its contact details are checked and it is marked as a crisis line in the admin panel."
+            action={{
+              href: "/responsible-gambling/help-directory",
+              label: "Full worldwide help directory",
+            }}
+          />
+        ) : (
+          // One dialable line each. Descriptions, websites, chat routes and the
+          // region filter are the directory's job — this is the fast path.
+          <ul role="list" className="flex flex-col">
+            {crisisLines.map((r) => {
+              const phone = displayContact(r.contacts?.phone);
+              const phoneHref = contactHref("phone", phone);
+              const site = displayContact(r.contacts?.website);
+              const siteHref = contactHref("website", site);
+              const href = phoneHref ?? siteHref;
+              return (
+                <li
+                  key={r.id}
+                  className="flex items-baseline gap-3 py-3 border-b border-border-hairline"
+                >
+                  <span className="min-w-0 flex-1 flex items-baseline gap-2">
+                    <span className="text-sm font-semibold text-text-primary truncate">
+                      {r.name}
+                    </span>
+                    <span className="shrink-0 text-2xs text-text-muted font-semibold border border-border-divider rounded-sm px-1.5 py-0.5">
+                      {r.country}
+                    </span>
+                  </span>
+                  {href ? (
+                    <a
+                      href={href}
+                      {...(href.startsWith("http") ? { target: "_blank", rel: HELP_LINK_REL } : {})}
+                      className="shrink-0 text-sm font-semibold text-text-body tabular-nums hover:text-brand"
+                    >
+                      {phoneHref ? phone : contactText(site, siteHref)}
+                    </a>
+                  ) : (
+                    <span className="shrink-0 text-xs font-medium text-text-muted">
+                      See directory
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
         <ArrowLink
           href="/responsible-gambling/help-directory"
           className={`${sectionCtaClassName} min-h-11`}
