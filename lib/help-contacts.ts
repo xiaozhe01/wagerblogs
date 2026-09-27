@@ -1,3 +1,5 @@
+import { outboundRel } from "@/lib/outbound-rel";
+
 export const CONTACT_KINDS = ["phone", "website", "chat"] as const;
 
 export type ContactKind = (typeof CONTACT_KINDS)[number];
@@ -40,10 +42,9 @@ export function contactText(raw: string, href: string | null): string {
   return raw;
 }
 
-/** Outbound rel for every external help link. `nofollow` keeps the equity;
- * `noreferrer` is the one that stops the organisation's analytics seeing that
- * a reader arrived from a gambling affiliate. */
-export const HELP_LINK_REL = "nofollow noopener noreferrer";
+/** @deprecated Use outboundRel("helpDirectory"). Kept as the named export the
+ * two help routes already import. */
+export const HELP_LINK_REL = outboundRel("helpDirectory");
 
 /** "" when the field carries no contact route. Editors use "-" for "none", so
  * it reads as absent rather than rendering a bare dash at the reader. */

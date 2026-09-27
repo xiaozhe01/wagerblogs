@@ -2,13 +2,14 @@ import type { ReactNode } from "react";
 import type { SerializedAutoLinkNode, SerializedLinkNode } from "@payloadcms/richtext-lexical";
 import type { JSXConverters } from "@payloadcms/richtext-lexical/react";
 import { siteUrl } from "@/lib/schema";
+import { outboundRel } from "@/lib/outbound-rel";
 
 // Outbound rel for body copy. Forced at render, never read from the node, and
 // not exposed to authors: MIGRATION.md D4 keeps an editable relAttribute only
 // on a Review's primaryDomainLink, which does not render through this module.
 // Payload's own LinkJSXConverter emits nofollow for no link at any time, so
 // this override supplies the enforcement rather than hardening a weak default.
-const EXTERNAL_REL = "nofollow noopener noreferrer";
+const EXTERNAL_REL = outboundRel("bodyLink");
 
 const SITE_HOST = new URL(siteUrl).hostname.toLowerCase();
 
