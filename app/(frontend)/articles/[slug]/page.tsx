@@ -85,6 +85,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!article) notFound();
 
   const hero = resolveMedia(article.heroImage);
+  // The record's own credit wins over the media library's: the same image can
+  // be licensed differently per use, and an editor filling the field here
+  // expects to see it.
+  const heroCredit = article.heroImageCredit || hero?.credit;
   const author = typeof article.author === "object" ? article.author : undefined;
   const related = (article.related ?? []).filter(
     (entry): entry is Article => typeof entry === "object",
@@ -166,23 +170,34 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   priority
                 />
               </div>
-              {(hero.credit || hero.caption) && (
+              {(heroCredit || hero.caption) && (
                 <figcaption className="text-xs text-text-muted tabular-nums leading-loose mt-2">
                   {hero.caption}
-                  {hero.caption && hero.credit ? " " : null}
-                  {hero.credit ? `Credit: ${hero.credit}` : null}
+                  {hero.caption && heroCredit ? " " : null}
+                  {heroCredit ? `Credit: ${heroCredit}` : null}
                 </figcaption>
               )}
             </>
           ) : (
             <div
               aria-hidden="true"
-              className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
+              className="aspect-video rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
             >
               [hero image — 16:9, credit line required]
             </div>
           )}
         </figure>
+
+        {author && (
+          <ArticleByline
+            name={author.name}
+            credential={author.credentialLine}
+            photo={author.photo}
+            profileHref={`/authors/${author.slug}`}
+            publishedAt={article.publishedAt ? formatDate(article.publishedAt) : ""}
+            readTime={readTime(article.body)}
+          />
+        )}
 
         {toc.length > 0 && (
           // Mobile TOC sits after the intro, before the first H2 — the standard

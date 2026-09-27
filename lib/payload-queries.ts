@@ -42,3 +42,20 @@ export const resolvePreviewUser = cache(async (): Promise<TypedUser | null> => {
   const { user } = await payload.auth({ headers: await nextHeaders() });
   return user ?? null;
 });
+
+/**
+ * The live window for a bonus offer. `active` is the editor's manual switch;
+ * this adds the dated one, so an offer that has expired stops rendering
+ * without anyone remembering to untick it. An offer with no dates set is
+ * always in window.
+ *
+ * Spread into a `where`, never used alone — the caller still owns `active`.
+ */
+export function offerWindow(now = new Date().toISOString()): Where {
+  return {
+    and: [
+      { or: [{ validFrom: { exists: false } }, { validFrom: { less_than_equal: now } }] },
+      { or: [{ validUntil: { exists: false } }, { validUntil: { greater_than: now } }] },
+    ],
+  };
+}

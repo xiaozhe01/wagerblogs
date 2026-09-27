@@ -17,7 +17,7 @@ import LatestNewsSection, { ALL_NEWS, NEWS_PARAM } from "@/components/section/La
 import BlogSection, { type ArticleTeaser } from "@/components/section/BlogSection";
 import BettingToolboxSection from "@/components/section/BettingToolboxSection";
 import TopHeroSection from "@/components/section/TopHeroSection";
-import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
+import { offerWindow, publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
 import { readTime } from "@/lib/lexical";
 import { formatDate, resolveChip } from "@/lib/utils";
@@ -117,9 +117,9 @@ export default async function Home({
   // 4. bonus-offers — structural, no _status. `active` is the editor's switch.
   const { docs: offers } = await payload.find({
     collection: "bonus-offers",
-    where: { active: { equals: true } },
+    where: { active: { equals: true }, ...offerWindow() },
     limit: 4,
-    depth: 0,
+    depth: 1,
     overrideAccess: false,
   });
 

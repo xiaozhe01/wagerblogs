@@ -171,7 +171,14 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
         ]
       : []),
     ...(review.payoutSpeedText ? [{ label: "Payout speed", value: review.payoutSpeedText }] : []),
-    { label: "Last verified", value: formatDate(review.lastVerified) },
+    {
+      label: "Last verified",
+      // The flag is orthogonal to publish state: the review stays up, but the
+      // date stops implying the figures are current.
+      value: review.needsReverification
+        ? `${formatDate(review.lastVerified)} · due a re-check`
+        : formatDate(review.lastVerified),
+    },
   ];
 
   const rail = (

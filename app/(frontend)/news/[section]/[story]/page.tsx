@@ -132,6 +132,10 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
   });
 
   const hero = resolveMedia(story.heroImage);
+  // The record's own credit wins over the media library's: the same image can
+  // be licensed differently per use, and an editor filling the field here
+  // expects to see it.
+  const heroCredit = story.heroImageCredit || hero?.credit;
   const author = typeof story.author === "object" ? story.author : undefined;
   const takeaways = (story.takeaways ?? [])
     .map((entry) => entry.takeaway)
@@ -215,23 +219,34 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
                   priority
                 />
               </div>
-              {(hero.credit || hero.caption) && (
+              {(heroCredit || hero.caption) && (
                 <figcaption className="text-xs text-text-muted tabular-nums leading-loose mt-2">
                   {hero.caption}
-                  {hero.caption && hero.credit ? " " : null}
-                  {hero.credit ? `Credit: ${hero.credit}` : null}
+                  {hero.caption && heroCredit ? " " : null}
+                  {heroCredit ? `Credit: ${heroCredit}` : null}
                 </figcaption>
               )}
             </>
           ) : (
             <div
               aria-hidden="true"
-              className="h-45 md:h-80 rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
+              className="aspect-video rounded-md placeholder-asset text-xs text-text-muted tabular-nums"
             >
               [hero image — 16:9, credit line required]
             </div>
           )}
         </figure>
+
+        {author && (
+          <ArticleByline
+            name={author.name}
+            credential={author.credentialLine}
+            photo={author.photo}
+            profileHref={`/authors/${author.slug}`}
+            publishedAt={story.publishedAt ? formatDate(story.publishedAt) : ""}
+            readTime={readTime(story.body)}
+          />
+        )}
 
         <RichText data={story.body} />
 
