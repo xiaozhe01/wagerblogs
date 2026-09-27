@@ -12,12 +12,14 @@ import { draftMode } from "next/headers";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { articleRow } from "@/lib/article-rows";
 import { buildOpenGraph } from "@/lib/og";
+import PageNav from "@/components/controls/PageNav";
+import { PAGE_PARAM, TILE_PAGE_SIZE, pageHref, paginate } from "@/lib/pagination";
+import { headingId } from "@/lib/utils";
 
-// ISR. Draft mode coexists with this: the __prerender_bypass cookie makes Next
-// skip the cache for that request only, so a preview never serves a stale page
-// and an ordinary visitor still gets the cached one.
-export const revalidate = 3600;
+// No `revalidate`: this route reads searchParams for the page number, so Next
+// renders it per request and the ISR window would never apply.
 
+const SECTION_TITLE = "All categories";
 const TITLE = "Betting Categories — WagerBlogs";
 const DESCRIPTION = "Browse every betting and casino vertical WagerBlogs covers.";
 
@@ -30,7 +32,12 @@ export const metadata: Metadata = {
 
 // Minimal categories index — every vertical as a card. Individual category
 // pages live at /categories/[slug].
-export default async function CategoriesIndexPage() {
+export default async function CategoriesIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const query = await searchParams;
   const { isEnabled: isDraft } = await draftMode();
   const previewUser = isDraft ? await resolvePreviewUser() : null;
   const payload = await getPayload({ config });
@@ -42,6 +49,8 @@ export default async function CategoriesIndexPage() {
     depth: 0,
     overrideAccess: false,
   });
+
+  const categoryPage = paginate(verticals, query[PAGE_PARAM], TILE_PAGE_SIZE);
 
   // articles filters _status — editorial. depth 1 resolves the author byline.
   const { docs: recent } = await payload.find({
@@ -73,26 +82,44 @@ export default async function CategoriesIndexPage() {
           Betting categories
         </h1>
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
-          [Placeholder standfirst — every vertical WagerBlogs covers, and how coverage is
-          organized.]
+          Every market we cover. Each category collects the reviews, guides and reporting on one
+          subject, so you can start from what interests you instead of a ranking.
         </p>
       </header>
 
-      <EditorialSection title="All categories" register="editorial">
-        {verticals.length === 0 ? (
+      <EditorialSection title={SECTION_TITLE} register="editorial">
+        {categoryPage.total === 0 ? (
           <EmptyState
             title="No categories published yet"
             body="Verticals appear here as soon as the taxonomy is populated."
           />
         ) : (
-          <LinkTileGrid
-            items={verticals.map((vertical) => ({
-              href: `/categories/${vertical.slug}`,
-              title: vertical.name,
-              desc: vertical.description,
-              key: vertical.slug,
-            }))}
-          />
+          <>
+            <LinkTileGrid
+              items={categoryPage.items.map((vertical) => ({
+                href: `/categories/${vertical.slug}`,
+                title: vertical.name,
+                desc: vertical.description,
+                key: vertical.slug,
+              }))}
+            />
+            <PageNav
+              page={categoryPage.page}
+              totalPages={categoryPage.totalPages}
+              total={categoryPage.total}
+              from={categoryPage.from}
+              to={categoryPage.to}
+              noun="categories"
+              label={SECTION_TITLE}
+              hrefFor={(n) =>
+                pageHref({
+                  basePath: "/categories",
+                  page: n,
+                  anchor: headingId("section", SECTION_TITLE),
+                })
+              }
+            />
+          </>
         )}
       </EditorialSection>
 

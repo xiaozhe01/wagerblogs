@@ -158,6 +158,10 @@ export default async function ArticlesIndexPage({
               <PageNav
                 page={postPage.page}
                 totalPages={postPage.totalPages}
+                total={postPage.total}
+                from={postPage.from}
+                to={postPage.to}
+                noun="articles"
                 label={SECTION_TITLE}
                 hrefFor={(n) =>
                   pageHref({

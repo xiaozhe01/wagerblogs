@@ -291,6 +291,10 @@ export default async function CategoryPage({
         <PageNav
           page={articlePage.page}
           totalPages={articlePage.totalPages}
+          total={articlePage.total}
+          from={articlePage.from}
+          to={articlePage.to}
+          noun="articles"
           label={sectionTitle}
           hrefFor={(n) =>
             pageHref({

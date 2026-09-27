@@ -245,6 +245,10 @@ export default async function AuthorPage({
             <PageNav
               page={recentPage.page}
               totalPages={recentPage.totalPages}
+              total={recentPage.total}
+              from={recentPage.from}
+              to={recentPage.to}
+              noun="pieces"
               label={RECENT_WORK}
               hrefFor={(n) =>
                 pageHref({

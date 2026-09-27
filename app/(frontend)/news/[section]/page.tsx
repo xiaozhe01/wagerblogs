@@ -181,6 +181,10 @@ export default async function NewsSectionPage({
         <PageNav
           page={storyPage.page}
           totalPages={storyPage.totalPages}
+          total={storyPage.total}
+          from={storyPage.from}
+          to={storyPage.to}
+          noun="stories"
           label={`Latest ${section.name} stories`}
           hrefFor={(n) =>
             pageHref({ basePath: href, page: n, anchor: headingId("section", "Latest stories") })

@@ -152,6 +152,10 @@ export default async function SearchPage({
       <PageNav
         page={results.page}
         totalPages={results.totalPages}
+        total={results.total}
+        from={results.from}
+        to={results.to}
+        noun="results"
         label="Search results"
         hrefFor={(n) =>
           pageHref({

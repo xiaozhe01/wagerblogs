@@ -148,6 +148,10 @@ export default async function ReviewGroupPage({
             <PageNav
               page={reviewPage.page}
               totalPages={reviewPage.totalPages}
+              total={reviewPage.total}
+              from={reviewPage.from}
+              to={reviewPage.to}
+              noun="reviews"
               label={sectionTitle}
               hrefFor={(n) =>
                 pageHref({ basePath: href, page: n, anchor: headingId("section", sectionTitle) })
