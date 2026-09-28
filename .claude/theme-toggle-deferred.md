@@ -1,13 +1,33 @@
 # Light/dark theme toggle — scope and build record
 
-**Status: IN PROGRESS since 2026-08-31.** Was parked; the park was then
-overridden as a deliberate call, not because the reasoning below was wrong.
-Phases 0 and 0.5 are done. The sections below are the standing scope — do not
-re-derive them.
+**Status: SHIPPED. All phases complete.** Verified 2026-09-28 against the
+current tree, phase by phase — evidence in the table below.
+
+This file said "Phases 0 and 0.5 are done" for four weeks after the work
+finished. `editorial-redesign-plan-2026-09-03.md` §13 flagged the
+contradiction on 2026-09-03 and it was not acted on. Everything below the
+verification table is kept as the **build record** — the reasoning, the
+measured contrast tables and the warm-light pass are still accurate and still
+worth reading. Only the status was wrong.
 
 Build order: 0 token rename · 0.5 invariant guard · 1 dark token set ·
 2 toggle · 3 RG inversion · 4 pending states · 5 interactive states ·
-6 doubled a11y suite. Each gated on the previous passing.
+6 doubled a11y suite.
+
+## Verification — 2026-09-28
+
+| Phase                | Verdict | Evidence                                                                                                                                                                                                              |
+| -------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 token rename       | DONE    | tokens carry project names throughout `globals.css`                                                                                                                                                                   |
+| 0.5 invariant guard  | DONE    | `scripts/check-color-invariants.mjs`, wired into `prebuild` and `pretest:a11y`                                                                                                                                        |
+| 1 dark token set     | DONE    | `globals.css:825` — a second `.dark` block with **39** `--color-*` tokens, derived by `visual-harness/dark-ramp.mjs`. Correctly placed **after** shadcn's `.dark` at :770, which is the hazard this file warned about |
+| 2 toggle             | DONE    | `next-themes@^0.4.6` in `package.json`; `ThemeProvider` at `app/(frontend)/layout.tsx:48`; `ThemeToggle` at `SiteFooter.tsx:99` — the footer placement this file predicted                                            |
+| 3 RG inversion       | DONE    | shipped as `.card-inverted` (not the scoped `.card-dark`), with `--color-bg-safety` and `--color-bg-safety-cta` both redefined in the dark block at `globals.css:866`                                                 |
+| 4 pending states     | DONE    | `--color-border-placeholder` and `--color-bg-placeholder` both redefined for dark (`#4a4740` vs light `#b6b3ab`) — the "one part that isn't a recolour" was addressed                                                 |
+| 5 interactive states | DONE    | **zero `TODO(theme)` markers remain** in `app/`, `components/`, `lib/`; the four debt sites in the table below are all resolved                                                                                       |
+| 6 doubled a11y suite | DONE    | `playwright.config.ts` runs four projects — `desktop-light`, `desktop-dark`, `mobile-light`, `mobile-dark` — over 25 routes. 254 passed / 0 failed / 14 skipped                                                       |
+
+The estimate below said 5–7 sessions. It was spent. Nothing here is outstanding.
 
 ## Why it had been parked (the risks are still live)
 

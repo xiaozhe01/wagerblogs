@@ -50,9 +50,11 @@ as deleted). Entries citing them are kept for history but flagged inline.
 
 ## Design decisions already settled — don't re-derive
 
-- **Warm-light shipped, dark toggle parked** (`project_warm_light_shipped_dark_deferred`)
+- **Warm-light and the dark toggle are BOTH shipped** (`project_warm_light_shipped_dark_deferred`)
   — palette `#fbf8f1`/`#f3ede0` as of 2026-08-31; muted deliberately kept at
-  `#646464` against the brief. Scope in `.claude/theme-toggle-deferred.md`.
+  `#646464` against the brief. The dark toggle is **not parked**: all six phases
+  verified complete 2026-09-28, evidence table in
+  `.claude/theme-toggle-deferred.md`.
 - **Shell/tablet refactor COMPLETE** (`project_tablet_refactor_parked`) —
   finished 2026-08-21; single column below `wide:` (1370px), rail and side-nav
   desktop-only, footer tracks the content column. Its scratch doc is deleted.
