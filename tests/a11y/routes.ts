@@ -35,7 +35,7 @@ const allRoutes: RouteUnderTest[] = [
   { path: "/news", label: "News index", register: "editorial" },
   { path: "/news/football", label: "News section", register: "editorial" },
   {
-    path: "/news/football/placeholder-headline-football",
+    path: "/news/football/wisconsin-penn-state-score-comeback-fickell",
     label: "News story",
     register: "editorial",
   },
