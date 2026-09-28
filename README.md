@@ -9,13 +9,36 @@ this codebase encodes.
 
 ## Status
 
-Currently a Next.js frontend scaffold built against typed mock data
-(`lib/mock-data.ts`, `lib/site-data.ts`). Routes, components, the link-policy
-rules, and the Playwright a11y suite are in place. PayloadCMS, Supabase, and
-Clerk are specified in the stack but not yet wired in — see Phase 1 and
-Phase 5 of
-[`docs/04-claude-code-implementation-brief.md`](docs/04-claude-code-implementation-brief.md)
-for what's next.
+**Two phase sequences run in this repo and they number independently.** Check
+which one a task belongs to before starting — a bare "Phase 5" is ambiguous.
+
+| Track                                                                | Scope                               | State                                                       |
+| -------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------- |
+| **FW-1** ([`MIGRATION.md`](MIGRATION.md))                            | Wiring the frontend onto PayloadCMS | **Complete**, closed 2026-09-25 at Phase 5 (Live Preview)   |
+| **`docs/04`** ([brief](docs/04-claude-code-implementation-brief.md)) | The overall Phase 0–7 build order   | **Phases 0–3 done · 4 and 6 partial · 5 and 7 not started** |
+
+Every route renders from PayloadCMS against Supabase Postgres. 21 routes,
+20 collections, 7 tracked migrations, Live Preview working end to end.
+
+What is **not** built:
+
+- **Clerk auth and UGC** (`docs/04` Phase 5). Clerk is not installed; `/login`
+  returns 404. The UGC collections exist in Payload, but nothing can
+  authenticate to write to them, so `Comments` and reader reviews render as
+  disabled skeletons.
+- **`Article` JSON-LD** (`docs/04` Phase 4.3). `lib/schema.tsx` emits
+  `WebSite`, `BreadcrumbList`, `FAQPage` and a gated `Review`. There is no
+  `Article`/`NewsArticle` helper yet.
+- **Verification CI** (`docs/04` Phase 7). No `.github/workflows`. The
+  link-policy rules below hold because the code is correct, not because
+  anything fails a build when it stops being correct.
+- **Real editorial copy.** Bracketed `[Placeholder …]` and `[TO WRITE]` values
+  ship deliberately as a visible-unfinished signal — see
+  [`CONTENT-BACKLOG.md`](CONTENT-BACKLOG.md), which explains the convention and
+  what is still bracketed.
+
+`Organization` JSON-LD and compliance badges are absent **on purpose**, not as
+gaps: rule 3 forbids them until a real publisher record exists.
 
 ## Before touching code
 
@@ -35,9 +58,10 @@ Read `/docs` in numeric order — each doc builds on the last:
 5. [`04-claude-code-implementation-brief.md`](docs/04-claude-code-implementation-brief.md)
    — the phased build order. Follow it in sequence.
 
-Also see [`docs/architecture-gaps-solo-dev.md`](docs/architecture-gaps-solo-dev.md)
-for solo-dev-specific scalability constraints (CMS migration discipline,
-etc.).
+Then [`MIGRATION.md`](MIGRATION.md) for the FW-1 record — what is
+Payload-backed, what is deliberately static, and why. Also
+[`docs/architecture-gaps-solo-dev.md`](docs/architecture-gaps-solo-dev.md) for
+solo-dev scalability constraints.
 
 ## Non-negotiable rules
 
@@ -60,48 +84,60 @@ These hold even when not restated in a prompt or PR — full detail in
 ## Stack
 
 - **Framework:** Next.js 16 (App Router), React 19, TypeScript
-- **CMS:** PayloadCMS v3 *(not yet integrated — see Status)*
-- **Database:** Supabase PostgreSQL, session-mode pooler *(not yet
-  integrated)*
-- **Auth:** Clerk *(not yet integrated)*
+- **CMS:** PayloadCMS v3, co-located in this repo (`app/(payload)/`,
+  `collections/`), with a white-labelled admin and a custom dashboard
+- **Database:** Supabase PostgreSQL, session-mode pooler (port 5432), via
+  `@payloadcms/db-postgres` and tracked migrations
+- **Media:** Supabase Storage through `@payloadcms/storage-s3`
+- **Auth:** Clerk — _specified in the brief, not yet installed_
 - **UI:** Tailwind CSS v4, shadcn/ui (`base-mira` style), Base UI,
   lucide-react icons
-- **Testing:** Playwright + `@axe-core/playwright` (accessibility)
+- **Testing:** `node:test` unit suite + Playwright/`@axe-core/playwright`
 - **Deployment:** Vercel, Cloudflare DNS
 
 ## Project structure
 
 ```
-app/                      Routes (Next.js App Router)
-  page.tsx                Homepage
-  reviews/[slug]/         Review pages (+ full-review subpage)
-  blog/[slug]/            Blog posts
-  categories/[slug]/      Category listings
-  authors/[slug]/         Author pages
-  legal/[doc]/            Legal documents
-  responsible-gambling/   RG hub + help directory
-  not-found.tsx           404 (editorial register, real HTTP 404)
+app/
+  (frontend)/             21 public routes, all Payload-backed
+    page.tsx              Homepage
+    articles/[slug]/      Editorial articles
+    news/[section]/[story]/
+    reviews/[vertical]/[slug]/
+    categories/[slug]/    Per-vertical landing
+    authors/[slug]/       Author bios
+    legal/[doc]/          Legal documents
+    responsible-gambling/ RG hub + help directory
+    not-found.tsx         404 (editorial register, real HTTP 404)
+  (payload)/              Admin panel, REST/GraphQL, preview entry/exit
+  sitemap.ts  robots.ts  llms.txt/   Crawler surfaces
+
+collections/              20 Payload collections + i18n label dictionary
+migrations/               7 tracked migrations — never edit an applied one
 
 components/
   layout/                 PageShell, TopHeader, SideNav, SiteFooter, Breadcrumbs
-  section/                Page sections (hero, editorial, comparison, ranked list, ...)
-  cards/                  Post/news/teaser card variants
-  rail/                   Sidebar rail widgets (trending, topics, at-a-glance, ...)
-  ui/                     shadcn/ui primitives + custom UI atoms
-  RankedList.tsx          Operator ranking table (link-policy-aware)
-  PrimaryDomainLink.tsx   Tier-gated link to the primary domain
-  Comments.tsx            UGC comments (nofollow-enforced)
+  section/                Page sections (editorial, comparison, ranked list, ...)
+  cards/                  Post/news/teaser card variants + MediaImage
+  rail/                   Sidebar rail widgets
+  controls/               Links, chips, pagination, share button
+  rich-text/              Lexical converters (enforce outbound rel policy)
+  live-preview/           Draft-mode refresh listener
+  admin/                  Custom Payload dashboard
+  ui/                     shadcn/ui primitives
 
 lib/
-  types.ts                Shared content types (mirrors eventual PayloadCMS collections)
-  mock-data.ts            Placeholder content — fictional, never promote to prod as-is
-  site-data.ts            Static nav/footer/legal structure (stand-in for CMS taxonomy)
-  schema.tsx              JSON-LD structured data helpers
-  utils.ts                cn() and other shared helpers
+  payload-queries.ts      publishedFilter / resolvePreviewUser — always SPREAD
+  urls.ts                 single URL derivation for every crawler surface
+  schema.tsx              JSON-LD helpers
+  og.ts                   Open Graph + Twitter card composition
+  outbound-rel.ts         centralised rel policy per surface
+  mock-data.ts            static stand-ins that remain (see MIGRATION.md)
+  site-data.ts            nav/footer taxonomy — deliberately static
 
-tests/a11y/               Playwright accessibility suite (axe-core)
-playwright/                Ad hoc visual/diagnostic scripts + screenshots
-docs/                      Architecture, design, and implementation-brief docs (read first)
+scripts/                  seed, migrations helpers, one-off corrections
+tests/                    unit suite + tests/a11y/ (Playwright + axe)
+docs/                     Architecture and implementation briefs (read first)
 ```
 
 ## Getting started
@@ -111,23 +147,36 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000); the admin is at
+`/admin`. `predev` runs `migrate:status` first, so a schema/migration
+mismatch surfaces before the server starts.
+
+Needs `.env.local` with `DATABASE_URI`, `PAYLOAD_SECRET`, and the `S3_*`
+media variables.
 
 ## Scripts
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the Next.js dev server |
-| `npm run build` | Production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint |
-| `npm run test:a11y` | Run the Playwright accessibility suite against a production build |
+| Command                           | Description                                                   |
+| --------------------------------- | ------------------------------------------------------------- |
+| `npm run dev`                     | Dev server (runs `migrate:status` first)                      |
+| `npm run build`                   | Production build (runs token check + `migrate:status`)        |
+| `npm run start`                   | Serve the production build                                    |
+| `npm run lint`                    | ESLint                                                        |
+| `npm run test:unit`               | Unit suite (`node:test` via tsx)                              |
+| `npm run test:a11y`               | Playwright accessibility suite                                |
+| `npm run migrate`                 | Apply pending migrations                                      |
+| `npm run migrate:create`          | Generate a migration from config changes                      |
+| `npm run migrate:status`          | Show applied/pending migrations                               |
+| `npm run seed` / `seed:content`   | Seed — **not idempotent**, never run against a hand-edited DB |
+| `npm run rls:check` / `rls:apply` | Row-level security verification                               |
 
 ## Working style
 
-- Show output after each phase in
-  [`04-claude-code-implementation-brief.md`](docs/04-claude-code-implementation-brief.md)
-  before starting the next — don't run ahead.
-- Show PayloadCMS collection configs before running any migration.
-- Validate against real behavior (curl output, actual rendered HTML, actual
-  DB state) rather than assuming a fix worked.
+- Confirm which track a phase belongs to (FW-1 vs `docs/04`) before starting.
+- Show PayloadCMS collection configs before running any migration, and land
+  the config change and its migration in the **same commit** — splitting them
+  makes every query fail on a missing column.
+- `npm run build` wants 8 pooler connections and `next dev` holds 10, against
+  a 15-client cap — stop the dev server before building.
+- Validate against real behavior (curl output, rendered HTML, actual DB
+  state) rather than assuming a fix worked.

@@ -1,102 +1,133 @@
 # Repo status — WagerBlogs
 
-**First swept 2026-08-25, re-verified 2026-08-29.** Records where things stand,
-not what to do next. Everything below was checked live, not inferred.
+**Rewritten 2026-09-28.** Records where things stand, not what to do next.
+Everything in the table below was run this session; anything older is marked
+as such rather than restated as current.
 
-| Check                              | Result                                                                                    |
-| ---------------------------------- | ----------------------------------------------------------------------------------------- |
-| `npx tsc --noEmit`                 | clean                                                                                     |
-| `npm run lint`                     | 0 errors, 4 warnings (all in `.claude/visual-harness/` and `playwright/` scratch scripts) |
-| `npm run test:a11y`                | 25 passed, 1 skipped                                                                      |
-| landmark naming                    | 72 named, 0 unnamed (`visual-harness/section-names.mjs`)                                  |
-| horizontal overflow @ 1370 / 390px | none on 10 routes (`visual-harness/overflow-check.mjs`)                                   |
+The previous version of this file was swept 2026-08-25 and re-verified
+2026-08-29, before PayloadCMS was installed. It claimed "Payload, Clerk and
+Supabase are **not installed**" and listed a route set that no longer exists.
+All of that is superseded here.
+
+| Check               | Result                                                                        |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `npx tsc --noEmit`  | clean                                                                         |
+| `npm run lint`      | 0 errors, 32 warnings (all generated migrations + `playwright/` scratch)      |
+| `npm run test:unit` | 77 passed, 0 failed                                                           |
+| `npm run test:a11y` | 254 passed, 0 failed, 14 skipped                                              |
+| `migrate:status`    | 7 migrations, all applied                                                     |
+| Prettier            | clean at `--print-width 100` (there is no config file — always pass the flag) |
+
+**Not re-run since 2026-08-29**, so treat as stale rather than green: landmark
+naming (`visual-harness/section-names.mjs`) and horizontal-overflow sweep
+(`visual-harness/overflow-check.mjs`).
+
+`npm run build` was **not** run — `next dev` holds 10 pooler connections and the
+build wants 8 against a 15-client cap, so it fails while dev is up. Stop dev
+first. A clean production build is still unverified on the current tree.
 
 ## Stack
 
-`next 16.2.12` · `react 19.2.4`. **Payload, Clerk and Supabase are not
-installed** — the CMS, auth and DB layers named in CLAUDE.md are entirely
-unbuilt. Everything renders from `lib/mock-data.ts`, which is what the ~47
-`TODO(cms)` markers gate.
+`next 16.2.12` · `react 19.2.4` · `payload ^3.89.0` ·
+`@payloadcms/db-postgres ^3.89.0` · `tailwindcss ^4`.
+
+PayloadCMS and Supabase Postgres are **installed and live** — every route
+renders from the CMS. Media is on Supabase Storage via
+`@payloadcms/storage-s3`. **Clerk is not installed**; it remains specified in
+`docs/04` Phase 5 and nothing in `package.json` references it.
+
+20 collections · 7 tracked migrations · 21 frontend routes.
 
 ## Routes that exist
 
 ```
-/  ·  /categories  ·  /categories/[slug]  ·  /reviews  ·  /reviews/[slug]
-/blog/[slug]  ·  /authors/[slug]  ·  /legal/[doc]
+/  ·  /about  ·  /contact  ·  /faq  ·  /search
+/articles  ·  /articles/[slug]
+/news  ·  /news/[section]  ·  /news/[section]/[story]
+/reviews  ·  /reviews/[vertical]  ·  /reviews/[vertical]/[slug]
+/categories  ·  /categories/[slug]
+/authors  ·  /authors/[slug]
+/legal/[doc]
 /responsible-gambling  ·  /responsible-gambling/help-directory
+/[...notfound]
 ```
 
----
+Plus `app/(payload)/` — admin, REST/GraphQL, and the draft-mode preview
+entry/exit routes.
 
 ## Open
 
-**1 · Five internal link targets 404.** Linked from real navigation, not
-placeholders:
+**1 · `docs/04` Phase 5 (Clerk auth + UGC) is not started.** `/login` returns
+404 and is linked from `SideNav` and `MobileNav`, both carrying `TODO(clerk)`.
+The UGC collections (Comments, ReaderReviews, ForumThreads, ForumReplies)
+exist with access rules and moderation fields, but nothing can authenticate to
+write to them, so `Comments` and the reader-review block render as disabled
+skeletons.
 
-| route                                 | linked from |
-| ------------------------------------- | ----------: |
-| `/about`                              |     9 files |
-| `/news`                               |     5 files |
-| `/contact`                            |     5 files |
-| `/blog` (index; only `[slug]` exists) |     4 files |
-| `/login`                              |     2 files |
+**2 · `docs/04` Phase 4.3 — `Article` JSON-LD was never built.** `lib/schema.tsx`
+exports `webSiteJsonLd`, `breadcrumbJsonLd`, `faqPageJsonLd` and a gated
+`reviewJsonLd`. There is no `articleJsonLd`, so story, article and review
+routes emit no `Article`/`NewsArticle` block. The date and byline gate that
+once blocked it is gone — records now carry real `publishedAt` and author
+relationships.
 
-**2 · No crawl plumbing.** No `app/robots.ts`, no `app/sitemap.ts`. Required by
-`docs/00` Layer 4; an off-page SEO site cannot ship without them.
+**3 · `docs/04` Phase 7 (verification CI) is not started.** No
+`.github/workflows`, and none of the three scripts the brief specifies: the
+tier1 primary-domain sweep, the UGC `rel` assertion, and the anchor-text
+distribution audit. Rules 1, 2 and 5 currently hold because the code is
+correct, not because anything fails a build when it stops being.
 
-**3 · `globals.css`'s breakpoint doc block contradicts the file it sits in.**
-The prose block says _"no custom `--breakpoint-_`tokens are declared — use
-unprefixed,`md:`, `lg:`directly"*, but line 153 declares`--breakpoint-wide: 1370px`, and `wide:`is what actually drives the shell.
-The same block describes the side-nav replacing the top-header at`lg:`(1024px); since the shell/tablet refactor that switch happens at`wide:`
-(1370px). Both statements are now wrong, in the file that calls itself the
-source of truth.
+**4 · `LatestStoriesSection` is the last render-path fixture read.** It imports
+`@/scripts/fixtures/news` and appears on `/not-found` and the news story
+route. The awkward import is the deliberate marker; it goes when the section is
+wired.
 
-**4 · `next.config.ts` carries `allowedDevOrigins: ["live-test.stakeblogs.com"]`**
-— a different project's host.
+**5 · `ComparisonCard` self-imports `operators` and `compareRows` from
+`lib/mock-data`** and takes no props, so CLAUDE.md rule 5 (one primary domain
+per ranked list) is enforced by a fixture file rather than by data.
 
-**5 · The "Component Reference — Filled States" page doesn't exist.**
-CLAUDE.md rule 3 names it as the _only_ place filled-in mockups belong. Until it
-exists there is nowhere legitimate to put them.
+**6 · `itemReviewed.url` emits an empty string** for any review that is not the
+primary domain — `reviews/[vertical]/[slug]/page.tsx`,
+`itemUrl={review.primaryDomainLink?.url ?? ""}`.
 
-**6 · `full-review` is referenced in `lib/mock-data.ts` (×2)** after the route
-was deleted. The other ~24 references are inside `.claude/` audit docs and are
-historical.
+**7 · `robots.ts` still carries four `Disallow` lines** for `?type=`, `?news=`,
+`?region=` and `?page=`. Those URLs are internally linked from `PageNav`, so
+blocking them stops Google reading the canonical that would consolidate them.
+The SEO backlog calls this self-inflicted; the fix is a deletion.
 
----
+**8 · No favicon.** No `app/icon.*` or `app/apple-icon.*`; `/favicon.ico` 404s.
+
+**9 · 55 `TODO` markers** across `app/`, `components/`, `lib/`, `scripts/` —
+45 `TODO(cms)`, 7 untagged, 2 `TODO(clerk)`, 1 `TODO(dev)`. Most are
+pre-publish gates tied to rule 3; see `.claude/todo-inventory.md`.
 
 ## Parked, not open
 
-**Light/dark theme toggle** — fully scoped 2026-08-31, then deliberately
-deferred until PayloadCMS Phase 1 lands and the blog-body typography exists.
-Reasoning, the phase estimate, and the four `TODO(theme)` debt sites are in
+**Light/dark theme toggle** — scoped 2026-08-31, phases 0 and 0.5 done, 1–6
+outstanding. Reasoning and the four `TODO(theme)` debt sites are in
 `theme-toggle-deferred.md`. Do not re-derive it.
 
----
+**Editor attribution / activity log** — parked on cost, see CONTENT-BACKLOG.md.
+Nothing records who edited a document.
 
-## Resolved since 2026-08-25
+**Update-as-you-type Live Preview** — deliberately not built; what shipped is
+the server-side variant that refreshes on save. See MIGRATION.md.
 
-- **`--breakpoint-cards-wide`** — dead token, now removed from `globals.css`.
-- **Landmark naming** — was 30 unnamed regions sitewide; now 0.
-- **`<main>` spacing ownership** — every route now declares its register and
-  lets `<main>` own the gaps between blocks.
-- **Typography migration** — both phases shipped; ≤12px nodes 69% → 29%,
-  weight-400 nodes 56% → 11%. See `typography-weight-audit.md`.
-- **Two h1 deviations** (`/responsible-gambling`, `/responsible-gambling/help-directory`)
-  — both back on the `text-5xl-*` ramp.
-- **Warm-light palette** (2026-08-31) — backgrounds, borders and the
-  placeholder gradient warmed off `#ffffff`/`#fafafa`; text ramp unchanged.
-  Three dead placeholder tokens deleted. Measurements in
-  `theme-toggle-deferred.md`.
+## Resolved since the 2026-08-25 sweep
 
-## References removed from this doc
+- **Crawl plumbing** — `app/sitemap.ts`, `app/robots.ts` and `app/llms.txt`
+  all exist and are built from the same registries `generateStaticParams`
+  resolves from.
+- **The five 404ing internal link targets** — `/about`, `/news` and `/contact`
+  are real routes; `/blog` was replaced by `/articles`. Only `/login` still
+  404s, and that is Phase 5 scope.
+- **`next.config.ts` `allowedDevOrigins`** — no longer points at another
+  project's host.
+- **`full-review`** — route and its references are gone.
+- **The whole FW-1 track** — five phases, closed 2026-09-25. See MIGRATION.md.
 
-This doc previously linked eight files that are not in the repo. Four were
-`docs/` files under pre-rename names — they exist today under their numbered
-names (`00-`…`04-`), so those links were repointed or dropped.
+## Still true from the old sweep
 
-The other four never existed here and their content is not recoverable from this
-repo: html-semantics-audit, handover-2026-08-20, link-audit and
-reaudit-2026-08-18-status (named without links on purpose, so a link check does
-not treat them as live). The first of those was also cited by the two companion
-typography docs; both citations were removed in the same pass, so nothing in
-`.claude/` points at a missing file any more.
+**The "Component Reference — Filled States" page does not exist.** CLAUDE.md
+rule 3 names it as the only legitimate place for filled-in mockups, so until it
+exists there is nowhere those belong.
