@@ -10,6 +10,7 @@ import Comments from "@/components/section/Comments";
 import ReviewCard from "@/components/section/ReviewCard";
 import ComparisonCard from "@/components/section/ComparisonCard";
 import PrimaryDomainLink from "@/components/controls/PrimaryDomainLink";
+import ShareButton from "@/components/controls/ShareButton";
 import ReviewSection from "@/components/section/ReviewSection";
 import TeaserCardGrid from "@/components/cards/TeaserCardGrid";
 import AtAGlanceCard from "@/components/rail/AtAGlanceCard";
@@ -234,6 +235,11 @@ export default async function OperatorReviewPage({ params }: { params: Promise<R
         <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
           {review.seo?.metaDescription}
         </p>
+        <ShareButton
+          title={`${operatorName} review`}
+          path={currentPath}
+          className="self-start mt-1"
+        />
       </header>
 
       <ReviewSection title="WagerBlogs editorial score">

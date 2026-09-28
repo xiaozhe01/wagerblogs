@@ -1,11 +1,15 @@
 import Link from "next/link";
 import MediaImage, { resolveMedia, type MediaRef } from "@/components/cards/MediaImage";
+import ShareButton from "@/components/controls/ShareButton";
 
 type ArticleBylineProps = {
   name: string;
   credential: string;
   profileHref: string;
   photo?: MediaRef;
+  /** Canonical title and path for the share sheet. Omitted on surfaces that
+   * are not a shareable page of their own. */
+  share?: { title: string; path: string };
 };
 
 // TODO(cms): Article schema requires author.name + author.url — a post cannot
@@ -15,6 +19,7 @@ export default function ArticleByline({
   credential,
   profileHref,
   photo,
+  share,
 }: ArticleBylineProps) {
   return (
     <div className="flex items-center gap-3 max-w-full">
@@ -36,6 +41,7 @@ export default function ArticleByline({
         </Link>
         <span className="text-xs font-medium text-text-muted"> · {credential}</span>
       </address>
+      {share && <ShareButton title={share.title} path={share.path} />}
     </div>
   );
 }

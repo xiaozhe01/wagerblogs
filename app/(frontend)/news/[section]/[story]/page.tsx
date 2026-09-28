@@ -250,6 +250,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
             credential={author.credentialLine}
             photo={author.photo}
             profileHref={`/authors/${author.slug}`}
+            share={{ title: story.title, path: href }}
           />
         )}
 

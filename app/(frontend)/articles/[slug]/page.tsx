@@ -192,6 +192,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             credential={author.credentialLine}
             photo={author.photo}
             profileHref={`/authors/${author.slug}`}
+            share={{ title: article.title, path: `/articles/${article.slug}` }}
           />
         )}
 
