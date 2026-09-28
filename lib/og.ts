@@ -23,6 +23,22 @@ export const DEFAULT_OG_IMAGE = {
   alt: "WagerBlogs — betting and gaming coverage",
 } as const;
 
+/** The site's own X account, as "@name". X renders it as the card's
+ * attribution, so an unowned handle would credit someone else on every share —
+ * it stays empty until the account exists, and buildTwitter omits the tag. */
+export const TWITTER_SITE = "";
+
+/** Card type only. Deliberately no title/description/images: set here they
+ * would be inherited verbatim by every route, which is exactly what made the
+ * layout's openGraph block override each page's own. Left absent, X reads the
+ * route's og:* tags instead — verified against the rendered tags. */
+export function buildTwitter(): Metadata["twitter"] {
+  return {
+    card: "summary_large_image",
+    ...(TWITTER_SITE.trim() ? { site: TWITTER_SITE.trim() } : {}),
+  };
+}
+
 type OpenGraphType = "website" | "article" | "profile";
 
 /** The 1200x630 derivative Media generates, or the original when the source

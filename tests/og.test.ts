@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { Media } from "../payload-types";
-import { DEFAULT_OG_IMAGE, SITE_NAME, buildOpenGraph } from "../lib/og";
+import { DEFAULT_OG_IMAGE, SITE_NAME, TWITTER_SITE, buildOpenGraph, buildTwitter } from "../lib/og";
 
 const media = {
   id: 7,
@@ -108,4 +108,30 @@ test("an absent author or section is omitted rather than emitted empty", () => {
   }) as Record<string, unknown>;
   assert.ok(!("authors" in og));
   assert.ok(!("section" in og));
+});
+
+test("the twitter card is always the large-image variant", () => {
+  const twitter = buildTwitter() as Record<string, unknown>;
+  assert.equal(twitter.card, "summary_large_image");
+});
+
+test("twitter:site is emitted only once a real handle is set", () => {
+  // X renders site as the card's attribution, so an empty or whitespace
+  // constant must emit no tag rather than an empty one crediting nobody.
+  const twitter = buildTwitter() as Record<string, unknown>;
+  if (TWITTER_SITE.trim()) {
+    assert.equal(twitter.site, TWITTER_SITE.trim());
+    assert.match(TWITTER_SITE.trim(), /^@[A-Za-z0-9_]{1,15}$/, "must be a valid @handle");
+  } else {
+    assert.ok(!("site" in twitter));
+  }
+});
+
+test("the twitter block carries no title, description or image of its own", () => {
+  // Setting any of these sitewide would override every route's own card, which
+  // is the defect the layout's openGraph block already caused once.
+  const twitter = buildTwitter() as Record<string, unknown>;
+  for (const key of ["title", "description", "images"]) {
+    assert.ok(!(key in twitter), `twitter.${key} would override every route`);
+  }
 });

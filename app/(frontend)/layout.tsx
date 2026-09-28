@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ThemeProvider from "@/components/layout/ThemeProvider";
 import { JsonLd, siteUrl, webSiteJsonLd } from "@/lib/schema";
-import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/og";
+import { DEFAULT_OG_IMAGE, SITE_NAME, buildTwitter } from "@/lib/og";
 
 export const metadata: Metadata = {
   // Resolves relative canonicals to absolute; MetadataRoute needs it too.
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     // metadataBase above makes the relative url absolute.
     images: [DEFAULT_OG_IMAGE],
   },
+  twitter: buildTwitter(),
   // Safari's data detectors rewrite matched text into links before hydration,
   // which fails hydration and makes React regenerate the tree on the client.
   // Dates and addresses are covered as well as phone numbers: the placeholder
