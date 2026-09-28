@@ -209,7 +209,7 @@ export default async function RGDirectoryPage({
                   <li key={e.id} className="min-w-0 flex">
                     <article
                       aria-labelledby={headingId("org", e.name)}
-                      className="grow border border-border-divider rounded-md p-4 flex flex-col"
+                      className="grow min-w-0 border border-border-divider rounded-md p-4 flex flex-col"
                     >
                       <div className="flex items-start justify-between gap-2.5 mb-2.5">
                         <h3
