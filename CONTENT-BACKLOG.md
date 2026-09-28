@@ -206,6 +206,36 @@ recorded elsewhere:
 Until one is chosen, the standing rule holds: **do not run either seed against
 this database.**
 
+### Region coverage gap — three of six regions have no entry
+
+Separate from the duplicate bug, and older than it. `help-directory-entries`
+offers six regions; only three carry any record at all:
+
+| region                 | entries |
+| ---------------------- | ------- |
+| North America          | 2       |
+| UK & Ireland           | 2       |
+| Europe                 | 2       |
+| Asia Pacific           | **0**   |
+| Latin America          | **0**   |
+| Middle East and Africa | **0**   |
+
+The deleted placeholders never covered those three either, so nothing in the
+2026-09-28 cleanup caused this — it was simply never visible, because the only
+thing that would have shown it was a directory page filtered by a region with
+no entries.
+
+**Why it matters more than an ordinary content gap.** `/responsible-gambling`
+links every "Play Responsibly" callout site-wide to this directory, and
+`docs/04` Phase 6.2 specifies it as a _global_ directory of gambling-help
+organisations. A reader in Asia Pacific, Latin America, or the Middle East and
+Africa currently reaches a page that offers them nothing.
+
+Filling it is verification work, not writing: every entry needs a real
+organisation, a real contact, and a `verifiedAt` stamp before it publishes.
+Rule 3 applies with unusual force here — a bracketed helpline is the one
+placeholder class that must never reach a live route.
+
 ## Follow-ups from the access-rule fix — `dc38e2d`
 
 The leak itself is closed. These are the loose ends it exposed.
