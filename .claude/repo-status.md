@@ -22,9 +22,16 @@ All of that is superseded here.
 naming (`visual-harness/section-names.mjs`) and horizontal-overflow sweep
 (`visual-harness/overflow-check.mjs`).
 
-`npm run build` was **not** run — `next dev` holds 10 pooler connections and the
-build wants 8 against a 15-client cap, so it fails while dev is up. Stop dev
-first. A clean production build is still unverified on the current tree.
+`npm run build` — **run 2026-09-28, exit 0.** Three runs: 63s, 69s, and 68s
+with the dev server deliberately left running. 66 static pages, four workers,
+one warning ("No email adapter provided", from Payload).
+
+**The "build fails while dev runs" rule did not reproduce and has been
+retired.** Sampling `pg_stat_activity` across a build showed server-side
+connections going 14 → 15 — a delta of **one** — because Supavisor multiplexes
+the four workers. `max_connections` is **60**, not 15; the 15 figure is a
+Supavisor _client_ cap, which `pg_stat_activity` cannot show, and which the
+build never came close to exhausting in practice.
 
 ## Stack
 
@@ -131,3 +138,67 @@ the server-side variant that refreshes on save. See MIGRATION.md.
 **The "Component Reference — Filled States" page does not exist.** CLAUDE.md
 rule 3 names it as the only legitimate place for filled-in mockups, so until it
 exists there is nowhere those belong.
+
+## Verification pass — 2026-09-28
+
+A full re-measurement of claims that had been carried across documents without
+re-checking. Corrections, not confirmations, are what is listed here.
+
+**Retired — the claim was wrong.**
+
+- **"Build fails while dev runs."** It does not. See the build section above.
+- **"Tailwind `hover:` utilities are not gated to hover-capable devices."**
+  Tailwind v4 gates them automatically. Measured against the compiled
+  stylesheet: 55 `:hover` rules, **47 inside `@media (hover: hover)`**, 8 not.
+  All 8 are hand-written component classes — `.btn-primary`, `.btn-secondary`,
+  `.btn-brand`, `.btn-safety`, `.btn-on-fill`, `.link-inline`,
+  `.link-on-marker`, `.editorial-link-card`. M-1 is that list, nothing more.
+- **`theme-toggle-deferred.md` "Phases 0 and 0.5 done".** All six phases are
+  done; that file now carries a per-phase evidence table.
+
+**Fixed.**
+
+- Six duplicate `help-directory-entries` deleted, 12 rows → 6. **Not durable** —
+  `lib/mock-data.ts:485` still holds those six bracketed names and
+  `scripts/seed-content.ts:446` seeds from them. CONTENT-BACKLOG.md has the
+  traced mechanism and the two options for making it stick.
+
+**Newly found.**
+
+- **`esports-betting.crumb` is `[TO WRITE] crumb for esports-betting`** and
+  `Verticals.crumb` is `required: true`, so it renders — on
+  `/reviews/esports-betting` it appears in the visible trail **and in the
+  BreadcrumbList JSON-LD `name`**, which is what Google renders in a SERP
+  breadcrumb. `/categories/esports-betting` is unaffected; it uses
+  `vertical.name`. This is more serious than the known `noun` placeholder,
+  which only reaches `/llms.txt`.
+- **21 bracketed SEO fields on published records** — 18 on news (9 records ×
+  `metaTitle` + `metaDescription`), 3 `metaTitle` on articles. Reviews and
+  authors are clean. The `metaDescription` ones are the live risk: they reach
+  search snippets, where the `/llms.txt` caveat does not travel.
+
+**Resolved with a throwaway admin (created, used, deleted).**
+
+- **The `search-corpus` hook works.** Live-fire test, no server restart: a
+  distinctive word added to a published story's title through the authenticated
+  REST path was absent at +0s, present at **+10s**, and stable at +60s — far
+  inside the 1h TTL. The write was made via `PATCH /api/news/:id`, which runs in
+  the Next process, because `revalidateTag` only affects the process that calls
+  it. Title restored afterwards. Three handover documents had carried this as
+  "never observed firing"; it fires.
+
+- **`esports-betting.noun` and `.crumb` are real**, following the house pattern
+  the two written verticals set (`Online Casinos` → crumb `Casinos`, so the name
+  shortens). Now `noun: "esports betting site"`, `crumb: "Esports"`.
+  `/reviews/esports-betting` emits `['Home', 'Reviews', 'Esports']` in both the
+  visible trail and the BreadcrumbList; `/categories/esports-betting` is
+  unchanged at `Esports Betting` because it reads `vertical.name`; `/llms.txt`
+  now reads "every esports betting site reviewed on the same criteria" and its
+  bracketed line count dropped 17 → 16.
+
+**Still latent — three more verticals carry the same bracketed pair.**
+`horse-racing`, `sweepstakes-casinos` and `fantasy-sports` all have
+`[TO WRITE]` in `noun` and `crumb`. None renders today: all three have
+`hasReviews: false`, so `/reviews/<slug>` 404s and the crumb has no surface.
+They become live defects the moment that flag flips. The house pattern above
+makes each a one-line edit.

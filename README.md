@@ -176,7 +176,10 @@ media variables.
 - Show PayloadCMS collection configs before running any migration, and land
   the config change and its migration in the **same commit** — splitting them
   makes every query fail on a missing column.
-- `npm run build` wants 8 pooler connections and `next dev` holds 10, against
-  a 15-client cap — stop the dev server before building.
+- `npm run build` succeeds **with the dev server running** — measured
+  2026-09-28, exit 0 in 68s, no connection errors. The long-standing "stop dev
+  or the build fails on the pooler" rule did not reproduce: Supavisor
+  multiplexes, so a full build adds **one** server-side connection, and
+  `max_connections` is 60, not the 15 the docs had assumed.
 - Validate against real behavior (curl output, rendered HTML, actual DB
   state) rather than assuming a fix worked.
