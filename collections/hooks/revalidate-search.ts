@@ -8,19 +8,26 @@ import { SEARCH_CACHE_TAG } from "../../lib/search-shared";
 // config's module graph, which the admin UI also pulls in.
 const revalidate = async ({ req }: { req?: PayloadRequest } = {}) => {
   if (typeof window !== "undefined") return;
+
+  // The seed and migrate scripts run outside the Next server, where there is no
+  // store for revalidateTag to reach and nothing cached to drop either way.
+  // Measured: NEXT_RUNTIME is "nodejs" inside a request and undefined in a
+  // script. Guarded rather than caught, so an expected no-op does not print a
+  // stack trace for every seeded record.
+  if (!process.env.NEXT_RUNTIME) return;
+
   try {
     const { revalidateTag } = await import("next/cache");
     // Next 16 requires a cache-life profile; "max" replaces the old one-arg call.
     revalidateTag(SEARCH_CACHE_TAG, "max");
   } catch (error) {
-    // Never fail the write that triggered this. It is expected and harmless in
-    // the seed and migrate scripts, where there is no Next store.
+    // Only reachable from inside the Next server now, so this is a real failure
+    // and the search index stays stale until the TTL expires. It still must not
+    // fail the write that triggered it.
     //
-    // It is logged rather than discarded because a bare catch made those two
-    // cases indistinguishable: a hook working normally and a hook throwing on
-    // every single call look identical from outside. This hook has been
-    // recorded as "never observed firing" across three handover documents, and
-    // a silent catch is the one mechanism that would explain that.
+    // Logged rather than discarded: a bare catch made a working hook and a
+    // permanently broken one look identical from outside, which is how this was
+    // recorded as "never observed firing" across three handover documents.
     const message = error instanceof Error ? error.message : String(error);
     if (req?.payload?.logger) {
       req.payload.logger.warn(
