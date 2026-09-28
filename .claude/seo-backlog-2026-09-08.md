@@ -4,6 +4,29 @@ Resume point for the next SEO pass. Everything below was measured against a
 production build (`npx next build && npx next start -p 4321`), not inferred.
 Do not re-derive the "already shipped" section.
 
+## Status as of 2026-09-28
+
+Three of the seven items have shipped. The numbered sections below are kept
+verbatim — including their reasoning — and annotated rather than deleted.
+
+| #   | Item                            | State                                         |
+| --- | ------------------------------- | --------------------------------------------- |
+| 1   | Shared `og:title`/`description` | **Shipped** — every route emits its own       |
+| 2   | `robots.txt` Disallow block     | **Open** — still the four lines, still wrong  |
+| 3   | No favicon                      | **Open** — `/favicon.ico` still 404s          |
+| 4   | No `og:image`                   | **Shipped** — plus a 1200x630 derivative      |
+| 5   | No RSS feed                     | **Open** — but no longer blocked, see below   |
+| 6   | No `NewsArticle` JSON-LD        | **Open** — but no longer blocked, see below   |
+| 7   | Sitemap `lastModified`          | **Shipped** — reads each record's `updatedAt` |
+
+**Items 5 and 6 were both gated on "no real dates or bylines exist yet."
+That gate is gone.** Records now carry real `publishedAt` values and author
+relationships, so both are buildable today. Item 6 is also `docs/04` Phase 4.3,
+which makes it the highest-value item left here.
+
+The suggested order at the bottom of this file is superseded: **2 and 3 first**
+— both are small, both are live defects — then 6, then 5.
+
 ---
 
 ## Already shipped (2026-09-08) — do not redo
@@ -31,7 +54,7 @@ curl -s localhost:4321/faq | grep -oE '<meta (property|name)="(og|twitter):[^"]+
 
 ---
 
-## 1. Every page shares the site's `og:title` / `og:description` — DEFECT
+## 1. Every page shares the site's `og:title` / `og:description` — ~~DEFECT~~ SHIPPED
 
 **Evidence.** `/faq` renders `<title>FAQ — WagerBlogs</title>` but
 `og:title` is `"WagerBlogs"`, and `og:description` is the site-level string.
@@ -48,6 +71,18 @@ values instead.
 with the og one-liner above — each should show its own title.
 
 **Do not** re-add them "for safety"; that is what caused this.
+
+**Resolved differently, and the reason matters.** The layout's `openGraph`
+block was kept, not deleted — every route now calls `buildOpenGraph`
+(`lib/og.ts`), which **replaces** the layout's block wholesale rather than
+merging with it. That is Next's actual behaviour, verified against rendered
+tags. The layout's block survives only as the fallback for a route that emits
+no `openGraph` of its own.
+
+The same trap recurred with the Twitter card on 2026-09-28 and was avoided the
+same way: `buildTwitter` sets `card` and nothing else, because a title,
+description or image declared sitewide would override every route exactly as
+described above.
 
 ---
 
@@ -91,7 +126,7 @@ glyph is fine and does not touch CLAUDE.md rule 3.
 
 ---
 
-## 4. No `og:image` / `twitter:image` — count is 0 sitewide
+## 4. No `og:image` / `twitter:image` — ~~count is 0 sitewide~~ SHIPPED
 
 Shares render as bare text cards. `app/layout.tsx` already carries a
 `TODO(cms)` for per-route OG images.
@@ -104,6 +139,16 @@ Constraint: the generated card may show the page title and the wordmark only.
 It must not render a score, a rating, a star row, or a badge — those are the
 trust signals rule 3 forbids while the data is placeholder.
 
+**Shipped without the generated route.** `public/og-default.png` is a labelled
+1200x630 placeholder (`scripts/generate-og-default.ts`) used as the sitewide
+fallback, and `seo.ogImage` overrides it per record. `Media` also generates a
+1200x630 `og` derivative so a 3:2 photo is not re-cropped by each platform —
+see MIGRATION.md for why `withoutEnlargement` has to be an explicit `false`.
+
+`twitter:image` is not set explicitly; X reads `og:image`. `twitter:card` is
+declared once in the layout as `summary_large_image`. `app/opengraph-image.tsx`
+was never needed, so this item closed without it.
+
 ---
 
 ## 5. No RSS/Atom feed
@@ -115,18 +160,27 @@ built from `newsSections` and `blogPosts`. Add
 `alternates: { types: { "application/rss+xml": "/feed.xml" } }` to
 `app/layout.tsx` so it is discoverable from `<head>`.
 
-Blocked-ish: item `pubDate` needs a real date. Every `publishedAt` today is
-`[Jul 20, 2026]` — bracketed, not parseable. Either ship the feed with items
-omitted until dates are real, or land this after the CMS date fields.
+~~Blocked-ish: item `pubDate` needs a real date. Every `publishedAt` today is
+`[Jul 20, 2026]` — bracketed, not parseable.~~ **Unblocked 2026-09-28.**
+Records carry real ISO `publishedAt` values from the CMS, so the feed can ship
+with dated items. Build it from `news` and `articles` via `lib/urls.ts`, not
+from fixtures.
 
 ---
 
 ## 6. No `NewsArticle` / `BlogPosting` JSON-LD helper
 
-It cannot legitimately emit today: `datePublished` is `[Jul 20, 2026]` and the
+~~It cannot legitimately emit today: `datePublished` is `[Jul 20, 2026]` and the
 byline is "Jane Placeholder", both rejected by `isPlaceholder` in
-`lib/schema.tsx`. But unlike `ReviewJsonLd` there is no gated helper waiting,
-so nothing lights up when the CMS lands.
+`lib/schema.tsx`.~~ **Unblocked 2026-09-28** — records carry real ISO
+`publishedAt` and real author relationships, and `buildOpenGraph` already
+emits `article:published_time` from them through the same kind of ISO guard
+this helper needs.
+
+Unlike `ReviewJsonLd` there is still no gated helper waiting, so nothing lights
+up. **This is also `docs/04` Phase 4.3, which makes it a build-order
+requirement rather than an optional SEO nicety** — the highest-value item left
+in this file.
 
 **Fix.** Add `articleJsonLd()` beside `reviewJsonLd()`, following the exact
 same gate — return `null` unless headline, ISO `datePublished` and a real
@@ -136,7 +190,11 @@ point.
 
 ---
 
-## 7. Sitemap `lastModified` — do NOT put this on a schedule
+## 7. Sitemap `lastModified` — ~~do NOT put this on a schedule~~ SHIPPED
+
+**Resolved as prescribed below**: `app/sitemap.ts` reads each record's own
+`updatedAt`, and regeneration is event-driven, not timed. The warning against a
+cron job still stands and is the reason this section is kept.
 
 `app/sitemap.ts` currently stamps every entry with `new Date()`, i.e. build
 time, so each deploy resets every URL's date.

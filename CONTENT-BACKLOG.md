@@ -26,6 +26,14 @@ convention explicitly, which is what keeps it honest rather than misleading:
 
 18 of the 51 rows in llms.txt carry bracketed copy.
 
+> **Re-counted 2026-09-28:** 17 lines of the served `/llms.txt` still carry a
+> `[Placeholder …]` or `[TO WRITE]` value. The `esports-betting.noun` entry
+> below is **still unfixed** and still produces the malformed sentence quoted
+> there — it remains the one worth doing first, because it reads as a bug
+> rather than as scaffold. The six duplicate `help-directory-entries` are also
+> still present: the API returns 12 rows, six `verified: true` and six
+> `verified: false`, paired region for region.
+
 ### News stories (10)
 
 All ten seeded stories carry `[Placeholder headline — <section>]` titles and
