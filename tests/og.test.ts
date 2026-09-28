@@ -70,3 +70,42 @@ test("an unwritten metaTitle or metaDescription is omitted, not emitted empty", 
   assert.ok(!("title" in result));
   assert.ok(!("description" in result));
 });
+
+test("article:* is emitted only on an article, never on a website", () => {
+  const args = {
+    type: "article" as const,
+    publishedTime: "2026-09-27T12:00:00.000Z",
+    modifiedTime: "2026-09-27T04:58:33.556Z",
+    authors: ["Richard Reegan"],
+    section: "Football",
+  };
+  const article = buildOpenGraph(args) as Record<string, unknown>;
+  assert.equal(article.publishedTime, args.publishedTime);
+  assert.equal(article.modifiedTime, args.modifiedTime);
+  assert.deepEqual(article.authors, ["Richard Reegan"]);
+  assert.equal(article.section, "Football");
+
+  const website = buildOpenGraph({ ...args, type: "website" }) as Record<string, unknown>;
+  for (const key of ["publishedTime", "modifiedTime", "authors", "section"]) {
+    assert.ok(!(key in website), `${key} leaked onto a website`);
+  }
+});
+
+test("a placeholder date never becomes a machine-readable timestamp", () => {
+  // The CMS still carries bracketed dates on unwritten records. Emitting one
+  // as article:published_time would publish a fabricated fact.
+  for (const bad of ["[Jul 18, 2026]", "", "TBC", "coming soon"]) {
+    const og = buildOpenGraph({ type: "article", publishedTime: bad }) as Record<string, unknown>;
+    assert.ok(!("publishedTime" in og), `emitted ${JSON.stringify(bad)}`);
+  }
+});
+
+test("an absent author or section is omitted rather than emitted empty", () => {
+  const og = buildOpenGraph({
+    type: "article",
+    authors: [undefined, null, "  "],
+    section: "   ",
+  }) as Record<string, unknown>;
+  assert.ok(!("authors" in og));
+  assert.ok(!("section" in og));
+});

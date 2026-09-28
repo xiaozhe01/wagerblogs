@@ -48,6 +48,10 @@ export function buildOpenGraph({
   ogImage,
   type = DEFAULT_TYPE,
   path,
+  publishedTime,
+  modifiedTime,
+  authors,
+  section,
 }: {
   title?: string | null;
   description?: string | null;
@@ -57,11 +61,30 @@ export function buildOpenGraph({
   type?: OpenGraphType;
   /** Root-relative path. metadataBase in layout.tsx makes it absolute. */
   path?: string;
+  /** article:* below. Only emitted on type "article", and only when the value
+   * is real — a placeholder date would become a machine-readable timestamp
+   * platforms and Google both read as fact. */
+  publishedTime?: string | null;
+  modifiedTime?: string | null;
+  authors?: (string | null | undefined)[];
+  section?: string | null;
 }): Metadata["openGraph"] {
   const image = resolveMedia(ogImage);
+  const isIso = (v?: string | null) => (v && /^\d{4}-\d{2}-\d{2}/.test(v) ? v : undefined);
+  const named = (authors ?? []).filter((a): a is string => Boolean(a?.trim()));
+  const article =
+    type === "article"
+      ? {
+          ...(isIso(publishedTime) ? { publishedTime: isIso(publishedTime) } : {}),
+          ...(isIso(modifiedTime) ? { modifiedTime: isIso(modifiedTime) } : {}),
+          ...(named.length ? { authors: named } : {}),
+          ...(section?.trim() ? { section } : {}),
+        }
+      : {};
   return {
     type,
     siteName: SITE_NAME,
+    ...article,
     ...(title ? { title } : {}),
     ...(description ? { description } : {}),
     ...(path ? { url: path } : {}),

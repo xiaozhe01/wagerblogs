@@ -100,6 +100,10 @@ export async function generateMetadata({
       description: story.seo?.metaDescription,
       ogImage: story.seo?.ogImage,
       type: "article",
+      publishedTime: story.publishedAt,
+      modifiedTime: story.updatedAt,
+      authors: [typeof story.author === "object" ? story.author?.name : undefined],
+      section: typeof story.section === "object" ? story.section?.name : undefined,
       path: `/news/${sectionSlug}/${story.slug}`,
     }),
     alternates: {

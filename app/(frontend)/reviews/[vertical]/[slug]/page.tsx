@@ -99,6 +99,10 @@ export async function generateMetadata({
       description: review.seo?.metaDescription,
       ogImage: review.seo?.ogImage,
       type: "article",
+      publishedTime: review.lastVerified,
+      modifiedTime: review.updatedAt,
+      authors: [typeof review.author === "object" ? review.author?.name : undefined],
+      section: typeof review.vertical === "object" ? review.vertical?.name : undefined,
       path: `/reviews/${verticalSlug}/${review.slug}`,
     }),
     alternates: {
