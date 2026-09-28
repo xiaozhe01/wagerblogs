@@ -34,6 +34,12 @@ export default function MediaImage({
   const file = resolveMedia(media);
   if (!file?.url) return null;
 
+  // Applied here rather than at each call site, so every cropped image follows
+  // the point the editor set in the admin. Payload already crops its generated
+  // sizes around it; this is the same decision for object-cover on the page.
+  // Omitted at the 50/50 default, which is what object-position already is.
+  const style = focalPosition(file);
+
   if (fill) {
     return (
       <Image
@@ -43,6 +49,7 @@ export default function MediaImage({
         sizes={sizes}
         priority={priority}
         className={className}
+        style={style}
       />
     );
   }
@@ -56,6 +63,15 @@ export default function MediaImage({
       sizes={sizes}
       priority={priority}
       className={className}
+      style={style}
     />
   );
+}
+
+function focalPosition(file: Media): { objectPosition: string } | undefined {
+  const x = typeof file.focalX === "number" ? file.focalX : 50;
+  const y = typeof file.focalY === "number" ? file.focalY : 50;
+  if (x === 50 && y === 50) return undefined;
+  const clamp = (n: number) => Math.min(100, Math.max(0, n));
+  return { objectPosition: `${clamp(x)}% ${clamp(y)}%` };
 }
