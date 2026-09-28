@@ -26,13 +26,17 @@ convention explicitly, which is what keeps it honest rather than misleading:
 
 18 of the 51 rows in llms.txt carry bracketed copy.
 
-> **Re-counted 2026-09-28:** 17 lines of the served `/llms.txt` still carry a
-> `[Placeholder …]` or `[TO WRITE]` value. The `esports-betting.noun` entry
-> below is **still unfixed** and still produces the malformed sentence quoted
-> there — it remains the one worth doing first, because it reads as a bug
-> rather than as scaffold. The six duplicate `help-directory-entries` are also
-> still present: the API returns 12 rows, six `verified: true` and six
-> `verified: false`, paired region for region.
+> **Re-counted 2026-09-28: now 16 lines**, down from 17. The
+> `esports-betting` entry below is **fixed** — `noun` is "esports betting site"
+> and `crumb` is "Esports", so `/llms.txt` reads "every esports betting site
+> reviewed on the same criteria" and `/reviews/esports-betting` no longer emits
+> a bracketed string into its BreadcrumbList. The six duplicate
+> `help-directory-entries` are **deleted**, and the fixture that recreated them
+> is empty — see below.
+>
+> **Three verticals still carry the same bracketed pair**: `horse-racing`,
+> `sweepstakes-casinos`, `fantasy-sports`. None renders, because all three have
+> `hasReviews: false` and `/reviews/<slug>` 404s. Latent, not live.
 
 ### News stories (10)
 
@@ -165,6 +169,42 @@ duplicating the six real organisations region for region:
 They do **not** render — the help-directory page filters them out — so this is
 database noise rather than a live content defect. Delete via the admin, or via
 a small correction script.
+
+### Deleted 2026-09-28, and the mechanism traced
+
+All six were removed with a one-pass script, kept out of the repo. The
+predicate was deliberately narrow — a bracketed name **and** `verified: false` —
+so it could not match a real organisation. 12 rows → 6.
+
+**The deletion is not durable, and this is the precise mechanism of the bug
+described above.** Traced 2026-09-28:
+
+- `lib/mock-data.ts:485` — `helpDirectory` contains **exactly those six
+  bracketed names and nothing else**.
+- `scripts/seed-content.ts:446` — loops over it to seed
+  `help-directory-entries`.
+- The six real organisations (`Gamcare.org.uk`, `Gamblingcare.ie`,
+  `Spillemyndigheden`, `German Federal Ministry of Health`,
+  `National Problem Gambling Helpline`, `Responsible Gambling Council Canada`)
+  exist **only in the database**. They appear in no source file.
+
+So the six placeholders were renamed to real organisations in the admin, and
+the next seed run could not match them under their new names — exactly the
+rename-defeats-idempotency failure this document describes. `npm run seed:content`
+will recreate all six again.
+
+Two ways to make it durable, neither taken yet because both pre-empt decisions
+recorded elsewhere:
+
+1. **Point the fixture at the real six.** Makes the seed a genuine no-op. But
+   the real contact details would then live in source control, which is a
+   verification question (rule 3) rather than a mechanical one.
+2. **Drop `help-directory` from the seed entirely**, on the grounds that it is
+   now hand-curated. Cheapest, and loses the ability to rebuild that collection
+   from scratch.
+
+Until one is chosen, the standing rule holds: **do not run either seed against
+this database.**
 
 ## Follow-ups from the access-rule fix — `dc38e2d`
 

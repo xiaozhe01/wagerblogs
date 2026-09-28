@@ -477,80 +477,27 @@ export const rgToc = [
   { label: "Self-exclusion by state", href: "#self-exclusion" },
 ];
 
-// app/responsible-gambling/help-directory/page.tsx content.
-// TODO(cms): DirectoryEntry requires orgName, country, region, ≥1 contact, and a
-// verifiedAt stamp — an entry never ships without it. Re-verification cadence:
-// [90 days]; expired stamps re-enter the pending state and unpublish. Trimmed to a
-// few sample entries per region here; the full set covers more countries/regions.
-export const helpDirectory: HelpDirectoryRegion[] = [
-  {
-    region: "North America",
-    entries: [
-      {
-        name: "[National problem gambling helpline — US]",
-        country: "US",
-        desc: "[Placeholder — 24/7 phone and text support; routes callers to state-level resources.]",
-        contacts: {
-          phone: "[number — verify]",
-          site: "[URL — verify]",
-          chat: "",
-        },
-      },
-      {
-        name: "[Provincial helpline network — Canada]",
-        country: "CA",
-        desc: "[Placeholder — per-province helplines and self-exclusion programs.]",
-        contacts: {
-          phone: "[number — verify]",
-          site: "[URL — verify]",
-          chat: "",
-        },
-      },
-    ],
-  },
-  {
-    region: "UK & Ireland",
-    entries: [
-      {
-        name: "[National gambling helpline — UK]",
-        country: "UK",
-        desc: "[Placeholder — free 24/7 helpline and live chat, plus structured treatment referral.]",
-        contacts: {
-          phone: "[number — verify]",
-          site: "",
-          chat: "[URL — verify]",
-        },
-      },
-      {
-        name: "[Problem gambling service — Ireland]",
-        country: "IE",
-        desc: "[Placeholder — counselling and residential treatment, publicly funded.]",
-        contacts: { phone: "[number — verify]", site: "", chat: "" },
-      },
-    ],
-  },
-  {
-    region: "Europe",
-    entries: [
-      {
-        name: "[Federal addiction support — Germany]",
-        country: "DE",
-        desc: "[Placeholder — federal helpline with multilingual counselling.]",
-        contacts: { phone: "[number — verify]", site: "", chat: "" },
-      },
-      {
-        name: "[Support line — Nordics]",
-        country: "SE / NO / DK",
-        desc: "[Placeholder — shared Nordic helpline network with online programs.]",
-        contacts: {
-          phone: "[number — verify]",
-          site: "",
-          chat: "[URL — verify]",
-        },
-      },
-    ],
-  },
-];
+// Seed input for help-directory-entries, and nothing else reads it — the page
+// itself is Payload-backed.
+//
+// Deliberately empty since 2026-09-28. It held six bracketed placeholders which
+// an editor had already replaced, in the admin, with the six real organisations
+// now in the database. The seed keys "already exists" on name + country, could
+// not match them under their real names, and recreated all six on every run —
+// the rename-defeats-idempotency failure CONTENT-BACKLOG.md describes. Emptying
+// it makes the seed a no-op for this collection, which is what keeps the
+// deletion from coming back.
+//
+// The cost: the seed can no longer rebuild this collection from scratch. That is
+// the accepted trade until `seedSource` lands. Do not repopulate this with
+// placeholder organisations — a bracketed helpline is the one placeholder class
+// that must never reach a live route.
+//
+// Coverage note: the six real records cover north-america, uk-ireland and
+// europe, two each. asia-pacific, latin-america and middle-east-africa are
+// options on the collection with no entry at all — a real gap, and one the
+// deleted placeholders never filled either.
+export const helpDirectory: HelpDirectoryRegion[] = [];
 
 // components/Comments.tsx sample comments.
 // TODO(cms): Tier 3 review routes only — in production this component should return
