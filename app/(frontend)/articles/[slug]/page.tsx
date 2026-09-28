@@ -7,6 +7,7 @@ import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnchorList from "@/components/rail/AnchorList";
 import ArticleByline from "@/components/section/ArticleByline";
+import PublishMeta from "@/components/section/PublishMeta";
 import BlogPostCard from "@/components/cards/BlogPostCard";
 import EditorialSection from "@/components/section/EditorialSection";
 import KeyTakeaways from "@/components/section/KeyTakeaways";
@@ -151,6 +152,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
             {article.excerpt}
           </p>
+          <PublishMeta publishedAt={article.publishedAt} readTime={readTime(article.body)} />
         </header>
 
         <figure className="w-full">
@@ -190,8 +192,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             credential={author.credentialLine}
             photo={author.photo}
             profileHref={`/authors/${author.slug}`}
-            publishedAt={article.publishedAt ? formatDate(article.publishedAt) : ""}
-            readTime={readTime(article.body)}
           />
         )}
 

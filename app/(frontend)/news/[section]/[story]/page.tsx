@@ -10,6 +10,7 @@ import PostRow from "@/components/cards/PostRow";
 import AnchorList from "@/components/rail/AnchorList";
 import NewsRail from "@/components/rail/NewsRail";
 import ArticleByline from "@/components/section/ArticleByline";
+import PublishMeta from "@/components/section/PublishMeta";
 import EditorialSection from "@/components/section/EditorialSection";
 import KeyTakeaways from "@/components/section/KeyTakeaways";
 import LatestStoriesSection from "@/components/section/LatestStoriesSection";
@@ -20,7 +21,7 @@ import { RichText } from "@/components/rich-text/RichText";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
 import { deriveHeadings, readTime } from "@/lib/lexical";
-import { formatDate, slugLabel } from "@/lib/utils";
+import { slugLabel } from "@/lib/utils";
 import { buildOpenGraph } from "@/lib/og";
 import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
 
@@ -209,6 +210,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
           <p className="text-2xl font-medium leading-copy text-text-body text-pretty">
             {story.excerpt}
           </p>
+          <PublishMeta publishedAt={story.publishedAt} readTime={readTime(story.body)} />
         </header>
 
         <figure className="w-full">
@@ -248,8 +250,6 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
             credential={author.credentialLine}
             photo={author.photo}
             profileHref={`/authors/${author.slug}`}
-            publishedAt={story.publishedAt ? formatDate(story.publishedAt) : ""}
-            readTime={readTime(story.body)}
           />
         )}
 
