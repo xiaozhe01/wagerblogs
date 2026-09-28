@@ -40,11 +40,19 @@ export default async function NewsRail({
         />
       )}
       {children}
-      <InfoCard
-        title="Corrections"
-        body="Spotted something wrong? Tell us and we'll fix it."
-        cta={{ href: "/contact", label: "Report an issue" }}
-      />
     </>
+  );
+}
+
+/** The standing tail for the two news indexes. Not part of NewsRail: the story
+ * template carries its own Corrections section in main, so a rail card there
+ * would say the same thing twice. */
+export function NewsCorrectionsCard() {
+  return (
+    <InfoCard
+      title="Corrections"
+      body="Spotted something wrong? Tell us and we'll fix it."
+      cta={{ href: "/contact", label: "Report an issue" }}
+    />
   );
 }

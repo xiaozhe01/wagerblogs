@@ -19,7 +19,7 @@ import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
-import { readTime } from "@/lib/lexical";
+import { deriveHeadings, readTime } from "@/lib/lexical";
 import { formatDate, slugLabel } from "@/lib/utils";
 import { buildOpenGraph } from "@/lib/og";
 import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
@@ -140,6 +140,13 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
   // be licensed differently per use, and an editor filling the field here
   // expects to see it.
   const heroCredit = story.heroImageCredit || hero?.credit;
+  // Same source as the articles template: the converter already renders ids on
+  // these headings, so the rail and the body cannot drift apart.
+  const toc = deriveHeadings(story.body).map((heading) => ({
+    href: `#${heading.id}`,
+    label: heading.label,
+    key: heading.id,
+  }));
   const author = typeof story.author === "object" ? story.author : undefined;
   const takeaways = (story.takeaways ?? [])
     .map((entry) => entry.takeaway)
@@ -148,21 +155,26 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
   const href = `/news/${section.slug}/${story.slug}`;
 
   const rail = (
-    <NewsRail currentSlug={section.slug}>
-      {/* Only the other stories in this section — a card listing just the page
-          you are on is not a way out of it. */}
-      {siblings.length > 0 && (
-        <AnchorList
-          title={`More in ${section.name}`}
-          cardClassName="card"
-          items={siblings.map((entry) => ({
-            href: `/news/${section.slug}/${entry.slug}`,
-            label: entry.title,
-            key: entry.slug,
-          }))}
-        />
+    <>
+      {toc.length > 0 && (
+        <AnchorList title="On this page" cardClassName="card hidden wide:block" items={toc} />
       )}
-    </NewsRail>
+      <NewsRail currentSlug={section.slug}>
+        {/* Only the other stories in this section — a card listing just the page
+          you are on is not a way out of it. */}
+        {siblings.length > 0 && (
+          <AnchorList
+            title={`More in ${section.name}`}
+            cardClassName="card"
+            items={siblings.map((entry) => ({
+              href: `/news/${section.slug}/${entry.slug}`,
+              label: entry.title,
+              key: entry.slug,
+            }))}
+          />
+        )}
+      </NewsRail>
+    </>
   );
 
   return (
@@ -239,6 +251,17 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
             publishedAt={story.publishedAt ? formatDate(story.publishedAt) : ""}
             readTime={readTime(story.body)}
           />
+        )}
+
+        {toc.length > 0 && (
+          // Mobile TOC sits after the intro, before the first H2 — the standard
+          // placement for in-article jump links. Desktop uses the rail instead.
+          <nav aria-labelledby="story-toc-heading" className="card wide:hidden">
+            <h2 id="story-toc-heading" className="heading text-sm mb-2.5">
+              On this page
+            </h2>
+            <AnchorList items={toc} />
+          </nav>
         )}
 
         <RichText data={story.body} />

@@ -6,7 +6,7 @@ import config from "@payload-config";
 import PageShell from "@/components/layout/PageShell";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PostRow from "@/components/cards/PostRow";
-import NewsRail from "@/components/rail/NewsRail";
+import NewsRail, { NewsCorrectionsCard } from "@/components/rail/NewsRail";
 import ArrowLink, { sectionCtaClassName } from "@/components/controls/ArrowLink";
 import EditorialSection from "@/components/section/EditorialSection";
 import EmptyState from "@/components/section/EmptyState";
@@ -73,7 +73,15 @@ export default async function NewsIndexPage() {
     .filter((entry) => entry.stories.length > 0);
 
   return (
-    <PageShell activeNavId="news" register="editorial" rail={<NewsRail />}>
+    <PageShell
+      activeNavId="news"
+      register="editorial"
+      rail={
+        <NewsRail>
+          <NewsCorrectionsCard />
+        </NewsRail>
+      }
+    >
       {/* Register: Editorial · Tier 1 — reporting, no outbound operator links */}
       <Breadcrumbs items={[{ label: "News" }]} />
 
