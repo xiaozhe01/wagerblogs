@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { resolveMedia, type MediaRef } from "@/components/cards/MediaImage";
+import type { Media } from "@/payload-types";
 
 // Next shallow-merges metadata, so a page's `openGraph` REPLACES the layout's
 // rather than composing with it — verified against the rendered tags, not
@@ -24,6 +25,23 @@ export const DEFAULT_OG_IMAGE = {
 
 type OpenGraphType = "website" | "article" | "profile";
 
+/** The 1200x630 derivative Media generates, or the original when the source
+ * was too small to make one. Preferring the derivative is what stops each
+ * platform cropping a 3:2 photo into its 1.91:1 slot however it likes. */
+function shareImage(image: Media | undefined) {
+  if (!image?.url) return undefined;
+  const og = image.sizes?.og;
+  const use = og?.url ? og : image;
+  return {
+    url: use.url as string,
+    // Payload's upload config records these; a record missing them is still
+    // worth emitting, just without the size hints.
+    ...(use.width ? { width: use.width } : {}),
+    ...(use.height ? { height: use.height } : {}),
+    alt: image.alt,
+  };
+}
+
 export function buildOpenGraph({
   title,
   description,
@@ -47,17 +65,6 @@ export function buildOpenGraph({
     ...(title ? { title } : {}),
     ...(description ? { description } : {}),
     ...(path ? { url: path } : {}),
-    images: [
-      image?.url
-        ? {
-            url: image.url,
-            // Payload's upload config records these; a record missing them is
-            // still worth emitting, just without the size hints.
-            ...(image.width ? { width: image.width } : {}),
-            ...(image.height ? { height: image.height } : {}),
-            alt: image.alt,
-          }
-        : DEFAULT_OG_IMAGE,
-    ],
+    images: [shareImage(image) ?? DEFAULT_OG_IMAGE],
   };
 }

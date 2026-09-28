@@ -28,6 +28,22 @@ export const Media: CollectionConfig = {
     // Storage adapter is configured in payload.config.ts, not here.
     // For dev this defaults to local disk under /media at the project root.
     mimeTypes: ["image/*"],
+    // 1200x630 is the slot every platform gives a large share card. It is
+    // 1.91:1 and editorial photography is usually 3:2, so without a derivative
+    // each platform crops to its own taste — we generate the crop instead.
+    //
+    // No `position`: with fit "cover" Payload crops around focalX/focalY
+    // itself, and a position would only compete with the point the editor set.
+    //
+    // withoutEnlargement must be an explicit `false`, which is not the default.
+    // Payload reads the three states differently: undefined omits the size
+    // entirely for a source smaller than the target, true returns that source
+    // uncropped at its own aspect ratio, and only false crops and scales to a
+    // true 1200x630. A slightly soft 1.91:1 card beats one every platform
+    // re-crops to its own taste.
+    imageSizes: [
+      { name: "og", width: 1200, height: 630, fit: "cover", withoutEnlargement: false },
+    ],
   },
   fields: [
     {

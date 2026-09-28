@@ -3,6 +3,7 @@ import * as migration_20260917_080746_retire_duplicate_status_fields from './202
 import * as migration_20260917_080929_enable_drafts from './20260917_080929_enable_drafts';
 import * as migration_20260918_094655_add_authors_seo_and_drafts from './20260918_094655_add_authors_seo_and_drafts';
 import * as migration_20260926_105732_add_review_and_bonus_logo from './20260926_105732_add_review_and_bonus_logo';
+import * as migration_20260927_111613_add_media_og_size from './20260927_111613_add_media_og_size';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20260926_105732_add_review_and_bonus_logo.up,
     down: migration_20260926_105732_add_review_and_bonus_logo.down,
-    name: '20260926_105732_add_review_and_bonus_logo'
+    name: '20260926_105732_add_review_and_bonus_logo',
+  },
+  {
+    up: migration_20260927_111613_add_media_og_size.up,
+    down: migration_20260927_111613_add_media_og_size.down,
+    name: '20260927_111613_add_media_og_size'
   },
 ];
