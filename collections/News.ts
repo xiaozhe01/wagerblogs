@@ -45,6 +45,14 @@ export const News: CollectionConfig = {
       required: true,
     },
     {
+      name: 'crumb',
+      type: 'text',
+      admin: {
+        description:
+          'Short breadcrumb label. Optional — falls back to the slug. A headline is far too long for a crumb, and this is the text Google renders in the breadcrumb trail under a search result.',
+      },
+    },
+    {
       name: 'slug',
       type: 'text',
       required: true,

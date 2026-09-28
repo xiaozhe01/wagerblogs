@@ -55,6 +55,40 @@ export function headingId(prefix: string, title: string) {
   return `${prefix}-${chipSlug(title)}`;
 }
 
+const CRUMB_MINOR_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "as",
+  "at",
+  "but",
+  "by",
+  "for",
+  "from",
+  "in",
+  "nor",
+  "of",
+  "on",
+  "or",
+  "the",
+  "to",
+  "vs",
+  "via",
+  "with",
+]);
+
+/** Breadcrumb label built from a URL slug, for records carrying no `crumb`.
+ * A headline is too long for a crumb; the slug is already the short form. */
+export function slugLabel(slug: string) {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((word, i) =>
+      i > 0 && CRUMB_MINOR_WORDS.has(word) ? word : word.charAt(0).toUpperCase() + word.slice(1),
+    )
+    .join(" ");
+}
+
 /** Payload stores dates as ISO; the UI wants "Jun 30, 2026". Locale is pinned
  * so the server render and any later client render cannot disagree. */
 export function formatDate(iso: string) {

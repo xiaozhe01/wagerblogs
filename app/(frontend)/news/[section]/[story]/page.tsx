@@ -20,7 +20,7 @@ import { RichText } from "@/components/rich-text/RichText";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
 import { readTime } from "@/lib/lexical";
-import { formatDate } from "@/lib/utils";
+import { formatDate, slugLabel } from "@/lib/utils";
 import { buildOpenGraph } from "@/lib/og";
 import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
 
@@ -174,7 +174,7 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
         items={[
           { label: "News", href: "/news" },
           { label: section.name, href: `/news/${section.slug}` },
-          { label: story.title },
+          { label: story.crumb || slugLabel(story.slug) },
         ]}
       />
 

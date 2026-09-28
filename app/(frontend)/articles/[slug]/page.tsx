@@ -14,7 +14,7 @@ import MediaImage, { resolveMedia } from "@/components/cards/MediaImage";
 import { RichText } from "@/components/rich-text/RichText";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { deriveHeadings, readTime } from "@/lib/lexical";
-import { formatDate } from "@/lib/utils";
+import { formatDate, slugLabel } from "@/lib/utils";
 import { buildOpenGraph } from "@/lib/og";
 import type { Article } from "@/payload-types";
 import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
@@ -133,7 +133,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       {/* Register: Editorial · Tier 1 — pure authority, no outbound operator links */}
       <Breadcrumbs
         currentPath={`/articles/${article.slug}`}
-        items={[{ label: "Articles", href: "/articles" }, { label: article.title }]}
+        items={[
+          { label: "Articles", href: "/articles" },
+          { label: article.crumb || slugLabel(article.slug) },
+        ]}
       />
 
       <article aria-labelledby="post-title" className="w-full flex flex-col gap-5">

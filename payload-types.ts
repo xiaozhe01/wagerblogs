@@ -160,6 +160,10 @@ export interface UserAuthOperations {
 export interface Article {
   id: number;
   title: string;
+  /**
+   * Short breadcrumb label. Optional — falls back to the slug. A headline is far too long for a crumb, and this is the text Google renders in the breadcrumb trail under a search result.
+   */
+  crumb?: string | null;
   slug: string;
   /**
    * Structural article-type taxonomy. Matches the FilterChips on /categories/[slug] pages. Fixed enum — not records, per the deliberate design note in site-data.ts:67.
@@ -426,6 +430,10 @@ export interface Author {
 export interface News {
   id: number;
   title: string;
+  /**
+   * Short breadcrumb label. Optional — falls back to the slug. A headline is far too long for a crumb, and this is the text Google renders in the breadcrumb trail under a search result.
+   */
+  crumb?: string | null;
   /**
    * URL segment for the story. Combined with section.slug at render: /news/[section-slug]/[story-slug].
    */
@@ -1124,6 +1132,7 @@ export interface PayloadMigration {
  */
 export interface ArticlesSelect<T extends boolean = true> {
   title?: T;
+  crumb?: T;
   slug?: T;
   type?: T;
   vertical?: T;
@@ -1158,6 +1167,7 @@ export interface ArticlesSelect<T extends boolean = true> {
  */
 export interface NewsSelect<T extends boolean = true> {
   title?: T;
+  crumb?: T;
   slug?: T;
   section?: T;
   beat?: T;
