@@ -55,27 +55,65 @@ reverted to draft on 2026-09-29, which leaves **`/articles` with no articles**.
 That is the honest state of the collection: there is no finished article on
 this site yet.
 
-#### Coverage lost with them — restore when real articles land
+#### Every stand-in for a real article — one list, fix in one pass
 
-`/articles/how-odds-boosts-actually-work` was the sampled article detail route
-in two tools, and both lost it on 2026-09-29 because no published article
-exists to take its place:
+**This subsection is the index. Nothing else records these substitutions.**
 
-- **`tests/a11y/routes.ts` — 8 assertions dropped.** The route ran under
-  `routes.spec.ts` and `best-practice.spec.ts` across four project matrices
-  (desktop/mobile x light/dark). The suite is 246 passing rather than 254. The
-  article template is still exercised indirectly by the news story, which
-  shares it, but nothing covers the article route's own header, byline and
+The Wisconsin news story,
+`/news/football/wisconsin-penn-state-score-comeback-fickell`, stands in for an
+article example in 15 files. It is not an article; it is the only real
+long-form record on the site, and it renders the same reading template. Two
+other slugs were repointed in the same pass because they had rotted
+independently: `/reviews/sportsbooks/peakwager` (never republished under that
+vertical) to `/reviews/sportsbooks/examplebet`, and `/authors/jane-placeholder`
+to `/authors/jane`.
+
+The same dead slug was rediscovered three separate times before this list
+existed. Grep `wisconsin-penn-state-score-comeback-fickell` to confirm the list
+is still current before working from it.
+
+**Coverage actually lost — the one entry that is not a like-for-like swap:**
+
+- `tests/a11y/routes.ts` — **8 assertions dropped**, not repointed. The route
+  ran under `routes.spec.ts` and `best-practice.spec.ts` across four project
+  matrices (desktop/mobile x light/dark), so the suite is 246 passing rather
+  than 254. Nothing now covers the article route's own header, byline and
   related-reading block.
-- **`.claude/visual-harness/overflow-check.mjs` — repointed, not dropped**, to
-  the Wisconsin news story, which renders the same reading template. No
-  coverage lost there.
 
-**When the content-review pass lands real article titles and the records
-republish:** put a real article path back in `tests/a11y/routes.ts` and restore
-those 8 assertions. Do not point either list at a draft slug — draft records
-404 to anonymous requests, which is what `npm run check:routes` exists to
-catch.
+**Four one-pass scripts are deliberately left broken.** `_blog-audit.mjs`,
+`_blog-rhythm.mjs`, `_prose-crossover.mjs` and `_share-shot.mjs` under
+`.claude/visual-harness/` still carry the dead slugs. They were committed by
+mistake in `b27ce51` and are slated for deletion, so repointing them would be
+wasted work. `npm run check:routes` reports them dead until they go — expected,
+not drift. Everything else below is clean.
+
+**Repointed, no coverage lost** (all render the same template):
+
+| File                                           |
+| ---------------------------------------------- |
+| `.claude/visual-harness/overflow-check.mjs`    |
+| `.claude/visual-harness/hidden-text.spec.ts`   |
+| `.claude/visual-harness/mobile-audit.mjs`      |
+| `.claude/visual-harness/rail-cards.spec.ts`    |
+| `.claude/visual-harness/render-hash.mjs`       |
+| `.claude/visual-harness/section-names.mjs`     |
+| `.claude/visual-harness/snap.spec.ts`          |
+| `.claude/visual-harness/spacing-audit.spec.ts` |
+| `.claude/visual-harness/type-audit.spec.ts`    |
+| `.claude/visual-harness/type-distribution.mjs` |
+| `.claude/visual-harness/type-state.mjs`        |
+| `.claude/visual-harness/verify.spec.ts`        |
+
+`tests/article-schema.test.ts` and `tests/crumb-label.test.ts` also name the
+slug, but as input to a pure function — they never fetch it, so they are not
+substitution sites and need no change.
+
+**When the content-drafting pass publishes a real article:** put a real article
+path back in `tests/a11y/routes.ts` to restore the 8 assertions, restore the
+article entry in `_share-shot.mjs`, and repoint whichever of the table above
+are still in use. Do not point any list at a draft slug — drafts 404 to
+anonymous requests. Then run `npm run check:routes`, which is what catches
+exactly this.
 
 ### Legal summaries (4)
 

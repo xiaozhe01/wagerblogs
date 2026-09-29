@@ -1,8 +1,8 @@
 import { chromium } from "@playwright/test";
 const b = await chromium.launch({ channel: "chrome" });
-const routes = ["/", "/reviews/sportsbooks/peakwager", "/blog/how-odds-boosts-actually-work",
+const routes = ["/", "/reviews/sportsbooks/examplebet", "/news/football/wisconsin-penn-state-score-comeback-fickell",
   "/legal/privacy-policy", "/categories/esports-betting", "/responsible-gambling",
-  "/responsible-gambling/help-directory", "/authors/jane-placeholder"];
+  "/responsible-gambling/help-directory", "/authors/jane"];
 
 // 1. touch targets below 44px on a touch viewport
 const p = await b.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true });

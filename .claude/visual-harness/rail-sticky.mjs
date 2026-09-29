@@ -3,7 +3,7 @@ const b = await chromium.launch({ channel: "chrome" });
 const heights = [700, 720, 800, 900, 1080];
 const routes = [
   "/",
-  "/reviews/sportsbooks/peakwager",
+  "/reviews/sportsbooks/examplebet",
   "/responsible-gambling",
   "/legal/privacy-policy",
   "/responsible-gambling/help-directory",

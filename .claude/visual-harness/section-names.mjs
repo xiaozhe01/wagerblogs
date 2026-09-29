@@ -5,13 +5,13 @@ const routes = [
   ["home", "/"],
   ["responsible-gambling", "/responsible-gambling"],
   ["help-directory", "/responsible-gambling/help-directory"],
-  ["review", "/reviews/sportsbooks/peakwager"],
+  ["review", "/reviews/sportsbooks/examplebet"],
   ["reviews", "/reviews"],
-  ["blog", "/blog/how-odds-boosts-actually-work"],
+  ["news-story", "/news/football/wisconsin-penn-state-score-comeback-fickell"],
   ["categories/[slug]", "/categories/esports-betting"],
   ["categories", "/categories"],
   ["legal", "/legal/privacy-policy"],
-  ["authors", "/authors/jane-placeholder"],
+  ["authors", "/authors/jane"],
 ];
 let named = 0,
   unnamed = 0;

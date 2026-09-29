@@ -109,10 +109,10 @@ for (const [vp, width, height] of VPS) {
     test("page header h1 -> next ink gap across routes", async ({ page }) => {
       const routes = [
         ["home", "/"],
-        ["blog-post", "/blog/how-odds-boosts-actually-work"],
-        ["review", "/reviews/sportsbooks/peakwager"],
+        ["news-story", "/news/football/wisconsin-penn-state-score-comeback-fickell"],
+        ["review", "/reviews/sportsbooks/examplebet"],
         ["category", "/categories/esports-betting"],
-        ["author", "/authors/jane-placeholder"],
+        ["author", "/authors/jane"],
         ["legal-privacy", "/legal/privacy-policy"],
         ["responsible-gambling", "/responsible-gambling"],
       ];

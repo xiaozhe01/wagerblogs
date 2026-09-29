@@ -7,12 +7,12 @@ const OUT =
 
 const ROUTES: Array<[string, string]> = [
   ["home", "/"],
-  ["blog-post", "/blog/how-odds-boosts-actually-work"],
-  ["review", "/reviews/sportsbooks/peakwager"],
+  ["news-story", "/news/football/wisconsin-penn-state-score-comeback-fickell"],
+  ["review", "/reviews/sportsbooks/examplebet"],
   ["reviews-hub", "/reviews"],
   ["category", "/categories/esports-betting"],
   ["categories-hub", "/categories"],
-  ["author", "/authors/jane-placeholder"],
+  ["author", "/authors/jane"],
   ["legal-privacy", "/legal/privacy-policy"],
   ["legal-terms", "/legal/terms-of-service"],
   ["legal-affiliate", "/legal/affiliate-disclosure"],

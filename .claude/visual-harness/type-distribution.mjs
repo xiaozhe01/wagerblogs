@@ -1,10 +1,10 @@
 import { chromium } from "@playwright/test";
 const routes = [
   ["home", "/"],
-  ["blog-post", "/blog/sample-post"],
-  ["review", "/reviews/sportsbooks/peakwager"],
+  ["news-story", "/news/football/wisconsin-penn-state-score-comeback-fickell"],
+  ["review", "/reviews/sportsbooks/examplebet"],
   ["category", "/categories/esports-betting"],
-  ["author", "/authors/jane-placeholder"],
+  ["author", "/authors/jane"],
   ["legal-privacy", "/legal/privacy-policy"],
   ["responsible-gambling", "/responsible-gambling"],
 ];

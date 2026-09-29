@@ -7,8 +7,8 @@ import { test } from "@playwright/test";
 
 const ROUTES: Array<[string, string]> = [
   ["home", "/"],
-  ["review", "/reviews/sportsbooks/peakwager"],
-  ["blog-post", "/blog/how-odds-boosts-actually-work"],
+  ["review", "/reviews/sportsbooks/examplebet"],
+  ["news-story", "/news/football/wisconsin-penn-state-score-comeback-fickell"],
   ["legal", "/legal/privacy-policy"],
   ["responsible-gambling", "/responsible-gambling"],
   ["help-directory", "/responsible-gambling/help-directory"],

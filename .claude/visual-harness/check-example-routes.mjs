@@ -27,7 +27,12 @@ const BASE = process.env.CHECK_ROUTES_BASE ?? "http://localhost:3000";
 
 // The five segment families the drift has actually shown up in, plus /blog,
 // which was renamed to /articles and still appears in older scripts.
-const ROUTE = /["'`](\/(?:reviews|articles|news|authors|categories|blog)\/[A-Za-z0-9\-/]+)["'`]/g;
+//
+// The optional host prefix is load-bearing: three scripts pass the path inside
+// a whole URL to page.goto, and a pattern anchored on the opening quote skipped
+// all three while still reporting the file as scanned.
+const ROUTE =
+  /["'`](?:https?:\/\/[^"'`]*?)?(\/(?:reviews|articles|news|authors|categories|blog)\/[A-Za-z0-9\-/]+)["'`]/g;
 
 const sources = [];
 

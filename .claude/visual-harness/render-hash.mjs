@@ -9,12 +9,12 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const ROUTES = [
   "/",
-  "/blog/how-odds-boosts-actually-work",
+  "/news/football/wisconsin-penn-state-score-comeback-fickell",
   "/reviews",
-  "/reviews/sportsbooks/peakwager",
+  "/reviews/sportsbooks/examplebet",
   "/categories",
   "/categories/esports-betting",
-  "/authors/jane-placeholder",
+  "/authors/jane",
   "/legal/privacy-policy",
   "/legal/terms-of-service",
   "/legal/affiliate-disclosure",
