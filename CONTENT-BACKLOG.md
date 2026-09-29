@@ -55,6 +55,28 @@ reverted to draft on 2026-09-29, which leaves **`/articles` with no articles**.
 That is the honest state of the collection: there is no finished article on
 this site yet.
 
+#### Coverage lost with them — restore when real articles land
+
+`/articles/how-odds-boosts-actually-work` was the sampled article detail route
+in two tools, and both lost it on 2026-09-29 because no published article
+exists to take its place:
+
+- **`tests/a11y/routes.ts` — 8 assertions dropped.** The route ran under
+  `routes.spec.ts` and `best-practice.spec.ts` across four project matrices
+  (desktop/mobile x light/dark). The suite is 246 passing rather than 254. The
+  article template is still exercised indirectly by the news story, which
+  shares it, but nothing covers the article route's own header, byline and
+  related-reading block.
+- **`.claude/visual-harness/overflow-check.mjs` — repointed, not dropped**, to
+  the Wisconsin news story, which renders the same reading template. No
+  coverage lost there.
+
+**When the content-review pass lands real article titles and the records
+republish:** put a real article path back in `tests/a11y/routes.ts` and restore
+those 8 assertions. Do not point either list at a draft slug — draft records
+404 to anonymous requests, which is what `npm run check:routes` exists to
+catch.
+
 ### Legal summaries (4)
 
 All four legal documents' `summary` fields are bracketed. The schema

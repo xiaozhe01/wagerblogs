@@ -241,6 +241,12 @@ It only had to be skipped on the database that push had already built.
 
 Session-mode pooler (port 5432): **pool_size = 15 clients**.
 
+> A client handle is not a backend connection. Supavisor multiplexes, so the
+> server's `max_connections` (60) is what a build actually consumes, and it
+> consumes one. Do not add the numbers below together to conclude two processes
+> cannot coexist — that is exactly the error retired under "Dev + build
+> coexistence".
+
 **Build parallelism.** Next collects page data and prerenders with a pool of
 worker processes, each opening its own `getPayload` pool. The build-time cap
 must satisfy `workers x max < 15`. The worker count defaults to cores-1 (7 on
@@ -326,20 +332,23 @@ Re-evaluate the production side as more routes are wired and each prerendered
 page opens more query sites. The worker count no longer moves with the machine's
 core count, so a faster machine will not silently reintroduce the failure.
 
-### Dev + build coexistence
+### Dev + build coexistence — ~~they cannot~~ they can, retired 2026-09-28
 
-The dev server (`max` 10) and a build (4 x 2 = 8) **cannot run at the same
-time** — combined they exceed the 15-client cap. Kill the dev server before
-`npm run build`, and restart it after. The same applies to `npm run test:a11y`,
-which builds and then serves.
-
-**Diagnostic signature:** `EMAXCONNSESSION` during a build while the dev server
-is running.
-
-This is a manual step rather than a config problem: each cap is correct for its
-own context, and only their overlap breaks. The durable fix is raising Supabase
-`pool_size` in the dashboard — deferred, because it needs a paid plan and the
-manual step is bounded.
+> **This section was wrong and is kept only so the reasoning is not repeated.**
+> It said the dev server (`max` 10) and a build (4 x 2 = 8) could not run at the
+> same time because together they exceed a 15-client cap, and told you to kill
+> the dev server first.
+>
+> Measured instead of inherited: a full `npm run build` runs to **exit 0 with
+> `next dev` up**, re-confirmed 2026-09-29. The 15 is a Supavisor _client_ cap
+> and is invisible to `pg_stat_activity`; the server's `max_connections` is
+> **60**, and a full build adds **one** server-side connection because Supavisor
+> multiplexes. The arithmetic above counts client handles as if they were
+> backend connections.
+>
+> No manual step is needed, and `npm run test:a11y` does not need one either.
+> The `EMAXCONNSESSION` signature below is still a real failure mode under
+> genuine connection pressure — it was simply not what this section described.
 
 ### Diagnostic signatures
 

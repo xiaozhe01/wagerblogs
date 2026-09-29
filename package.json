@@ -10,6 +10,7 @@
     "preview": "next build && next start -p 4400",
     "lint": "eslint",
     "check:tokens": "node scripts/check-color-invariants.mjs",
+    "check:routes": "tsx .claude/visual-harness/check-example-routes.mjs",
     "predev": "npx payload migrate:status",
     "prebuild": "npm run check:tokens && npx payload migrate:status",
     "payload": "npx payload",
