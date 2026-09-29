@@ -16,7 +16,8 @@ import { RichText } from "@/components/rich-text/RichText";
 import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { deriveHeadings, readTime } from "@/lib/lexical";
 import { formatDate, slugLabel } from "@/lib/utils";
-import { buildOpenGraph } from "@/lib/og";
+import { buildOpenGraph, recordImage } from "@/lib/og";
+import { ArticleJsonLd } from "@/lib/schema";
 import type { Article } from "@/payload-types";
 import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
 
@@ -141,6 +142,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       />
 
       <article aria-labelledby="post-title" className="w-full flex flex-col gap-5">
+        {/* Self-gating: renders nothing until the headline, image, date and
+            author are all real. */}
+        <ArticleJsonLd
+          headline={article.title}
+          pagePath={`/articles/${article.slug}`}
+          datePublished={article.publishedAt}
+          authorName={author?.name}
+          authorUrl={author ? `/authors/${author.slug}` : undefined}
+          image={recordImage(article.seo?.ogImage, article.heroImage)}
+        />
         <header className="flex flex-col gap-3 max-w-header">
           <p className="meta-label-caps">{article.type}</p>
           <h1

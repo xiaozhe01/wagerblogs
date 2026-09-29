@@ -76,6 +76,83 @@ export function ReviewJsonLd(input: ReviewJsonLdInput) {
   return data ? <JsonLd data={data} /> : null;
 }
 
+export type ArticleJsonLdInput = {
+  /** The record's own `title`, not seo.metaTitle — the editorial headline is
+   * what Google wants here, and metaTitle is an override for the tab. */
+  headline: string;
+  /** Site-relative path of the page carrying the article. */
+  pagePath: string;
+  datePublished?: string | null;
+  authorName?: string;
+  /** Site-relative path of the author's profile. */
+  authorUrl?: string;
+  /** The record's own image, from `recordImage` — undefined when the record has
+   * none. The sitewide fallback must not reach here. */
+  image?: { url: string; width?: number; height?: number };
+};
+
+const isIso = (value?: string | null) => (value && /^\d{4}-\d{2}-\d{2}/.test(value) ? value : null);
+
+/**
+ * Returns null unless the headline, image, date and author are all real —
+ * `type` is the only difference between an Article and a NewsArticle. Same gate
+ * as reviewJsonLd: a block assembled from scaffold is a fabricated signal
+ * whether or not the page around it renders one (rule 3).
+ *
+ * No `publisher`. It would be an Organization, and Organization schema is a
+ * standing do-not-add while the publisher record itself is bracketed — the
+ * footer still reads `Company No. [company number — verify]`. See
+ * .claude/seo-backlog-2026-09-08.md.
+ *
+ * No `dateModified`, which docs/04 Phase 4.3 lists. The only candidate is
+ * Payload's `updatedAt`, and that moves on any write — a migration or a repair
+ * script, not just an edit. On the one record that currently passes this gate
+ * it would have claimed a modification a day after publication while the
+ * story's own Corrections block says none was issued.
+ */
+function articleSchema(type: "Article" | "NewsArticle", input: ArticleJsonLdInput) {
+  if (isPlaceholder(input.headline)) return null;
+  if (isPlaceholder(input.authorName)) return null;
+  if (!isIso(input.datePublished) || isPlaceholder(input.datePublished ?? undefined)) return null;
+  if (!input.image?.url) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": type,
+    headline: input.headline,
+    url: `${siteUrl}${input.pagePath}`,
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}${input.pagePath}` },
+    image: {
+      "@type": "ImageObject",
+      // Payload stores a root-relative URL; JSON-LD needs a crawlable one.
+      url: `${siteUrl}${input.image.url}`,
+      ...(input.image.width ? { width: input.image.width } : {}),
+      ...(input.image.height ? { height: input.image.height } : {}),
+    },
+    datePublished: input.datePublished,
+    author: {
+      "@type": "Person",
+      name: input.authorName,
+      ...(input.authorUrl ? { url: `${siteUrl}${input.authorUrl}` } : {}),
+    },
+  };
+}
+
+export const articleJsonLd = (input: ArticleJsonLdInput) => articleSchema("Article", input);
+export const newsArticleJsonLd = (input: ArticleJsonLdInput) => articleSchema("NewsArticle", input);
+
+/** Renders nothing while the record is still scaffold. */
+export function ArticleJsonLd(input: ArticleJsonLdInput) {
+  const data = articleJsonLd(input);
+  return data ? <JsonLd data={data} /> : null;
+}
+
+/** Renders nothing while the record is still scaffold. */
+export function NewsArticleJsonLd(input: ArticleJsonLdInput) {
+  const data = newsArticleJsonLd(input);
+  return data ? <JsonLd data={data} /> : null;
+}
+
 /** No SearchAction: the search box is not wired to anything (rule 3).
  * TODO(cms): Organization stays absent until the publisher record is real —
  * company number and address are still bracketed in the footer. */

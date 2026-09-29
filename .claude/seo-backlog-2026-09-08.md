@@ -16,7 +16,7 @@ verbatim — including their reasoning — and annotated rather than deleted.
 | 3   | No favicon                      | **Open** — `/favicon.ico` still 404s          |
 | 4   | No `og:image`                   | **Shipped** — plus a 1200x630 derivative      |
 | 5   | No RSS feed                     | **Open** — but no longer blocked, see below   |
-| 6   | No `NewsArticle` JSON-LD        | **Open** — but no longer blocked, see below   |
+| 6   | No `NewsArticle` JSON-LD        | **Shipped** — also closes `docs/04` Phase 4.3 |
 | 7   | Sitemap `lastModified`          | **Shipped** — reads each record's `updatedAt` |
 
 **Items 5 and 6 were both gated on "no real dates or bylines exist yet."
@@ -168,7 +168,37 @@ from fixtures.
 
 ---
 
-## 6. No `NewsArticle` / `BlogPosting` JSON-LD helper
+## 6. ~~No `NewsArticle` / `BlogPosting` JSON-LD helper~~ SHIPPED 2026-09-29
+
+`articleJsonLd` / `newsArticleJsonLd` and their self-gating components are in
+`lib/schema.tsx`, wired into `/articles/[slug]` and `/news/[section]/[story]`.
+This closes **`docs/04` Phase 4.3 as well** — the audit confirmed the two were
+one item tracked twice.
+
+It emits on exactly **one** record today, the Wisconsin story: 0 errors and 0
+warnings from validator.schema.org. Every other article and story is draft or
+bracketed and correctly produces nothing.
+
+**Two properties are deliberately absent. Do not add them back without reading
+this.**
+
+- **`publisher`.** It is an `Organization`, and Organization schema is a
+  standing do-not-add in the section at the end of this file while the
+  publisher record itself is bracketed — `SiteFooter.tsx:89` still reads
+  `Company No. [company number — verify]`. There is also no logo asset:
+  `public/` holds only `og-default.png`. Article validates without it, at
+  reduced rich-result eligibility.
+- **`dateModified`, which `docs/04` Phase 4.3 lists explicitly.** The only
+  candidate source is Payload's `updatedAt`, and it moves on any write — a
+  migration, a repair script, a test edit. On the Wisconsin record it would
+  have claimed a modification the day after publication, while that story's own
+  Corrections block renders "No corrections have been issued for this story".
+  A departure from the brief's literal list, taken because the alternative is a
+  machine-readable claim the page itself contradicts.
+
+The original entry follows.
+
+### Original entry
 
 ~~It cannot legitimately emit today: `datePublished` is `[Jul 20, 2026]` and the
 byline is "Jane Placeholder", both rejected by `isPlaceholder` in

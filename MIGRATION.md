@@ -992,10 +992,16 @@ rendering. The fix was the fallback, not the field: it is now the slug.
 - **`twitter:site`** — wired in `lib/og.ts`, empty until a real X account
   exists. The guard in `tests/og.test.ts` enforces the `@handle` format when
   it is set.
-- **`Article`/`NewsArticle` JSON-LD** — still absent. `docs/04` Phase 4.3.
-  The date and byline gate that once justified this is gone; records now carry
-  real `publishedAt` and author relationships.
+- ~~**`Article`/`NewsArticle` JSON-LD** — still absent.~~ **Shipped
+  2026-09-29**, closing `docs/04` Phase 4.3 and SEO backlog #6 together.
+  `publisher` and `dateModified` are deliberately omitted — the reasoning is in
+  `.claude/seo-backlog-2026-09-08.md` §6 and must be read before either is
+  added back.
 - **`itemReviewed.url` emits `""`** for any review that is not the primary
   domain.
-- **A production build has not been run** on this tree. `next dev` holds 10
-  pooler connections and the build wants 8 against a 15-client cap.
+- ~~**A production build has not been run** on this tree. `next dev` holds 10
+  pooler connections and the build wants 8 against a 15-client cap.~~
+  **Retired 2026-09-28, re-verified 2026-09-29**: the build runs to exit 0
+  alongside `next dev`. The 15 was a Supavisor client cap, invisible to
+  `pg_stat_activity`; `max_connections` is 60 and a full build adds one
+  server-side connection.

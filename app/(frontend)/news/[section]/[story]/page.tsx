@@ -22,7 +22,8 @@ import { publishedFilter, resolvePreviewUser } from "@/lib/payload-queries";
 import { storyRow } from "@/lib/news-rows";
 import { deriveHeadings, readTime } from "@/lib/lexical";
 import { slugLabel } from "@/lib/utils";
-import { buildOpenGraph } from "@/lib/og";
+import { buildOpenGraph, recordImage } from "@/lib/og";
+import { NewsArticleJsonLd } from "@/lib/schema";
 import LivePreviewListener from "@/components/live-preview/LivePreviewListener";
 
 type StoryParams = { section: string; story: string };
@@ -192,6 +193,16 @@ export default async function NewsStoryPage({ params }: { params: Promise<StoryP
       />
 
       <article aria-labelledby="story-title" className="w-full flex flex-col gap-5">
+        {/* Self-gating: renders nothing until the headline, image, date and
+            author are all real. */}
+        <NewsArticleJsonLd
+          headline={story.title}
+          pagePath={href}
+          datePublished={story.publishedAt}
+          authorName={author?.name}
+          authorUrl={author ? `/authors/${author.slug}` : undefined}
+          image={recordImage(story.seo?.ogImage, story.heroImage)}
+        />
         <header className="flex flex-col gap-3 max-w-header">
           <p className="meta-label-caps">
             <Link

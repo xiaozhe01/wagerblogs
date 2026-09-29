@@ -40,7 +40,11 @@ const allRoutes: RouteUnderTest[] = [
     register: "editorial",
   },
   { path: "/articles", label: "Articles index", register: "editorial" },
-  { path: "/articles/how-odds-boosts-actually-work", label: "Article", register: "editorial" },
+  // No article detail route: all three articles were reverted to draft on
+  // 2026-09-29 for carrying bracketed titles, so the collection has nothing
+  // published to sample. The template is still covered structurally by the news
+  // story above, which shares it. Restore a route here when a real article
+  // publishes — don't point this at a draft slug, it 404s anonymously.
   { path: "/reviews", label: "Reviews hub", register: "comparison" },
   { path: "/reviews/sportsbooks/examplebet", label: "Operator review", register: "comparison" },
   { path: "/reviews/sportsbooks", label: "Review group", register: "comparison" },

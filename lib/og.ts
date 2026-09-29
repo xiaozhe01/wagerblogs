@@ -58,6 +58,21 @@ function shareImage(image: Media | undefined) {
   };
 }
 
+/** The record's own share image, or undefined — never DEFAULT_OG_IMAGE. Takes
+ * the refs in preference order and returns the first that resolves.
+ *
+ * Separate from buildOpenGraph's fallback on purpose: an og:image has to point
+ * somewhere, so falling back to the sitewide placeholder is right there. JSON-LD
+ * has no such duty, and a block whose `image` is the sitewide fallback describes
+ * the site rather than the record. */
+export function recordImage(...refs: (MediaRef | undefined)[]) {
+  for (const ref of refs) {
+    const image = shareImage(resolveMedia(ref));
+    if (image) return image;
+  }
+  return undefined;
+}
+
 export function buildOpenGraph({
   title,
   description,
