@@ -38,17 +38,22 @@ convention explicitly, which is what keeps it honest rather than misleading:
 > `sweepstakes-casinos`, `fantasy-sports`. None renders, because all three have
 > `hasReviews: false` and `/reviews/<slug>` 404s. Latent, not live.
 
-### News stories (10)
+### News stories (10) — ~~published~~ 9 reverted to draft 2026-09-29
 
-All ten seeded stories carry `[Placeholder headline — <section>]` titles and
-`[Placeholder dek — <section>]` excerpts. Both surface in llms.txt, in feed
-rows, in search, and in social previews. Real editorial work replaces these
-when news publication starts.
+Nine of the ten carry `[Placeholder headline — <section>]` titles and
+`[Placeholder dek — <section>]` excerpts. They were public until 2026-09-29,
+when all nine were reverted to `_status: draft`; each URL now 404s to anonymous
+requests and they are gone from the sitemap, llms.txt and the search corpus.
+The tenth, `wisconsin-penn-state-score-comeback-fickell`, is real and stays
+published. Real editorial work republishes the rest.
 
-### Articles (3)
+### Articles (3) — ~~published~~ all reverted to draft 2026-09-29
 
 All three seeded articles carry `[Placeholder]`-prefixed titles. Their
-`excerpt` fields are real copy — only the titles are scaffold.
+`excerpt` fields are real copy — only the titles are scaffold. All three were
+reverted to draft on 2026-09-29, which leaves **`/articles` with no articles**.
+That is the honest state of the collection: there is no finished article on
+this site yet.
 
 ### Legal summaries (4)
 
@@ -154,6 +159,28 @@ help-directory-entries, bonus-offers.**
 
 Backfill for the 30-odd existing seeded records by natural-key match, same
 shape as `scripts/fix-market-stat-periods.ts`.
+
+### The seed publishes bracketed records — second failure of the same shape
+
+`scripts/seed-content.ts` hardcodes `_status: "published"` on every record it
+creates: articles at **:368**, news at **:426**, authors at **:192**, reviews
+at **:269**. The titles it writes come straight from the bracketed fixtures in
+`scripts/fixtures/blog.ts` and `scripts/fixtures/news.ts`.
+
+So the 2026-09-29 unpublish is **not** a one-time cleanup. Any future
+`npm run seed:content` re-creates all 12 as published records with bracketed
+titles, putting them back in the sitemap, llms.txt, search and social previews
+— and, once `articleJsonLd`/`newsArticleJsonLd` exist, back into the set the
+gate has to reject.
+
+This is the same class as the rename trap above: the seed's idea of a finished
+record and the site's idea of a publishable one are not the same, and nothing
+reconciles them. A fix means either seeding as `draft` and publishing by hand,
+or gating `_status` on the fixture's own content being unbracketed. Neither is
+done.
+
+Until then the standing rule in the next section applies to this too: **do not
+run `npm run seed:content` against a database anyone is looking at.**
 
 ### Outstanding data from the failed check
 
